@@ -3,13 +3,15 @@
 //
 
 #include "AVPlayer.h"
+#include <stdio.h>
 
-AVPlayer::AVPlayer()
-{
+namespace MSAV {
 
+AVPlayer::AVPlayer() {
+    printf("AVPlayer Initialize...");
 }
 
-AVPlayer::~AVPlayer()
-{
+AVPlayer::~AVPlayer() {
 
+}
 }

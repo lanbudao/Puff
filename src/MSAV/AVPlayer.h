@@ -6,17 +6,21 @@
 #define MSPLAYER_AVPLAYER_H
 
 #include <string.h>
+#include "Global.h"
+
 using namespace std;
 
-class AVPlayer
+namespace MSAV {
+
+class MS_AV_EXPORT AVPlayer
 {
 public:
     AVPlayer();
     ~AVPlayer();
 
-//    void play(string fileName);
+//  void play(string fileName);
 
 };
 
-
+};
 #endif //MSPLAYER_AVPLAYER_H
