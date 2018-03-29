@@ -2,7 +2,7 @@
 #ifndef MSAV_AVPLAYER_H
 #define MSAV_AVPLAYER_H
 
-#include "MS_Global.h"
+#include "MSAVGlobal.h"
 
 /**
  *

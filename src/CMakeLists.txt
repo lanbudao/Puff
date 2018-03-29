@@ -6,9 +6,9 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "optional:-std=c++11")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MSAV)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MSAV/private)
+list(APPEND INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+list(APPEND INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/MSAV)
+list(APPEND INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/MSAV/private)
 
 # Check ffmpeg modules
 list(APPEND EXTRA_INCLUDE ${CMAKE_SOURCE_DIR}/external/include)
@@ -54,9 +54,13 @@ file(GLOB SDK_PRIVATE_HEADERS MSAV/private/*.h)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
 list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS})
 
+# Include path
+list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
+include_directories(${INCLUDE_DIR})
+
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-add_library(${MODULE} SHARED ${SOURCES} ${HEADERS})
+add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp MSAV/AVDemuxer.h)
 
 message("HEADERS->" ${HEADERS})
 
