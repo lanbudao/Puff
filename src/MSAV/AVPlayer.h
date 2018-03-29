@@ -1,15 +1,12 @@
-//
-// Created by giga on 2018/3/28.
-//
 
-#ifndef MSPLAYER_AVPLAYER_H
-#define MSPLAYER_AVPLAYER_H
+#ifndef MSAV_AVPLAYER_H
+#define MSAV_AVPLAYER_H
 
-#include <string.h>
-#include "Global.h"
+#include "MS_Global.h"
 
-using namespace std;
-
+/**
+ *
+ */
 namespace MSAV {
 
 class MS_AV_EXPORT AVPlayer
@@ -23,4 +20,4 @@ public:
 };
 
 };
-#endif //MSPLAYER_AVPLAYER_H
+#endif //MSAV_AVPLAYER_H

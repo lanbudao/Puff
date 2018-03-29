@@ -1,9 +1,12 @@
 set(MODULE MSAV)
 
-#include(${PROJET_SOURCE_DIR}/MSAV)
+# Use C++11
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+    message(STATUS "optional:-std=c++11")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
-message(${CMAKE_CURRENT_SOURCE_DIR})
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MSAV)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MSAV/private)
 
@@ -44,15 +47,19 @@ endif()
 
 list(APPEND EXTRA_DEFS -DBUILD_MSAV_LIB -D__STDC_CONSTANT_MACROS)
 
-file(GLOB SDK_HEADERS MSAV/*.h)
+file(GLOB SDK_HEADERS *.h MSAV/*.h)
 file(GLOB SDK_PRIVATE_HEADERS MSAV/private/*.h)
 
-list(APPEND SOURCES
-        AVPlayer.cpp)
+# Load all source file without heareders
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
 list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS})
 
-add_definitions(-DBUILD_MSAV_LIB)
-
+# Output path
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 add_library(${MODULE} SHARED ${SOURCES} ${HEADERS})
 
-#target_compile_definitions(${MODULE} PRIVATE ${EXTRA_DEFS})
+message("HEADERS->" ${HEADERS})
+
+target_compile_definitions(${MODULE} PUBLIC ${EXTRA_DEFS})
+
+set_target_properties(${MODULE} PROPERTIES VERSION 1.0 SOVERSION 1.0)
