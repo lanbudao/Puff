@@ -59,10 +59,10 @@ list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
 include_directories(${INCLUDE_DIR})
 
 # Output path
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp MSAV/AVDemuxer.h)
 
-message("HEADERS->" ${HEADERS})
+target_link_libraries(${MODULE} ${EXTRA_LIBS})
 
 target_compile_definitions(${MODULE} PUBLIC ${EXTRA_DEFS})
 

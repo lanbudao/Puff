@@ -1,17 +1,18 @@
 #include "AVDemuxer.h"
+extern "C" {
 #include "libavformat/avformat.h"
-
-class AVDemuxerPrivate
+}
+class AVDemuxer::Private
 {
 public:
-    AVDemuxerPrivate():
+    Private():
         format_ctx(NULL),
         input_format(NULL),
         format_opts(NULL)
     {
 
     }
-    ~AVDemuxerPrivate()
+    ~Private()
     {
 
     }
@@ -20,11 +21,11 @@ public:
     AVFormatContext *format_ctx;
     AVInputFormat *input_format;
     AVDictionary *format_opts;
-
+    hash<String> format_dict;
 };
 
 AVDemuxer::AVDemuxer():
-    d(new AVDemuxerPrivate())
+    d(new Private())
 {
 
 }

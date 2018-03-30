@@ -3,7 +3,7 @@
 
 #include "MSAVGlobal.h"
 
-class AVDemuxer
+class MS_AV_EXPORT AVDemuxer
 {
 public:
     AVDemuxer();
@@ -14,8 +14,8 @@ public:
     void unload();
 
 private:
-    class AVDemuxerPrivate;
-    AVDemuxerPrivate *d;
+    class Private;
+    Private *d;
 };
 
 

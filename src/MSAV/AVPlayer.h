@@ -15,8 +15,12 @@ public:
     AVPlayer();
     ~AVPlayer();
 
-//  void play(string fileName);
+    void setFile(const String &fileName);
+    void play(const String fileName);
 
+private:
+    class Private;
+    Private *d;
 };
 
 };

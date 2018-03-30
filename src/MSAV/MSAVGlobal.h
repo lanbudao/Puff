@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
+#include <functional>
 
 using namespace std;
 
@@ -39,6 +40,16 @@ using namespace std;
 typedef std::string String;
 
 namespace MSAV {
-    String GetVersion() {return String("");}
+
+enum LogLevel {
+    LogOff,
+    LogDebug, // log all
+    LogWarning, // log warning, critical, fatal
+    LogCritical, // log critical, fatal
+    LogFatal,
+    LogAll
+};
+
+MS_AV_EXPORT inline String GetVersion() {return String("");}
 }
 #endif //MSAV_GLOBAL_H

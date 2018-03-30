@@ -9,12 +9,36 @@
 
 namespace MSAV {
 
-AVPlayer::AVPlayer() {
+class AVPlayer::Private
+{
+public:
+    explicit Private()
+    {
+
+    }
+    ~Private()
+    {
+
+    }
+    String fileName;
+    hash<String> format_dict;
+};
+
+AVPlayer::AVPlayer():
+    d(new Private())
+{
     printf("AVPlayer Initialize...");
     printf("BUILD_MSAV_LIB: %d", XXXX);
 }
 
-AVPlayer::~AVPlayer() {
+AVPlayer::~AVPlayer()
+{
 
 }
+
+void AVPlayer::setFile(const String &fileName)
+{
+
+}
+
 }
