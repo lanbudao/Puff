@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include "signals2/signal.hpp"
 
 #include "MSAVGlobal.h"
 

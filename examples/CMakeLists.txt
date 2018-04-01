@@ -9,6 +9,7 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 include_directories(${CMAKE_SOURCE_DIR}/src/MSAV)
+include_directories(${CMAKE_SOURCE_DIR}/3rdparty/boost)
 
 aux_source_directory(. DIR_SRCS)
 

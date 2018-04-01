@@ -54,9 +54,19 @@ file(GLOB SDK_PRIVATE_HEADERS MSAV/private/*.h)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
 list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS})
 
+# Find boost library
+set(BOOST_DIR $ENV{BOOST_PATH})
+if (EXISTS BOOST_DIR)
+    message(STATUS "Boost library path exist--> $ENV{BOOST_PATH}")
+    list(APPEND INCLUDE_DIR ${BOOST_DIR})
+else()
+    message(FATAL_ERROR "No boost directory specified.\nPlease set environment variables of boost named 'BOOST_PATH'.")
+endif()
 # Include path
 list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
 include_directories(${INCLUDE_DIR})
+# 3rd party libaries
+include_directories(${CMAKE_SOURCE_DIR}/3rdparty/boost)
 
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
