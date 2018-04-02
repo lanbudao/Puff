@@ -13,7 +13,6 @@ function(CHECK_ENV arg)
         set(ENV_DIR $ENV{${ARGV0}})
         if (EXISTS ${ENV_DIR})
             message(STATUS "Check env exist--> ${ENV_DIR}")
-            include_directories(${ENV_DIR})
             set(${arg} ${ENV_DIR} PARENT_SCOPE)
         else()
             message(FATAL_ERROR "No ${ARGV0} exist.")
@@ -25,9 +24,8 @@ CHECK_ENV(FFMPEG_DIR)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-include_directories(${BOOST_DIR}/boost)
-include_directories(${FFMPEG_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/src/MSAV)
+link_directories(${BOOST_DIR}/stage/lib ${FFMPEG_DIR}/lib)
+include_directories(${BOOST_DIR} ${BOOST_DIR}/boost ${FFMPEG_DIR}/include ${CMAKE_SOURCE_DIR}/src/MSAV)
 
 aux_source_directory(. DIR_SRCS)
 

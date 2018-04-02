@@ -29,7 +29,7 @@ CHECK_ENV(BOOST_DIR)
 if (EXISTS ${BOOST_DIR})
     list(APPEND EXTRA_INCLUDE ${BOOST_DIR}/boost)
     link_directories(${BOOST_DIR}/stage/lib)
-    list(APPEND EXTRA_LIBS boost_signals-mgw62-mt-d-x32-1_66)    #signals2
+    list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-d-x32-1_66")    #signals2
 endif()
 
 # Check ffmpeg modules

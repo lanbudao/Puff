@@ -15,17 +15,24 @@ using namespace MSAV;
 //    return 0;
 //}
 
+using namespace boost::signals2;
+
 class AVObject
 {
 public:
     AVObject()
     {
-        typedef boost::signals2::signal_type<void()> Signal_t;
+        typedef signal_type<void()> SignalV;
     }
     virtual ~AVObject()
     {
 
     }
+//    typedef signal_type<void()> Signal0;
+//    template <typename T1>
+//    typedef signal_type<void(T1)> Signal1;
+//    template <typename T1, typename T2>
+//    typedef signal_type<void(T1, T2)> Signal2;
 };
 
 class A
@@ -73,14 +80,14 @@ int main(int argc, char *argv[])
     int a = 0;
     int b = a;
     printf("%d, %d\n", a, b);
-    return 0;
-//    A* pA = new A;
-//    B* pB = new B;
-//
-//    C* pC = new C;
-//    Connect(pC, ValueChanged, pA, &A::FuncOfA);
-//    Connect(pC, ValueChanged, pB, &B::FuncOfB);
-//    pC->SetValue(10);
+//    return 0;
+    A* pA = new A;
+    B* pB = new B;
+
+    C* pC = new C;
+    Connect(pC, ValueChanged, pA, &A::FuncOfA);
+    Connect(pC, ValueChanged, pB, &B::FuncOfB);
+    pC->SetValue(10);
 //    pC->SetValue(5);
 //    pC->SetValue(5);
 //    delete pC;
