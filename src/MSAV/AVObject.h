@@ -5,63 +5,28 @@
 #include <iostream>
 #include <vector>
 #include "signals2/signal.hpp"
+#include "signals2/signal_type.hpp"
 
 #include "MSAVGlobal.h"
+#include "DPTR.h"
 
 namespace MSAV {
 
-template<class T1>
-class MS_AV_EXPORT SlotBase {
-public:
-    virtual void Exec(T1 param1) = 0;
+using namespace boost::signals2;
 
-    virtual ~SlotBase() {}
-};
-
-template<class T, class T1>
-class MS_AV_EXPORT SlotImpl : public SlotBase<T1>
+class AVObjectPrivate;
+class AVObject
 {
 public:
-    SlotImpl(T *pObj, void (T::*func)(T1)) {
-        obj = pObj;
-        func = func;
-    }
+    AVObject();
+    virtual ~AVObject();
 
-    void Exec(T1 param1) {
-        (obj->*func)(param1);
-    }
+protected:
+    String className() const;
+    void setClassName(const String &name);
 
 private:
-    T *obj;
-
-    void (T::*func)(T1);
+    MS_DECL_PRIVATE(AVObject);
 };
-
-
-template<class T1>
-class MS_AV_EXPORT Signal {
-public:
-    template<class T>
-    void Bind(T *obj, void (T::*func)(T1)) {
-        slotSet.push_back(new SlotImpl<T, T1>(obj, func));
-    }
-
-    ~Signal() {
-        for (int i = 0; i < (int) slotSet.size(); i++) {
-            delete slotSet[i];
-        }
-    }
-
-    void operator()(T1 param1) {
-        for (int i = 0; i < (int) slotSet.size(); i++) {
-            slotSet[i]->Exec(param1);
-        }
-    }
-
-private:
-    vector<SlotBase<T1> *> slotSet;
-};
-
-#define Connect(sender, signal, receiver, method) ( (sender)->signal.Bind(receiver, method) )
 }
 #endif //MSAV_AVOBJECT_H

@@ -36,20 +36,22 @@ using namespace std;
 #endif
 #endif
 #define MS_AV_PRIVATE_EXPORT MS_AV_EXPORT
+#define MS_DECL_DEPRECATED __declspec(deprecated)
 
 typedef std::string String;
 
 namespace MSAV {
 
 enum LogLevel {
-    LogOff,
-    LogDebug, // log all
-    LogWarning, // log warning, critical, fatal
-    LogCritical, // log critical, fatal
+    LogOff = 0,
     LogFatal,
+    LogError,
+    LogWarning,
+    LogDebug,
     LogAll
 };
 
 MS_AV_EXPORT inline String GetVersion() {return String("");}
+
 }
 #endif //MSAV_GLOBAL_H

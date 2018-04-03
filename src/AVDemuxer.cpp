@@ -2,6 +2,9 @@
 extern "C" {
 #include "libavformat/avformat.h"
 }
+
+namespace MSAV {
+
 class AVDemuxer::Private
 {
 public:
@@ -55,5 +58,7 @@ bool AVDemuxer::load()
 
 void AVDemuxer::unload()
 {
+
+}
 
 }

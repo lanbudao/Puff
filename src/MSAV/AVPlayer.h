@@ -19,8 +19,7 @@ public:
     void play(const String fileName);
 
 private:
-    class Private;
-    Private *d;
+    MS_DECL_PRIVATE
 };
 
 };

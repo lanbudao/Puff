@@ -2,8 +2,11 @@
 #define MSAV_AVDEMUXER_H
 
 #include "MSAVGlobal.h"
+#include "AVObject.h"
 
-class MS_AV_EXPORT AVDemuxer
+namespace MSAV {
+
+class MS_AV_EXPORT AVDemuxer: public AVObject
 {
 public:
     AVDemuxer();
@@ -14,9 +17,8 @@ public:
     void unload();
 
 private:
-    class Private;
-    Private *d;
+    MS_DECL_PRIVATE
 };
 
-
+}
 #endif //MSAV_AVDEMUXER_H

@@ -15,25 +15,59 @@ using namespace MSAV;
 //    return 0;
 //}
 
-using namespace boost::signals2;
+template<class T1>
+class MS_AV_EXPORT SlotBase {
+public:
+    virtual void Exec(T1 param1) = 0;
 
-class AVObject
+    virtual ~SlotBase() {}
+};
+
+template<class T, class T1>
+class MS_AV_EXPORT SlotImpl : public SlotBase<T1>
 {
 public:
-    AVObject()
-    {
-        typedef signal_type<void()> SignalV;
+    SlotImpl(T *pObj, void (T::*func)(T1)) {
+        obj = pObj;
+        func = func;
     }
-    virtual ~AVObject()
-    {
 
+    void Exec(T1 param1) {
+        (obj->*func)(param1);
     }
-//    typedef signal_type<void()> Signal0;
-//    template <typename T1>
-//    typedef signal_type<void(T1)> Signal1;
-//    template <typename T1, typename T2>
-//    typedef signal_type<void(T1, T2)> Signal2;
+
+private:
+    T *obj;
+
+    void (T::*func)(T1);
 };
+
+
+template<class T1>
+class MS_AV_EXPORT Signal {
+public:
+    template<class T>
+    void Bind(T *obj, void (T::*func)(T1)) {
+        slotSet.push_back(new SlotImpl<T, T1>(obj, func));
+    }
+
+    ~Signal() {
+        for (int i = 0; i < (int) slotSet.size(); i++) {
+            delete slotSet[i];
+        }
+    }
+
+    void operator()(T1 param1) {
+        for (int i = 0; i < (int) slotSet.size(); i++) {
+            slotSet[i]->Exec(param1);
+        }
+    }
+
+private:
+    vector<SlotBase<T1> *> slotSet;
+};
+
+#define Connect(sender, signal, receiver, method) ( (sender)->signal.Bind(receiver, method) )
 
 class A
 {

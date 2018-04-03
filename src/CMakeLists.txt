@@ -27,6 +27,7 @@ endfunction ()
 # Find boost library
 CHECK_ENV(BOOST_DIR)
 if (EXISTS ${BOOST_DIR})
+    list(APPEND EXTRA_INCLUDE ${BOOST_DIR})
     list(APPEND EXTRA_INCLUDE ${BOOST_DIR}/boost)
     link_directories(${BOOST_DIR}/stage/lib)
     list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-d-x32-1_66")    #signals2
@@ -82,8 +83,6 @@ list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS})
 # Include path
 list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
 include_directories(${INCLUDE_DIR})
-# 3rd party libaries
-include_directories(${CMAKE_SOURCE_DIR}/3rdparty/boost)
 
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
@@ -93,4 +92,7 @@ target_link_libraries(${MODULE} ${EXTRA_LIBS})
 
 target_compile_definitions(${MODULE} PUBLIC ${EXTRA_DEFS})
 
-set_target_properties(${MODULE} PROPERTIES VERSION 1.0 SOVERSION 1.0)
+set_target_properties(${MODULE} PROPERTIES
+        VERSION 1.0
+        SOVERSION 1.0
+        OUTPUT_NAME msav)
