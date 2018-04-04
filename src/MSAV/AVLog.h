@@ -17,7 +17,7 @@ public:
 
     void setLevel(LogLevel level);
 
-    LogLevel level();
+    LogLevel level() const;
 
 private:
     explicit AVLog();

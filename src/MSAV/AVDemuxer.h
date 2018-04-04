@@ -6,8 +6,10 @@
 
 namespace MSAV {
 
+class AVDemuxerPrivate;
 class MS_AV_EXPORT AVDemuxer: public AVObject
 {
+    DPTR_DECLARE_PRIVATE(AVDemuxer);
 public:
     AVDemuxer();
     ~AVDemuxer();
@@ -17,7 +19,7 @@ public:
     void unload();
 
 private:
-    MS_DECL_PRIVATE
+
 };
 
 }

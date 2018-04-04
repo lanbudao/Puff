@@ -2,38 +2,39 @@
 
 namespace MSAV {
 
-class AVObject::Private
+class AVObjectPrivate: public DptrPrivate<AVObject>
 {
 public:
-    Private()
+    AVObjectPrivate()
     {
 
     }
-    ~Private()
+    ~AVObjectPrivate()
     {
 
     }
     String className;
 };
-AVObject::AVObject():
-    d(new Private())
+AVObject::AVObject()
 {
     typedef signal_type<void()> SignalV;
 }
 
 AVObject::~AVObject()
 {
-    delete d;
+
 }
 
 String AVObject::className() const
 {
-    return d->className;
+    DPTR_D(const AVObject);
+    return d.className;
 }
 
 void AVObject::setClassName(const String &name)
 {
-    d->className = name;
+    DPTR_D(AVObject);
+    d.className = name;
 }
 
 }

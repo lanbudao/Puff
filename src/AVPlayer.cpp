@@ -9,14 +9,14 @@
 
 namespace MSAV {
 
-class AVPlayer::Private
+class AVPlayerPrivate: public DptrPrivate<AVPlayer>
 {
 public:
-    explicit Private()
+    AVPlayerPrivate()
     {
 
     }
-    ~Private()
+    ~AVPlayerPrivate()
     {
 
     }
@@ -24,8 +24,7 @@ public:
     hash<String> format_dict;
 };
 
-AVPlayer::AVPlayer():
-    d(new Private())
+AVPlayer::AVPlayer()
 {
     printf("AVPlayer Initialize...");
     printf("BUILD_MSAV_LIB: %d", XXXX);

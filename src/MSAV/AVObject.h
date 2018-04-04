@@ -17,6 +17,7 @@ using namespace boost::signals2;
 class AVObjectPrivate;
 class AVObject
 {
+    DPTR_DECLARE_PRIVATE(AVObject);
 public:
     AVObject();
     virtual ~AVObject();
@@ -26,7 +27,6 @@ protected:
     void setClassName(const String &name);
 
 private:
-    MS_DECL_PRIVATE(AVObject);
 };
 }
 #endif //MSAV_AVOBJECT_H

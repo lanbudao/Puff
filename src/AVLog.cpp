@@ -44,9 +44,9 @@ void AVLog::setLevel(LogLevel level)
     d.level = level;
 }
 
-LogLevel AVLog::level()
+LogLevel AVLog::level() const
 {
-    DPTR_D(AVLog);
+    DPTR_D(const AVLog);
 
     return d.level;
 }

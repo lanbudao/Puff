@@ -5,17 +5,17 @@ extern "C" {
 
 namespace MSAV {
 
-class AVDemuxer::Private
+class AVDemuxerPrivate: public DptrPrivate<AVDemuxer>
 {
 public:
-    Private():
+    AVDemuxerPrivate():
         format_ctx(NULL),
         input_format(NULL),
         format_opts(NULL)
     {
 
     }
-    ~Private()
+    ~AVDemuxerPrivate()
     {
 
     }
@@ -27,33 +27,34 @@ public:
     hash<String> format_dict;
 };
 
-AVDemuxer::AVDemuxer():
-    d(new Private())
+AVDemuxer::AVDemuxer()
 {
 
 }
 
 AVDemuxer::~AVDemuxer()
 {
-    delete d;
+
 }
 
 void AVDemuxer::setMedia(const String &fileName)
 {
-    d->fileName = fileName;
+    DPTR_D(AVDemuxer);
+    d.fileName = fileName;
 }
 
 bool AVDemuxer::load()
 {
+    DPTR_D(AVDemuxer);
     unload();
 
-    if (d->fileName.empty()) {
+    if (d.fileName.empty()) {
         return false;
     }
-    if (!d->format_ctx) {
-        d->format_ctx = avformat_alloc_context();
+    if (!d.format_ctx) {
+        d.format_ctx = avformat_alloc_context();
     }
-    avformat_open_input(&d->format_ctx, d->fileName.data(), d->input_format, &d->format_opts);
+    avformat_open_input(&d.format_ctx, d.fileName.data(), d.input_format, &d.format_opts);
 }
 
 void AVDemuxer::unload()

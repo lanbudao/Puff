@@ -38,7 +38,7 @@
 
 #define DPTR_DECLARE_PRIVATE(Class) friend class Class##Private; DptrPrivateInterface<Class, Class##Private> dptr_d;
 #define DPTR_DECLARE_PUBLIC(Class) friend class Class;
-#define DPTR_INIT_PRIVATE(Class) qxt_d.setPublic(this);
+#define DPTR_INIT_PRIVATE(Class) dptr_d.setPublic(this);
 #define DPTR_D(Class) Class##Private& d = dptr_d()
 #define DPTR_P(Class) Class& p = dptr_p()
 
