@@ -3,8 +3,11 @@
 
 #include "MSAVGlobal.h"
 #include "DPTR.h"
+#include "boost/asio/deadline_timer.hpp"
 
 namespace MSAV {
+
+using namespace boost::asio;
 
 class AVClockPrivate;
 class AVClock

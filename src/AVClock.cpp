@@ -9,14 +9,16 @@ namespace MSAV {
 class AVClockPrivate: public DptrPrivate<AVClock>
 {
 public:
-    AVClockPrivate()
+    AVClockPrivate():
+        timer(NULL)
     {
 
     }
     ~AVClockPrivate()
     {
-
+        delete timer;
     }
+    deadline_timer *timer;
 };
 
 AVClock::AVClock() {

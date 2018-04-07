@@ -1,9 +1,14 @@
 #include "AVDemuxer.h"
+#include "AVError.h"
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 #include "libavformat/avformat.h"
 #include "libavformat/avio.h"
+#ifdef __cplusplus
 }
+#endif
 
 namespace MSAV {
 
@@ -116,6 +121,8 @@ bool AVDemuxer::load()
     DPTR_D(AVDemuxer);
     unload();
 
+    int ret = 0;
+
     if (d.fileName.empty()) {
         return false;
     }
@@ -125,10 +132,15 @@ bool AVDemuxer::load()
 
     /*Open Stream*/
     d.interruptHandler->begin(InterruptHandler::OpenStream);
-    avformat_open_input(&d.format_ctx, d.fileName.data(), d.input_format, &d.format_opts);
+    ret = avformat_open_input(&d.format_ctx, d.fileName.data(), d.input_format, &d.format_opts);
     d.interruptHandler->end();
 
+    if (ret < 0) {
+        AVError::ErrorCode code = AVError::OpenError;
+        return false;
+    }
 
+    return true;
 }
 
 void AVDemuxer::unload()

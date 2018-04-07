@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.9)
+
 set(MODULE MSAV)
 
 # Use C++11
@@ -30,7 +32,12 @@ if (EXISTS ${BOOST_DIR})
     list(APPEND EXTRA_INCLUDE ${BOOST_DIR})
     list(APPEND EXTRA_INCLUDE ${BOOST_DIR}/boost)
     link_directories(${BOOST_DIR}/stage/lib)
-    list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-d-x32-1_66")    #signals2
+    list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-x32-1_66")    #signals2
+    list(APPEND EXTRA_LIBS "boost_timer-mgw62-mt-x32-1_66")    #timer
+    list(APPEND EXTRA_LIBS "boost_system-mgw62-mt-x32-1_66")    #system
+    if(WIN32)
+        list(APPEND EXTRA_LIBS "ws2_32")
+    endif()
 endif()
 
 # Check ffmpeg modules
@@ -85,8 +92,8 @@ list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
 include_directories(${INCLUDE_DIR})
 
 # Output path
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
-add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp MSAV/AVDemuxer.h)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
+add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp MSAV/AVDemuxer.h AVError.cpp MSAV/AVError.h)
 
 target_link_libraries(${MODULE} ${EXTRA_LIBS})
 
