@@ -35,8 +35,10 @@ if (EXISTS ${BOOST_DIR})
     list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-x32-1_66")    #signals2
     list(APPEND EXTRA_LIBS "boost_timer-mgw62-mt-x32-1_66")    #timer
     list(APPEND EXTRA_LIBS "boost_system-mgw62-mt-x32-1_66")    #system
+    list(APPEND EXTRA_LIBS "boost_thread-mgw62-mt-x32-1_66")    #thread
     if(WIN32)
         list(APPEND EXTRA_LIBS "ws2_32")
+        list(APPEND EXTRA_DEFS "-DBOOST_USE_WINDOWS_H")
     endif()
 endif()
 

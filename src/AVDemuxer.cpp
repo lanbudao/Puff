@@ -80,7 +80,8 @@ public:
         format_ctx(NULL),
         input_format(NULL),
         format_opts(NULL),
-        interruptHandler(NULL)
+        interruptHandler(NULL),
+        isEOF(true)
     {
         av_register_all();
     }
@@ -181,6 +182,7 @@ public:
     } video_stream_info, audio_stream_info, subtitle_stream_info;
 
     Packet curPkt;
+    bool isEOF;
 };
 
 AVDemuxer::AVDemuxer()
@@ -257,6 +259,12 @@ bool AVDemuxer::readFrame()
     d.interruptHandler->end();
 
     if (ret < 0) {
+        if (ret == AVERROR_EOF) {
+            if (!d.isEOF) {
+
+                d.isEOF = true;
+            }
+        }
         return false;
     }
     stream_index = avpkt.stream_index;
@@ -267,6 +275,7 @@ bool AVDemuxer::readFrame()
 
     d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[stream_index]->time_base));
     av_packet_unref(&avpkt);
+    d.isEOF = false;
 
     return true;
 }
