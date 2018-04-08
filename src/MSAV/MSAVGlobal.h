@@ -38,6 +38,8 @@ using namespace std;
 #define MS_AV_PRIVATE_EXPORT MS_AV_EXPORT
 #define MS_DECL_DEPRECATED __declspec(deprecated)
 
+#define MS_NO_COPY final
+
 typedef std::string String;
 
 namespace MSAV {

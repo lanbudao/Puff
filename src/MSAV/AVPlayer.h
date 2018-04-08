@@ -19,7 +19,7 @@ public:
     ~AVPlayer();
 
     void setFile(const String &fileName);
-    void play(const String fileName);
+    void play(const String& fileName);
 
 private:
 

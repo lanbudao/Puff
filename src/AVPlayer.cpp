@@ -31,8 +31,8 @@ public:
 
 AVPlayer::AVPlayer()
 {
-    printf("AVPlayer Initialize...");
-    printf("BUILD_MSAV_LIB: %d", XXXX);
+    printf("AVPlayer Initialize...\n");
+    printf("BUILD_MSAV_LIB: %d\n", XXXX);
 }
 
 AVPlayer::~AVPlayer()
@@ -47,7 +47,7 @@ void AVPlayer::setFile(const String &fileName)
     d.fileName = fileName;
 }
 
-void AVPlayer::play(const String fileName)
+void AVPlayer::play(const String& fileName)
 {
     DPTR_D(AVPlayer);
 

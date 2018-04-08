@@ -18,6 +18,11 @@ public:
     bool load();
     void unload();
 
+    bool readFrame();
+    int  videoStream();
+    int  audioStream();
+    int  subtitleStream();
+
 private:
 
 };
