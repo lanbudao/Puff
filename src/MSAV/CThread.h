@@ -1,27 +1,35 @@
 #ifndef MSAV_CTHREAD_H
 #define MSAV_CTHREAD_H
 
-#include "boost/thread.hpp"
-#include "boost/bind.hpp"
+#include "CObject.h"
+
+namespace boost {
+    class thread;
+}
 
 namespace MSAV {
 
-//namespace boost {
-//    class thread;
-//}
-
-class CThread
+class MS_AV_EXPORT CThread: public CObject
 {
 public:
     CThread();
     virtual ~CThread();
 
-    virtual void run();
+    void start();
+    void exit();
+    void sleep(int second);
+    void msleep(int ms);
 
     int id() const;
 
+MS_SIGNALS:
+    signals2::signal<void()> finished;
+
+public:
+    virtual void run();
+
 protected:
-//    boost::thread *t;
+    boost::thread *t;
 };
 
 }

@@ -1,18 +1,74 @@
 #include <stdio.h>
 #include <iostream>
 #include "AVPlayer.h"
-#include "AVObject.h"
+#include "CObject.h"
+#include "CThread.h"
 #include "signals2/signal_type.hpp"
 
 using namespace MSAV;
 
+class MyThread: public CThread
+{
+public:
+
+protected:
+    void run() MS_DECL_OVERRIDE
+    {
+        int i = 100;
+        while (i-- > 0) {
+            printf("child thread1: %d\n", i);
+            msleep(400);
+        }
+
+        MS_EMIT finished();
+    }
+};
+class MyThread2: public CThread
+{
+public:
+
+protected:
+    void run() MS_DECL_OVERRIDE
+    {
+        int i = 100;
+        while (i-- > 0) {
+            printf("child thread2: %d\n", i);
+            msleep(400);
+        }
+
+        MS_EMIT finished();
+    }
+};
+
+class MyReceive {
+public:
+    void func()
+    {
+        printf("thread is exit!\n");
+    }
+};
+
+static void func1()
+{
+    printf("thread is exit111!\n");
+}
+
 int main(int argc, char *argv[])
 {
-    AVPlayer *player = new AVPlayer();
+//    AVPlayer *player = new AVPlayer();
+//
+//    player->play("F:\\work_file\\video\\M.I.A.OfficialVideo.mp4");
+//
+//    printf("hello world\n");
 
-    player->play("F:\\work_file\\video\\M.I.A.OfficialVideo.mp4");
-
-    printf("hello world\n");
+    CThread *t1 = new MyThread();
+    CThread *t2 = new MyThread2();
+    MyReceive *receive = new MyReceive;
+    Connect(t1->finished, receive, &MyReceive::func);
+    Connect(t1->finished, func1);
+//    t->finished.connect(func1);
+    t1->start();
+    t2->start();
 
     return 0;
 }

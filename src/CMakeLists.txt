@@ -38,7 +38,6 @@ if (EXISTS ${BOOST_DIR})
     list(APPEND EXTRA_LIBS "boost_thread-mgw62-mt-x32-1_66")    #thread
     if(WIN32)
         list(APPEND EXTRA_LIBS "ws2_32")
-        list(APPEND EXTRA_DEFS "-DBOOST_USE_WINDOWS_H")
     endif()
 endif()
 
@@ -97,9 +96,9 @@ include_directories(${INCLUDE_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp MSAV/AVDemuxer.h AVError.cpp MSAV/AVError.h)
 
-target_link_libraries(${MODULE} ${EXTRA_LIBS})
-
 target_compile_definitions(${MODULE} PUBLIC ${EXTRA_DEFS})
+
+target_link_libraries(${MODULE} ${EXTRA_LIBS})
 
 set_target_properties(${MODULE} PROPERTIES
         VERSION 1.0

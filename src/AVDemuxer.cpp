@@ -164,7 +164,7 @@ public:
     AVFormatContext *format_ctx;
     AVInputFormat *input_format;
     AVDictionary *format_opts;
-    hash<String> format_dict;
+    std::hash<String> format_dict;
     InterruptHandler *interruptHandler;
 
     struct StreamInfo {

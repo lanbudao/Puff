@@ -2,12 +2,12 @@
 #define MSAV_AVDEMUXER_H
 
 #include "MSAVGlobal.h"
-#include "AVObject.h"
+#include "CObject.h"
 
 namespace MSAV {
 
 class AVDemuxerPrivate;
-class MS_AV_EXPORT AVDemuxer: public AVObject
+class MS_AV_EXPORT AVDemuxer: public CObject
 {
     DPTR_DECLARE_PRIVATE(AVDemuxer);
 public:

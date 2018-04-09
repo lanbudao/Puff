@@ -39,6 +39,9 @@ using namespace std;
 #define MS_DECL_DEPRECATED __declspec(deprecated)
 
 #define MS_NO_COPY final
+#define MS_DECL_OVERRIDE override
+#define MS_SIGNALS public
+#define MS_EMIT
 
 typedef std::string String;
 

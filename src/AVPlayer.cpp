@@ -23,7 +23,7 @@ public:
         delete demuxer;
     }
     String fileName;
-    hash<String> format_dict;
+    std::hash<String> format_dict;
 
     /*Demuxer*/
     AVDemuxer *demuxer;
