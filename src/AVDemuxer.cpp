@@ -81,7 +81,8 @@ public:
         input_format(NULL),
         format_opts(NULL),
         interruptHandler(NULL),
-        isEOF(true)
+        isEOF(true),
+        stream(-1)
     {
         av_register_all();
     }
@@ -181,6 +182,7 @@ public:
         }
     } video_stream_info, audio_stream_info, subtitle_stream_info;
 
+    int stream;
     Packet curPkt;
     bool isEOF;
 };
@@ -243,12 +245,17 @@ void AVDemuxer::unload()
     }
 }
 
+int AVDemuxer::stream()
+{
+    DPTR_D(const AVDemuxer);
+    return d.stream;
+}
+
 bool AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);
 
     int ret = 0;
-    int stream_index = -1;
     AVPacket avpkt;
 
     d.curPkt = Packet();
@@ -267,13 +274,13 @@ bool AVDemuxer::readFrame()
         }
         return false;
     }
-    stream_index = avpkt.stream_index;
-    if (stream_index != videoStream() && stream_index != audioStream() && stream_index != subtitleStream()) {
+    d.stream = avpkt.stream_index;
+    if (d.stream != videoStream() && d.stream != audioStream() && d.stream != subtitleStream()) {
         av_packet_unref(&avpkt);
         return false;
     }
 
-    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[stream_index]->time_base));
+    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
     av_packet_unref(&avpkt);
     d.isEOF = false;
 

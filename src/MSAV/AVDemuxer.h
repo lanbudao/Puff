@@ -18,6 +18,7 @@ public:
     bool load();
     void unload();
 
+    int  stream();
     bool readFrame();
     int  videoStream();
     int  audioStream();

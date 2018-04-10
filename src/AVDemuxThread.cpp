@@ -57,7 +57,7 @@ void AVDemuxThread::setVideoThread(AVThread *thread)
     d.video_thread = thread;
 }
 
-AVThread *AVDemuxThread::videoThead()
+AVThread *AVDemuxThread::videoThread()
 {
     DPTR_D(const AVDemuxThread);
     return d.video_thread;
@@ -66,6 +66,7 @@ AVThread *AVDemuxThread::videoThead()
 void AVDemuxThread::run()
 {
     DPTR_D(AVDemuxThread);
+    int stream;
 
     if (d.audio_thread && !d.audio_thread->isRunning()) {
         d.audio_thread->start();
@@ -77,7 +78,15 @@ void AVDemuxThread::run()
 
         if (!d.demuxer->readFrame())
             continue;
+        stream = d.demuxer->stream();
+        /*video*/
+        if (stream == d.demuxer->videoStream()) {
 
+        }
+        /*audio*/
+        else if (stream == d.demuxer->audioStream()) {
+
+        }
     }
     CThread::run();
 }

@@ -19,7 +19,7 @@ public:
     void setAudioThread(AVThread *thread);
     AVThread *audioThread();
     void setVideoThread(AVThread *thread);
-    AVThread *videoThead();
+    AVThread *videoThread();
 
 protected:
     void run() MS_DECL_OVERRIDE;
