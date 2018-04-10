@@ -1,12 +1,7 @@
 
 #include "AVPlayer.h"
 #include "AVDemuxer.h"
-
-#ifdef BUILD_MSAV_LIB
-#define XXXX 1
-#else
-#define XXXX 0
-#endif
+#include "AVDemuxThread.h"
 
 namespace MSAV {
 
@@ -14,9 +9,12 @@ class AVPlayerPrivate: public DptrPrivate<AVPlayer>
 {
 public:
     AVPlayerPrivate():
-        demuxer(NULL)
+        demuxer(NULL),
+        demux_thread(NULL)
     {
         demuxer = new AVDemuxer();
+        demux_thread = new AVDemuxThread();
+        demux_thread->setDemuxer(demuxer);
     }
     ~AVPlayerPrivate()
     {
@@ -27,12 +25,12 @@ public:
 
     /*Demuxer*/
     AVDemuxer *demuxer;
+    AVDemuxThread *demux_thread;
 };
 
 AVPlayer::AVPlayer()
 {
     printf("AVPlayer Initialize...\n");
-    printf("BUILD_MSAV_LIB: %d\n", XXXX);
 }
 
 AVPlayer::~AVPlayer()

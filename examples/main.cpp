@@ -20,7 +20,7 @@ protected:
             msleep(400);
         }
 
-        MS_EMIT finished();
+        CThread::run();
     }
 };
 class MyThread2: public CThread
@@ -36,7 +36,7 @@ protected:
             msleep(400);
         }
 
-        MS_EMIT finished();
+        CThread::run();
     }
 };
 

@@ -4,7 +4,21 @@
 
 namespace MSAV {
 
-CThread::CThread(): t(NULL)
+class CThreadPrivate: public DptrPrivate<CThread>
+{
+public:
+    CThreadPrivate(): running(false) {
+
+    }
+    ~CThreadPrivate() {
+
+    }
+
+    bool running;
+};
+
+CThread::CThread():
+    t(NULL)
 {
     t = new boost::thread(boost::bind(&CThread::run, this));
 }
@@ -16,23 +30,27 @@ CThread::~CThread()
 
 void CThread::start()
 {
+    DPTR_D(CThread);
     t->join();
+    d.running = true;
 }
 
 void CThread::exit() {
+    DPTR_D(CThread);
     t->interrupt();
 }
 
 void CThread::run()
 {
-    printf("run...\n");
-
+    DPTR_D(CThread);
+    printf("CThread::finished\n");
+    d.running = false;
     MS_EMIT finished();
 }
 
 void CThread::sleep(int second)
 {
-    boost::this_thread::sleep(boost::posix_time::seconds(second));
+    msleep(second * 1000);
 }
 
 void CThread::msleep(int ms)
@@ -45,6 +63,11 @@ int CThread::id() const
 //    thread::id t_id = t->get_id();
 //    return t->get_id();
     return 0;
+}
+
+bool CThread::isRunning() {
+    DPTR_D(CThread);
+    return d.running;
 }
 
 }

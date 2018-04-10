@@ -39,7 +39,7 @@
 #define DPTR_DECLARE_PRIVATE(Class) friend class Class##Private; DptrPrivateInterface<Class, Class##Private> dptr_d;
 #define DPTR_DECLARE_PUBLIC(Class) friend class Class;
 #define DPTR_INIT_PRIVATE(Class) dptr_d.setPublic(this);
-#define DPTR_D(Class) Class##Private& d = dptr_d()
+#define DPTR_D(Class) /*Class##Private*/auto& d = dptr_d.pri<Class##Private>()//dptr_d()
 #define DPTR_P(Class) Class& p = dptr_p()
 
 template <typename PUB>
@@ -62,6 +62,10 @@ class DptrPrivateInterface
 public:
     DptrPrivateInterface() { pvt = new PVT; }
     ~DptrPrivateInterface() { delete pvt; }
+    template <typename T>
+    inline T& pri() { return *reinterpret_cast<T*>(pvt); }
+    template <typename T>
+    inline const T& pri() const { return *reinterpret_cast<T*>(pvt); }
     inline void setPublic(PUB* pub) { pvt->setPublic(pub); }
     inline PVT& operator()() { return *static_cast<PVT*>(pvt); }
     inline const PVT& operator()() const { return *static_cast<PVT*>(pvt); }
