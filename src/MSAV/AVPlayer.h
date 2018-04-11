@@ -22,6 +22,7 @@ public:
     void play(const String& fileName);
 
 private:
+    DPTR_DECLARE(AVPlayer)
 
 };
 

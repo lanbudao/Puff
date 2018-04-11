@@ -36,7 +36,8 @@
 #ifndef MSAV_DPTR_H
 #define MSAV_DPTR_H
 
-#define DPTR_DECLARE_PRIVATE(Class) friend class Class##Private; DptrPrivateInterface<Class, Class##Private> dptr_d;
+#define DPTR_DECLARE(Class) DptrPrivateInterface<Class, Class##Private> dptr_d;
+#define DPTR_DECLARE_PRIVATE(Class) friend class Class##Private;
 #define DPTR_DECLARE_PUBLIC(Class) friend class Class;
 #define DPTR_INIT_PRIVATE(Class) dptr_d.setPublic(this);
 #define DPTR_D(Class) /*Class##Private*/auto& d = dptr_d.pri<Class##Private>()//dptr_d()

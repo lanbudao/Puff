@@ -2,6 +2,7 @@
 #include "AVDemuxer.h"
 #include "AudioThread.h"
 #include "VideoThread.h"
+#include "PacketQueue.h"
 
 namespace MSAV {
 
@@ -74,17 +75,31 @@ void AVDemuxThread::run()
     if (d.video_thread && !d.video_thread->isRunning()) {
         d.video_thread->start();
     }
+    PacketQueue *vbuffer = d.video_thread ? d.video_thread->packets() : NULL;
+    PacketQueue *abuffer = d.audio_thread ? d.audio_thread->packets() : NULL;
+
+    if (vbuffer) {
+        vbuffer->clear();
+        vbuffer->setBlock(true);
+    }
+    if (abuffer) {
+        abuffer->clear();
+        abuffer->setBlock(true);
+    }
+
     while (!d.isEnd) {
 
         if (!d.demuxer->readFrame())
             continue;
         stream = d.demuxer->stream();
-        /*video*/
+
         if (stream == d.demuxer->videoStream()) {
 
         }
-        /*audio*/
         else if (stream == d.demuxer->audioStream()) {
+
+        }
+        else if (stream == d.demuxer->subtitleStream()) {
 
         }
     }

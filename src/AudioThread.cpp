@@ -2,6 +2,13 @@
 
 namespace MSAV {
 
+class AudioThreadPrivate: public DptrPrivate<AudioThread>
+{
+public:
+    AudioThreadPrivate() {}
+    ~AudioThreadPrivate() {}
+};
+
 AudioThread::AudioThread() {
 
 }

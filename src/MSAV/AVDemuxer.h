@@ -25,7 +25,7 @@ public:
     int  subtitleStream();
 
 private:
-
+    DPTR_DECLARE(AVDemuxer)
 };
 
 }

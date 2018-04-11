@@ -22,6 +22,9 @@ public:
 private:
     explicit AVLog();
     ~AVLog();
+
+private:
+    DPTR_DECLARE(AVLog)
 };
 
 }

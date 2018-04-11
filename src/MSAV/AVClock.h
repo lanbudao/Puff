@@ -16,6 +16,8 @@ class AVClock
 public:
     AVClock();
     ~AVClock();
+private:
+    DPTR_DECLARE(AVClock)
 };
 
 }

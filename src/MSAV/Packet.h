@@ -24,6 +24,9 @@ public:
     double pts, dts, duration;
     int64_t pos;
     char *data;
+
+private:
+    DPTR_DECLARE(Packet)
 };
 
 }

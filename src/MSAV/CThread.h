@@ -31,6 +31,9 @@ public:
 
 protected:
     boost::thread *t;
+
+private:
+    DPTR_DECLARE(CThread)
 };
 
 }

@@ -25,6 +25,7 @@ protected:
     void run() MS_DECL_OVERRIDE;
 
 private:
+    DPTR_DECLARE(AVDemuxThread)
 
 };
 

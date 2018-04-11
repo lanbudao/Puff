@@ -5,8 +5,10 @@
 
 namespace MSAV {
 
+class VideoThreadPrivate;
 class VideoThread: public AVThread
 {
+    DPTR_DECLARE_PRIVATE(VideoThread)
 public:
     VideoThread();
     ~VideoThread();

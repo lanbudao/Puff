@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string>
 #include <functional>
+#include <list>
 
 using namespace std;
 
@@ -44,6 +45,7 @@ using namespace std;
 #define MS_EMIT
 
 typedef std::string String;
+typedef std::list<String> StringList;
 
 namespace MSAV {
 

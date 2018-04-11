@@ -16,6 +16,8 @@ public:
 
     PacketQueue *packets();
 
+protected:
+    DPTR_DECLARE(AVThread)
 };
 
 }

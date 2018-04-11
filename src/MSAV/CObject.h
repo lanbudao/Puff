@@ -38,6 +38,7 @@ protected:
     void setClassName(const String &name);
 
 private:
+    DPTR_DECLARE(CObject)
 };
 }
 #endif //MSAV_AVOBJECT_H
