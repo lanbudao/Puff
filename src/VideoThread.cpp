@@ -1,5 +1,6 @@
 #include "VideoThread.h"
 #include "AVThread_p.h"
+#include "VideoDecoder.h"
 
 namespace MSAV {
 
@@ -10,7 +11,7 @@ public:
     ~VideoThreadPrivate() {}
 };
 
-VideoThread::VideoThread()
+VideoThread::VideoThread()//: AVThread()
 {
 
 }
@@ -24,9 +25,13 @@ void VideoThread::run()
 {
     DPTR_D(VideoThread);
 
-    while (true) {
+    auto *decoder = dynamic_cast<VideoDecoder *>(d.decoder);
+
+    while (!d.stopped) {
 
     }
+
+    AVThread::run();
 }
 
 }

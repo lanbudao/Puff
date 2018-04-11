@@ -31,8 +31,8 @@ CThread::~CThread()
 void CThread::start()
 {
     DPTR_D(CThread);
-    t->join();
     d.running = true;
+    t->join();
 }
 
 void CThread::exit() {

@@ -3,6 +3,7 @@
 
 #include "MSAVGlobal.h"
 #include "CObject.h"
+#include "Packet.h"
 
 namespace MSAV {
 
@@ -19,6 +20,7 @@ public:
     void unload();
 
     int  stream();
+    Packet packet() const;
     bool readFrame();
     int  videoStream();
     int  audioStream();

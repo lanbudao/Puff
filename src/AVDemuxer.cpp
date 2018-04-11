@@ -251,6 +251,12 @@ int AVDemuxer::stream()
     return d.stream;
 }
 
+Packet AVDemuxer::packet() const
+{
+    DPTR_D(const AVDemuxer);
+    return d.curPkt;
+}
+
 bool AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);

@@ -68,6 +68,7 @@ void AVDemuxThread::run()
 {
     DPTR_D(AVDemuxThread);
     int stream;
+    Packet pkt;
 
     if (d.audio_thread && !d.audio_thread->isRunning()) {
         d.audio_thread->start();
@@ -92,17 +93,36 @@ void AVDemuxThread::run()
         if (!d.demuxer->readFrame())
             continue;
         stream = d.demuxer->stream();
+        pkt = d.demuxer->packet();
 
         if (stream == d.demuxer->videoStream()) {
-
+            if (vbuffer) {
+                if (!d.video_thread || !d.video_thread->isRunning()) {
+                    vbuffer->clear();
+                    continue;
+                }
+                vbuffer->blockFull(!d.audio_thread || !d.audio_thread->isRunning() || !abuffer || abuffer->isEnough());
+                vbuffer->enqueue(pkt);
+            }
         }
         else if (stream == d.demuxer->audioStream()) {
-
+            if (abuffer) {
+                if (!d.audio_thread || !d.audio_thread->isRunning()) {
+                    abuffer->clear();
+                    continue;
+                }
+                abuffer->blockFull(!d.video_thread || !d.video_thread->isRunning() || !vbuffer);
+                abuffer->enqueue(pkt);
+            }
         }
         else if (stream == d.demuxer->subtitleStream()) {
 
         }
     }
+
+    //TODO: wait for video and audio thread stopped
+    //...
+
     CThread::run();
 }
 

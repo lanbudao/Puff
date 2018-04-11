@@ -10,7 +10,8 @@ namespace MSAV {
 class AVThreadPrivate : public DptrPrivate<AVThread> {
 public:
     AVThreadPrivate() :
-        decoder(NULL)
+        decoder(NULL),
+        stopped(false)
     {
         packets.clear();
     }
@@ -19,6 +20,9 @@ public:
 
     AVDecoder *decoder;
     PacketQueue packets;
+
+    /*Must be volatile*/
+    volatile bool stopped;
 };
 
 }

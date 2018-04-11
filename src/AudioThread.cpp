@@ -9,7 +9,8 @@ public:
     ~AudioThreadPrivate() {}
 };
 
-AudioThread::AudioThread() {
+AudioThread::AudioThread()//:AVThread()
+{
 
 }
 

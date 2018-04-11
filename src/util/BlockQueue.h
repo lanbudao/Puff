@@ -6,12 +6,12 @@
 #include "boost/thread/condition.hpp"
 #include <queue>
 
-namespace MSAV {
-
 typedef boost::shared_mutex Mutex;
 typedef boost::unique_lock<Mutex> WriteLock;
 typedef boost::shared_lock<Mutex> ReadLock;
 typedef boost::condition Condition;
+
+namespace MSAV {
 
 template <typename T>
 class BlockQueue
@@ -34,6 +34,8 @@ public:
     bool isFull() const;
     bool isEmpty() const;
     bool isEnough() const;
+    void blockEmpty(bool block);
+    void blockFull(bool block);
 
 protected:
     virtual bool checkFull() const;
@@ -45,7 +47,9 @@ protected:
 
 protected:
     std::queue<T> q;
-    Mutex mutex;
+
+    /*Must be mutable*/
+    mutable Mutex mutex, lock_change_mutex;
     Condition empty_cond, full_cond;
     int capacity, threshold;
     bool block_full, block_empty;
@@ -78,8 +82,9 @@ void BlockQueue<T>::enqueue(const T &t, unsigned long timeout)
 {
     WriteLock lock(mutex);
     if (q.size() >= capacity) {
-        if (block_full)
-            full_cond.wait(mutex, timeout);
+        if (block_full) {
+            full_cond.timed_wait(mutex, boost::get_system_time() + boost::posix_time::milliseconds(timeout));
+        }
     }
     q.push(t);
     onEnqueue(t);
@@ -98,7 +103,7 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
     ReadLock lock(mutex);
     if (q.empty()) {
         if (block_empty)
-            empty_cond.wait(mutex, timeout);
+            empty_cond.timed_wait(mutex, boost::get_system_time() + boost::posix_time::milliseconds(timeout));
     }
     if (q.empty())
         return T();
@@ -164,6 +169,22 @@ bool BlockQueue<T>::checkEmpty() const {
 template<typename T>
 bool BlockQueue<T>::checkEnough() const {
     return q.size() >= threshold && !q.empty();
+}
+
+template<typename T>
+void BlockQueue<T>::blockEmpty(bool block) {
+    if (!block)
+        empty_cond.notify_all();
+    WriteLock lock(lock_change_mutex);
+    block_empty = block;
+}
+
+template<typename T>
+void BlockQueue<T>::blockFull(bool block) {
+    if (!block)
+        full_cond.notify_all();
+    WriteLock lock(lock_change_mutex);
+    block_full = block;
 }
 
 }
