@@ -15,18 +15,33 @@ namespace MSAV {
 using namespace boost;
 
 template <typename S1, class T2, typename S2>
-static inline void Connect(S1 &s1, T2 *t2, S2 s2)
+MS_AV_EXPORT void Connect(S1 &s1, T2 *t2, S2 s2)
 {
     s1.connect(boost::bind(s2, t2));
 };
+template <typename S1, class T2, typename S2>
+MS_AV_EXPORT void Connect1(S1 &s1, T2 *t2, S2 s2)
+{
+    s1.connect(boost::bind(s2, t2, _1));
+};
+template <typename S1, class T2, typename S2>
+MS_AV_EXPORT void Connect2(S1 &s1, T2 *t2, S2 s2)
+{
+    s1.connect(boost::bind(s2, t2, _1, _2));
+};
+template <typename S1, class T2, typename S2>
+MS_AV_EXPORT void Connect3(S1 &s1, T2 *t2, S2 s2)
+{
+    s1.connect(boost::bind(s2, t2, _1, _2, _3));
+};
 template <typename S1, typename S2>
-static inline void Connect(S1 &s1, S2 &s2)
+MS_AV_EXPORT void Connect(S1 &s1, S2 &s2)
 {
     s1.connect(s2);
 };
 
 class CObjectPrivate;
-class CObject
+class MS_AV_EXPORT CObject
 {
     DPTR_DECLARE_PRIVATE(CObject);
 public:

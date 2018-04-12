@@ -33,11 +33,14 @@ protected:
         int i = 100;
         while (i-- > 0) {
             printf("child thread2: %d\n", i);
+            MS_EMIT Changed(i);
             msleep(400);
         }
 
         CThread::run();
     }
+MS_SIGNALS:
+    boost::signals2::signal<void(int)> Changed;
 };
 
 class MyReceive {
@@ -45,6 +48,10 @@ public:
     void func()
     {
         printf("thread is exit!\n");
+    }
+    void func2(int x)
+    {
+        printf("func2: %d!\n", x);
     }
 };
 
@@ -62,10 +69,12 @@ int main(int argc, char *argv[])
 //    printf("hello world\n");
 
     CThread *t1 = new MyThread();
-    CThread *t2 = new MyThread2();
+    MyThread2 *t2 = new MyThread2();
     MyReceive *receive = new MyReceive;
     Connect(t1->finished, receive, &MyReceive::func);
     Connect(t1->finished, func1);
+    Connect1(t2->Changed, receive, &MyReceive::func2);
+//    t2->Changed.connect(boost::bind(&MyReceive::func2, receive, _1));
 //    t->finished.connect(func1);
     t1->start();
     t2->start();

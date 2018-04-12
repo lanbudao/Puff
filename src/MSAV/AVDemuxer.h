@@ -21,7 +21,7 @@ public:
 
     int  stream();
     Packet packet() const;
-    bool readFrame();
+    int  readFrame();
     int  videoStream();
     int  audioStream();
     int  subtitleStream();

@@ -257,11 +257,11 @@ Packet AVDemuxer::packet() const
     return d.curPkt;
 }
 
-bool AVDemuxer::readFrame()
+int AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);
 
-    int ret = 0;
+    int ret = -1;
     AVPacket avpkt;
 
     d.curPkt = Packet();
@@ -278,19 +278,19 @@ bool AVDemuxer::readFrame()
                 d.isEOF = true;
             }
         }
-        return false;
+        return ret;
     }
     d.stream = avpkt.stream_index;
     if (d.stream != videoStream() && d.stream != audioStream() && d.stream != subtitleStream()) {
         av_packet_unref(&avpkt);
-        return false;
+        return -1;
     }
 
     d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
     av_packet_unref(&avpkt);
     d.isEOF = false;
 
-    return true;
+    return ret;
 }
 
 int AVDemuxer::videoStream() {

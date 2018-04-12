@@ -69,6 +69,7 @@ void AVDemuxThread::run()
     DPTR_D(AVDemuxThread);
     int stream;
     Packet pkt;
+    int ret = -1;
 
     if (d.audio_thread && !d.audio_thread->isRunning()) {
         d.audio_thread->start();
@@ -90,7 +91,8 @@ void AVDemuxThread::run()
 
     while (!d.isEnd) {
 
-        if (!d.demuxer->readFrame())
+        ret = d.demuxer->readFrame();
+        if (ret < 0)
             continue;
         stream = d.demuxer->stream();
         pkt = d.demuxer->packet();
