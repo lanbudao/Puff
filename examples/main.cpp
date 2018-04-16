@@ -5,14 +5,14 @@
 #include "CThread.h"
 #include "signals2/signal_type.hpp"
 
-using namespace MSAV;
+using namespace Puff;
 
 class MyThread: public CThread
 {
 public:
 
 protected:
-    void run() MS_DECL_OVERRIDE
+    void run() PU_DECL_OVERRIDE
     {
         int i = 100;
         while (i-- > 0) {
@@ -28,18 +28,18 @@ class MyThread2: public CThread
 public:
 
 protected:
-    void run() MS_DECL_OVERRIDE
+    void run() PU_DECL_OVERRIDE
     {
         int i = 100;
         while (i-- > 0) {
             printf("child thread2: %d\n", i);
-            MS_EMIT Changed(i);
+            PU_EMIT Changed(i);
             msleep(400);
         }
 
         CThread::run();
     }
-MS_SIGNALS:
+PU_SIGNALS:
     boost::signals2::signal<void(int)> Changed;
 };
 

@@ -1,13 +1,13 @@
-#ifndef MSAV_AVTHREAD_H
-#define MSAV_AVTHREAD_H
+#ifndef PUFF_AVTHREAD_H
+#define PUFF_AVTHREAD_H
 
 #include "CThread.h"
 
-namespace MSAV {
+namespace Puff {
 
 class PacketQueue;
 class AVThreadPrivate;
-class MS_AV_EXPORT AVThread: public CThread
+class PU_AV_EXPORT AVThread: public CThread
 {
     DPTR_DECLARE_PRIVATE(AVThread)
 public:
@@ -21,4 +21,4 @@ protected:
 };
 
 }
-#endif //MSAV_AVTHREAD_H
+#endif //PUFF_AVTHREAD_H

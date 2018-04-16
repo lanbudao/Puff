@@ -1,7 +1,7 @@
 #include "AVThread.h"
 #include "AVThread_p.h"
 
-namespace MSAV {
+namespace Puff {
 //
 //class AVThreadPrivate: public DptrPrivate<AVThread>
 //{

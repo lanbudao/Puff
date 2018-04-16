@@ -12,7 +12,7 @@ extern "C" {
 }
 #endif
 
-namespace MSAV {
+namespace Puff {
 
 class InterruptHandler
 {

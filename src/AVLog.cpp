@@ -1,7 +1,7 @@
 
 #include "AVLog.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVLogPrivate: public DptrPrivate<AVLog> {
 public:

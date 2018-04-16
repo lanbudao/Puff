@@ -1,6 +1,6 @@
 #include "AVError.h"
 
-namespace MSAV {
+namespace Puff {
 
 AVError::AVError() {
 

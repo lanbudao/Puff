@@ -1,7 +1,7 @@
 #include "AVDecoder.h"
 #include "AVDecoder_p.h"
 
-namespace MSAV {
+namespace Puff {
 
 AVDecoder::AVDecoder()
 {

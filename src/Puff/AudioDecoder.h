@@ -1,9 +1,9 @@
-#ifndef MSAV_AUDIODECODER_H
-#define MSAV_AUDIODECODER_H
+#ifndef PUFF_AUDIODECODER_H
+#define PUFF_AUDIODECODER_H
 
 #include "AVDecoder.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AudioDecoderPrivate;
 class AudioDecoder: public AVDecoder
@@ -20,4 +20,4 @@ private:
 };
 
 }
-#endif //MSAV_AUDIODECODER_H
+#endif //PUFF_AUDIODECODER_H

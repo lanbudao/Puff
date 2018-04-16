@@ -1,12 +1,12 @@
-#ifndef MSAV_AVDECODER_H
-#define MSAV_AVDECODER_H
+#ifndef PUFF_AVDECODER_H
+#define PUFF_AVDECODER_H
 
-#include "MSAVGlobal.h"
+#include "AVGlobal.h"
 #include "DPTR.h"
 
 typedef struct AVCodecContext AVCodecContext;
 
-namespace MSAV {
+namespace Puff {
 
 class AVDecoderPrivate;
 class AVDecoder
@@ -23,4 +23,4 @@ private:
 };
 
 }
-#endif //MSAV_AVDECODER_H
+#endif //PUFF_AVDECODER_H

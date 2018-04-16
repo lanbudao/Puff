@@ -1,9 +1,9 @@
-#ifndef MSAV_VIDEOTHREAD_H
-#define MSAV_VIDEOTHREAD_H
+#ifndef PUFF_VIDEOTHREAD_H
+#define PUFF_VIDEOTHREAD_H
 
 #include "AVThread.h"
 
-namespace MSAV {
+namespace Puff {
 
 class VideoThreadPrivate;
 class VideoThread: public AVThread
@@ -17,4 +17,4 @@ protected:
     void run() MS_DECL_OVERRIDE;
 };
 }
-#endif //MSAV_VIDEOTHREAD_H
+#endif //PUFF_VIDEOTHREAD_H

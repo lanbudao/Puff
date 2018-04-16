@@ -1,17 +1,17 @@
 
-#ifndef MSAV_AVPLAYER_H
-#define MSAV_AVPLAYER_H
+#ifndef PUFF_AVPLAYER_H
+#define PUFF_AVPLAYER_H
 
-#include "MSAVGlobal.h"
+#include "AVGlobal.h"
 #include "DPTR.h"
 
 /**
  *
  */
-namespace MSAV {
+namespace Puff {
 
 class AVPlayerPrivate;
-class MS_AV_EXPORT AVPlayer
+class PU_AV_EXPORT AVPlayer
 {
     DPTR_DECLARE_PRIVATE(AVPlayer);
 public:
@@ -27,4 +27,4 @@ private:
 };
 
 };
-#endif //MSAV_AVPLAYER_H
+#endif //PUFF_AVPLAYER_H

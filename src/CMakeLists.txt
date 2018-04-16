@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-set(MODULE MSAV)
+set(MODULE Puff)
 
 # Use C++11
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -10,8 +10,8 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 
 list(APPEND INCLUDE_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/MSAV
-        ${CMAKE_CURRENT_SOURCE_DIR}/MSAV/private
+        ${CMAKE_CURRENT_SOURCE_DIR}/Puff
+        ${CMAKE_CURRENT_SOURCE_DIR}/Puff/private
         ${CMAKE_CURRENT_SOURCE_DIR}/util)
 
 set(BOOST_DIR "")
@@ -56,7 +56,7 @@ if (EXISTS ${FFMPEG_DIR})
         if(NOT ${HAVE_${AV}} MATCHES HAVE_${AV}-NOTFOUND)
             set(HAVE_${AV} 1)
             list(APPEND EXTRA_LIBS ${av})
-            list(APPEND EXTRA_DEFS "-DMSAV_HAVE_${AV}=1")
+            list(APPEND EXTRA_DEFS "-DPUFF_HAVE_${AV}=1")
         else()
             message(FATAL_ERROR "${av} is required")
         endif()
@@ -69,7 +69,7 @@ if (EXISTS ${FFMPEG_DIR})
         if(NOT ${HAVE_${AV}} MATCHES HAVE_${AV}-NOTFOUND)
             set(HAVE_${AV} 1)
             list(APPEND EXTRA_LIBS ${av})
-            list(APPEND EXTRA_DEFS "-DMSAV_HAVE_${AV}=1")
+            list(APPEND EXTRA_DEFS "-DPUFF_HAVE_${AV}=1")
             list(APPEND AVMODULES ${av})
         endif()
     endforeach()
@@ -81,12 +81,12 @@ if (EXISTS ${FFMPEG_DIR})
     endif()
 endif()
 
-list(APPEND EXTRA_DEFS -DBUILD_MSAV_LIB -D__STDC_CONSTANT_MACROS)
+list(APPEND EXTRA_DEFS -DBUILD_PUFF_LIB -D__STDC_CONSTANT_MACROS)
 
 file(GLOB SDK_HEADERS *.h *.h)
-file(GLOB SDK_HEADERS *.h MSAV/*.h)
+file(GLOB SDK_HEADERS *.h Puff/*.h)
 file(GLOB SDK_HEADERS *.h util/*.h)
-file(GLOB SDK_PRIVATE_HEADERS MSAV/private/*.h)
+file(GLOB SDK_PRIVATE_HEADERS Puff/private/*.h)
 
 # Load all source file without heareders
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
@@ -99,7 +99,7 @@ include_directories(${INCLUDE_DIR})
 
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp MSAV/AVDemuxer.h AVError.cpp MSAV/AVError.h)
+add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp Puff/AVDemuxer.h AVError.cpp Puff/AVError.h)
 
 target_compile_definitions(${MODULE} PUBLIC ${EXTRA_DEFS})
 
@@ -108,4 +108,4 @@ target_link_libraries(${MODULE} ${EXTRA_LIBS})
 set_target_properties(${MODULE} PROPERTIES
         VERSION 1.0
         SOVERSION 1.0
-        OUTPUT_NAME msav)
+        OUTPUT_NAME puff)

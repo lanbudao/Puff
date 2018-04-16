@@ -1,11 +1,11 @@
-#ifndef MSAV_AVCLOCK_H
-#define MSAV_AVCLOCK_H
+#ifndef PUFF_AVCLOCK_H
+#define PUFF_AVCLOCK_H
 
-#include "MSAVGlobal.h"
+#include "AVGlobal.h"
 #include "DPTR.h"
 #include "boost/asio/deadline_timer.hpp"
 
-namespace MSAV {
+namespace Puff {
 
 using namespace boost::asio;
 
@@ -21,4 +21,4 @@ private:
 };
 
 }
-#endif //MSAV_AVCLOCK_H
+#endif //PUFF_AVCLOCK_H

@@ -1,7 +1,7 @@
 #include "AudioDecoder.h"
 #include "AVDecoder_p.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AudioDecoderPrivate: public AVDecoderPrivate
 {

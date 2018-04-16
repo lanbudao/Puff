@@ -4,7 +4,7 @@
 
 #include "AVClock.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVClockPrivate: public DptrPrivate<AVClock>
 {

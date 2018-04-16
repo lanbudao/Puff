@@ -1,7 +1,7 @@
 #include <libavcodec/avcodec.h>
 #include "Packet.h"
 
-namespace MSAV {
+namespace Puff {
 
 class PacketPrivate: public DptrPrivate<Packet>
 {

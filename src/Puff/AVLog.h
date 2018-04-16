@@ -1,13 +1,13 @@
-#ifndef MSAV_AVLOG_H
-#define MSAV_AVLOG_H
+#ifndef PUFF_AVLOG_H
+#define PUFF_AVLOG_H
 
-#include "MSAVGlobal.h"
+#include "AVGlobal.h"
 #include "DPTR.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVLogPrivate;
-class MS_AV_EXPORT AVLog
+class PU_AV_EXPORT AVLog
 {
     DPTR_DECLARE_PRIVATE(AVLog);
 public:
@@ -28,4 +28,4 @@ private:
 };
 
 }
-#endif //MSAV_AVLOG_H
+#endif //PUFF_AVLOG_H

@@ -1,9 +1,9 @@
-#ifndef MSAV_VIDEODECODER_H
-#define MSAV_VIDEODECODER_H
+#ifndef PUFF_VIDEODECODER_H
+#define PUFF_VIDEODECODER_H
 
 #include "AVDecoder.h"
 
-namespace MSAV {
+namespace Puff {
 
 class VideoDecoderPrivate;
 class VideoDecoder: public AVDecoder
@@ -20,4 +20,4 @@ private:
 };
 
 }
-#endif //MSAV_VIDEODECODER_H
+#endif //PUFF_VIDEODECODER_H

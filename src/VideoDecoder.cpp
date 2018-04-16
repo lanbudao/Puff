@@ -1,7 +1,7 @@
 #include "VideoDecoder.h"
 #include "AVDecoder_p.h"
 
-namespace MSAV {
+namespace Puff {
 
 class VideoDecoderPrivate: public AVDecoderPrivate
 {

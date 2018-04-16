@@ -4,7 +4,7 @@
 #include "VideoThread.h"
 #include "PacketQueue.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVDemuxThreadPrivate: public DptrPrivate<AVDemuxThread>
 {

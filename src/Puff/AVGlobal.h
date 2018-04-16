@@ -1,8 +1,8 @@
 /******************************************************************************
-    MSAV:  A lightweight player based on ffmpeg and sdl2
+    PUFF:  A lightweight player based on ffmpeg and sdl2
     Copyright (C) 2012-2018 lance <theartedly@gmail.com>
 
-*   This file is part of MSAV
+*   This file is part of PUFF
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -14,8 +14,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
     Lesser General Public License for more details.
 ******************************************************************************/
-#ifndef MSAV_GLOBAL_H
-#define MSAV_GLOBAL_H
+#ifndef PUFF_GLOBAL_H
+#define PUFF_GLOBAL_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,29 +25,29 @@
 
 using namespace std;
 
-#ifdef BUILD_MSAV_STATIC
-#define MS_AV_EXPORT
+#ifdef BUILD_PUFF_STATIC
+#define PU_AV_EXPORT
 #else
-#ifdef BUILD_MSAV_LIB
-#  undef MS_AV_EXPORT
-#  define MS_AV_EXPORT __declspec(dllexport)
+#ifdef BUILD_PUFF_LIB
+#  undef PU_AV_EXPORT
+#  define PU_AV_EXPORT __declspec(dllexport)
 #else
-#  undef MS_AV_EXPORT
-#  define MS_AV_EXPORT __declspec(dllimport)
+#  undef PU_AV_EXPORT
+#  define PU_AV_EXPORT __declspec(dllimport)
 #endif
 #endif
-#define MS_AV_PRIVATE_EXPORT MS_AV_EXPORT
-#define MS_DECL_DEPRECATED __declspec(deprecated)
+#define PU_AV_PRIVATE_EXPORT PU_AV_EXPORT
+#define PU_DECL_DEPRECATED __declspec(deprecated)
 
-#define MS_NO_COPY final
-#define MS_DECL_OVERRIDE override
-#define MS_SIGNALS public
-#define MS_EMIT
+#define PU_NO_COPY final
+#define PU_DECL_OVERRIDE override
+#define PU_SIGNALS public
+#define PU_EMIT
 
 typedef std::string String;
 typedef std::list<String> StringList;
 
-namespace MSAV {
+namespace Puff {
 
 enum LogLevel {
     LogOff = 0,
@@ -58,7 +58,7 @@ enum LogLevel {
     LogAll
 };
 
-MS_AV_EXPORT inline String GetVersion() {return String("");}
+PU_AV_EXPORT inline String GetVersion() {return String("");}
 
 }
-#endif //MSAV_GLOBAL_H
+#endif //PUFF_GLOBAL_H

@@ -3,7 +3,7 @@
 #include "AVDemuxer.h"
 #include "AVDemuxThread.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVPlayerPrivate: public DptrPrivate<AVPlayer>
 {

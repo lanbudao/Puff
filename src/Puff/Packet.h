@@ -1,15 +1,15 @@
-#ifndef MSAV_PACKET_H
-#define MSAV_PACKET_H
+#ifndef PUFF_PACKET_H
+#define PUFF_PACKET_H
 
-#include "MSAVGlobal.h"
+#include "AVGlobal.h"
 #include "DPTR.h"
 
 struct AVPacket;
 
-namespace MSAV {
+namespace Puff {
 
 class PacketPrivate;
-class MS_AV_EXPORT Packet
+class PU_AV_EXPORT Packet
 {
     DPTR_DECLARE_PRIVATE(Packet)
 public:
@@ -30,4 +30,4 @@ private:
 };
 
 }
-#endif //MSAV_PACKET_H
+#endif //PUFF_PACKET_H

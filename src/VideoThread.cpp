@@ -2,7 +2,7 @@
 #include "AVThread_p.h"
 #include "VideoDecoder.h"
 
-namespace MSAV {
+namespace Puff {
 
 class VideoThreadPrivate: public AVThreadPrivate
 {

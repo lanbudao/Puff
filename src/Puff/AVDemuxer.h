@@ -1,14 +1,14 @@
-#ifndef MSAV_AVDEMUXER_H
-#define MSAV_AVDEMUXER_H
+#ifndef PUFF_AVDEMUXER_H
+#define PUFF_AVDEMUXER_H
 
-#include "MSAVGlobal.h"
+#include "AVGlobal.h"
 #include "CObject.h"
 #include "Packet.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVDemuxerPrivate;
-class MS_AV_EXPORT AVDemuxer: public CObject
+class PU_AV_EXPORT AVDemuxer: public CObject
 {
     DPTR_DECLARE_PRIVATE(AVDemuxer);
 public:
@@ -31,4 +31,4 @@ private:
 };
 
 }
-#endif //MSAV_AVDEMUXER_H
+#endif //PUFF_AVDEMUXER_H

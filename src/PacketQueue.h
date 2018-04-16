@@ -1,10 +1,10 @@
-#ifndef MSAV_PACKETQUEUE_H
-#define MSAV_PACKETQUEUE_H
+#ifndef PUFF_PACKETQUEUE_H
+#define PUFF_PACKETQUEUE_H
 
 #include "Packet.h"
 #include "util/BlockQueue.h"
 
-namespace MSAV {
+namespace Puff {
 
 class PacketQueue: public BlockQueue<Packet>
 {
@@ -20,4 +20,4 @@ protected:
 };
 
 }
-#endif //MSAV_PACKETQUEUE_H
+#endif //PUFF_PACKETQUEUE_H

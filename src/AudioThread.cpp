@@ -1,6 +1,6 @@
 #include "AudioThread.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AudioThreadPrivate: public DptrPrivate<AudioThread>
 {

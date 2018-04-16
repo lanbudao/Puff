@@ -1,7 +1,7 @@
-#ifndef MSAV_AVERROR_H
-#define MSAV_AVERROR_H
+#ifndef PUFF_AVERROR_H
+#define PUFF_AVERROR_H
 
-namespace MSAV {
+namespace Puff {
 
 class AVError {
 public:
@@ -16,4 +16,4 @@ public:
 };
 
 }
-#endif //MSAV_AVERROR_H
+#endif //PUFF_AVERROR_H

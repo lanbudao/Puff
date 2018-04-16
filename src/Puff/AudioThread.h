@@ -1,12 +1,12 @@
-#ifndef MSAV_AUDIOTHREAD_H
-#define MSAV_AUDIOTHREAD_H
+#ifndef PUFF_AUDIOTHREAD_H
+#define PUFF_AUDIOTHREAD_H
 
 #include "AVThread.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AudioThreadPrivate;
-class MS_AV_EXPORT AudioThread: public AVThread
+class PU_AV_EXPORT AudioThread: public AVThread
 {
     DPTR_DECLARE_PRIVATE(AudioThread)
 public:
@@ -21,4 +21,4 @@ private:
 };
 
 }
-#endif //MSAV_AUDIOTHREAD_H
+#endif //PUFF_AUDIOTHREAD_H

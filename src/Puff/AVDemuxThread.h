@@ -1,9 +1,9 @@
-#ifndef MSAV_AVDEMUXTHREAD_H
-#define MSAV_AVDEMUXTHREAD_H
+#ifndef PUFF_AVDEMUXTHREAD_H
+#define PUFF_AVDEMUXTHREAD_H
 
 #include "CThread.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVThread;
 class AVDemuxer;
@@ -30,4 +30,4 @@ private:
 };
 
 }
-#endif //MSAV_AVDEMUXTHREAD_H
+#endif //PUFF_AVDEMUXTHREAD_H

@@ -1,14 +1,14 @@
-#ifndef MSAV_CTHREAD_H
-#define MSAV_CTHREAD_H
+#ifndef PUFF_CTHREAD_H
+#define PUFF_CTHREAD_H
 
 #include "CObject.h"
 
 namespace boost {class thread;}
 
-namespace MSAV {
+namespace Puff {
 
 class CThreadPrivate;
-class MS_AV_EXPORT CThread: public CObject
+class PU_AV_EXPORT CThread: public CObject
 {
     DPTR_DECLARE_PRIVATE(CThread)
 public:
@@ -23,7 +23,7 @@ public:
 
     int id() const;
 
-MS_SIGNALS:
+PU_SIGNALS:
     signals2::signal<void()> finished;
 
 public:
@@ -37,4 +37,4 @@ private:
 };
 
 }
-#endif //MSAV_CTHREAD_H
+#endif //PUFF_CTHREAD_H

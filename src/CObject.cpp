@@ -3,7 +3,7 @@
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
 
-namespace MSAV {
+namespace Puff {
 
 class CObjectPrivate: public DptrPrivate<CObject>
 {
