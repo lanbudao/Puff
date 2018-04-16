@@ -83,15 +83,15 @@ endif()
 
 list(APPEND EXTRA_DEFS -DBUILD_PUFF_LIB -D__STDC_CONSTANT_MACROS)
 
-file(GLOB SDK_HEADERS *.h *.h)
-file(GLOB SDK_HEADERS *.h Puff/*.h)
-file(GLOB SDK_HEADERS *.h util/*.h)
+file(GLOB SDK_HEADERS *.h)
+file(GLOB SDK_HEADERS_PUFF Puff/*.h)
+file(GLOB SDK_HEADERS_UTIL util/*.h)
 file(GLOB SDK_PRIVATE_HEADERS Puff/private/*.h)
 
 # Load all source file without heareders
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/util SOURCES)
-list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS})
+list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS} ${SDK_HEADERS_PUFF} ${SDK_HEADERS_UTIL})
 
 # Include path
 list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
@@ -99,7 +99,7 @@ include_directories(${INCLUDE_DIR})
 
 # Output path
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-add_library(${MODULE} SHARED ${SOURCES} ${HEADERS} AVDemuxer.cpp Puff/AVDemuxer.h AVError.cpp Puff/AVError.h)
+add_library(${MODULE} SHARED ${SOURCES} ${HEADERS})
 
 target_compile_definitions(${MODULE} PUBLIC ${EXTRA_DEFS})
 
