@@ -108,4 +108,4 @@ target_link_libraries(${MODULE} ${EXTRA_LIBS})
 set_target_properties(${MODULE} PROPERTIES
         VERSION 1.0
         SOVERSION 1.0
-        OUTPUT_NAME puff)
+        OUTPUT_NAME Puff)

@@ -14,7 +14,7 @@ public:
     ~AudioThread();
 
 protected:
-    void run() MS_DECL_OVERRIDE;
+    void run() PU_DECL_OVERRIDE;
 
 private:
     DPTR_DECLARE(AudioThread)

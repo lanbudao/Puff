@@ -4,7 +4,7 @@
 #include "DPTR.h"
 #include "commpeg.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVDecoderPrivate: public DptrPrivate<AVDecoder>
 {

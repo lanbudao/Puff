@@ -13,7 +13,7 @@ class AVDemuxThread: public CThread
     DPTR_DECLARE_PRIVATE(AVDemuxThread)
 public:
     AVDemuxThread();
-    ~AVDemuxThread() MS_DECL_OVERRIDE;
+    ~AVDemuxThread() PU_DECL_OVERRIDE;
 
     void setDemuxer(AVDemuxer *demuxer);
     void setAudioThread(AVThread *thread);
@@ -22,7 +22,7 @@ public:
     AVThread *videoThread();
 
 protected:
-    void run() MS_DECL_OVERRIDE;
+    void run() PU_DECL_OVERRIDE;
 
 private:
     DPTR_DECLARE(AVDemuxThread)

@@ -27,10 +27,10 @@ CHECK_ENV(FFMPEG_DIR)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 link_directories(${BOOST_DIR}/stage/lib ${FFMPEG_DIR}/lib)
-include_directories(${BOOST_DIR} ${BOOST_DIR}/boost ${FFMPEG_DIR}/include ${CMAKE_SOURCE_DIR}/src/PUFF)
+include_directories(${BOOST_DIR} ${BOOST_DIR}/boost ${FFMPEG_DIR}/include ${CMAKE_SOURCE_DIR}/src/Puff)
 
 aux_source_directory(. DIR_SRCS)
 
 add_executable(player ${DIR_SRCS})
 
-target_link_libraries(player PUFF)
+target_link_libraries(player Puff)

@@ -14,7 +14,7 @@ public:
     ~VideoThread();
 
 protected:
-    void run() MS_DECL_OVERRIDE;
+    void run() PU_DECL_OVERRIDE;
 };
 }
 #endif //PUFF_VIDEOTHREAD_H

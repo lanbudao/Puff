@@ -5,7 +5,7 @@
 #include "PacketQueue.h"
 #include "AVDecoder.h"
 
-namespace MSAV {
+namespace Puff {
 
 class AVThreadPrivate : public DptrPrivate<AVThread> {
 public:

@@ -11,7 +11,7 @@ typedef boost::unique_lock<Mutex> WriteLock;
 typedef boost::shared_lock<Mutex> ReadLock;
 typedef boost::condition Condition;
 
-namespace MSAV {
+namespace Puff {
 
 template <typename T>
 class BlockQueue

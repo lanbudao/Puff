@@ -86,7 +86,7 @@ public:
     {
         av_register_all();
     }
-    ~AVDemuxerPrivate() MS_NO_COPY
+    ~AVDemuxerPrivate() PU_NO_COPY
     {
         delete interruptHandler;
         if (format_opts) {

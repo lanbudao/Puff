@@ -45,7 +45,7 @@ void CThread::run()
     DPTR_D(CThread);
     printf("CThread::finished\n");
     d.running = false;
-    MS_EMIT finished();
+    PU_EMIT finished();
 }
 
 void CThread::sleep(int second)
