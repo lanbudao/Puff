@@ -44,6 +44,12 @@ using namespace std;
 #define PU_SIGNALS public
 #define PU_EMIT
 
+#ifndef DISABLE_COPY
+#define DISABLE_COPY(Class) \
+    Class(const Class &) = delete; \
+    Class &operator = (const Class &) = delete;
+#endif
+
 typedef unsigned char uchar;
 typedef std::string String;
 typedef std::list<String> StringList;

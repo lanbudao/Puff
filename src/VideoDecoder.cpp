@@ -1,7 +1,14 @@
 #include "VideoDecoder.h"
 #include "AVDecoder_p.h"
+#include "Factory.h"
+#include "boost/functional/hash.hpp"
 
 namespace Puff {
+
+FACTORY_DEFINE(VideoDecoder)
+
+boost::hash<String> hashId;
+VideoDecoderId VideoDecoderId_FFmpeg = (int)hashId("FFmpeg");
 
 VideoDecoder::VideoDecoder()
     :AVDecoder()
