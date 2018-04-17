@@ -3,14 +3,8 @@
 
 namespace Puff {
 
-class VideoDecoderPrivate: public AVDecoderPrivate
-{
-public:
-    VideoDecoderPrivate() {}
-    ~VideoDecoderPrivate() {}
-};
-
 VideoDecoder::VideoDecoder()
+    :AVDecoder()
 {
 
 }
@@ -33,6 +27,14 @@ StringList VideoDecoder::supportedCodecs()
         codecs.push_back(c->name);
     }
     return codecs;
+}
+
+String VideoDecoder::name() const {
+    return String();
+}
+
+String VideoDecoder::description() const {
+    return String();
 }
 
 }

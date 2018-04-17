@@ -60,6 +60,7 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
     if (pkt.duration < 0)
         pkt.duration = 0;
 
+    pkt.size = packet->size;
     pkt.data = (char *)malloc(packet->size);
     memcpy(pkt.data, packet->data, packet->size);
 

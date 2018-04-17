@@ -1,5 +1,5 @@
-#ifndef MSAV_AVTHREAD_P_H
-#define MSAV_AVTHREAD_P_H
+#ifndef PUFF_AVTHREAD_P_H
+#define PUFF_AVTHREAD_P_H
 
 #include "DPTR.h"
 #include "PacketQueue.h"
@@ -26,4 +26,4 @@ public:
 };
 
 }
-#endif //MSAV_AVTHREAD_P_H
+#endif //PUFF_AVTHREAD_P_H

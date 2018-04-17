@@ -44,6 +44,7 @@ using namespace std;
 #define PU_SIGNALS public
 #define PU_EMIT
 
+typedef unsigned char uchar;
 typedef std::string String;
 typedef std::list<String> StringList;
 

@@ -1,5 +1,5 @@
-#ifndef MSAV_BLOCKQUEUE_H
-#define MSAV_BLOCKQUEUE_H
+#ifndef PUFF_BLOCKQUEUE_H
+#define PUFF_BLOCKQUEUE_H
 
 #include "boost/thread/locks.hpp"
 #include "boost/thread/shared_mutex.hpp"
@@ -188,4 +188,4 @@ void BlockQueue<T>::blockFull(bool block) {
 }
 
 }
-#endif //MSAV_BLOCKQUEUE_H
+#endif //PUFF_BLOCKQUEUE_H

@@ -6,7 +6,7 @@
 namespace Puff {
 
 class AudioDecoderPrivate;
-class AudioDecoder: public AVDecoder
+class PU_AV_EXPORT AudioDecoder: public AVDecoder
 {
     DPTR_DECLARE_PRIVATE(AudioDecoder)
 public:
@@ -14,6 +14,9 @@ public:
     ~AudioDecoder();
 
     static StringList supportedCodecs();
+
+    virtual String name() const;
+    virtual String description() const;
 
 private:
 

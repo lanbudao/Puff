@@ -9,7 +9,7 @@ typedef struct AVCodecContext AVCodecContext;
 namespace Puff {
 
 class AVDecoderPrivate;
-class AVDecoder
+class PU_AV_EXPORT AVDecoder
 {
     DPTR_DECLARE_PRIVATE(AVDecoder)
 public:
@@ -17,6 +17,18 @@ public:
     virtual ~AVDecoder();
 
     AVCodecContext * codecCtx();
+
+    virtual String name() const = 0;
+    virtual String description() const = 0;
+
+    virtual bool open();
+    virtual bool close();
+
+    bool isOpen();
+    void flush();
+
+    void setCodecName(const String &name);
+    String codecName() const;
 
 private:
     DPTR_DECLARE(AVDecoder)

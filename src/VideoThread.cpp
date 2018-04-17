@@ -27,8 +27,13 @@ void VideoThread::run()
 
     auto *decoder = dynamic_cast<VideoDecoder *>(d.decoder);
 
+    Packet pkt;
+
     while (!d.stopped) {
 
+        if (!pkt.isValid()) {
+
+        }
     }
 
     AVThread::run();
