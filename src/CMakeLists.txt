@@ -28,18 +28,46 @@ function(CHECK_ENV arg)
     endif()
 endfunction ()
 
+function(FIND_BOOST_LIBRARY arg)
+    message(${ARGV0} " " ${ARGV1})
+    find_library(LIB_XX_LIBRARIES NAMES ${ARGV1} timer HINTS ${ARGV0})
+    message(STATUS "find boost library: " ${LIB_XX_LIBRARIES})
+    list(APPEND EXTRA_LIBS ${LIB_XX_LIBRARIES})
+endfunction()
+
 # Find boost library
 CHECK_ENV(BOOST_DIR)
 if (EXISTS ${BOOST_DIR})
-    list(APPEND EXTRA_INCLUDE ${BOOST_DIR})
-    list(APPEND EXTRA_INCLUDE ${BOOST_DIR}/boost)
-    link_directories(${BOOST_DIR}/stage/lib)
-    list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-x32-1_66")    #signals2
-    list(APPEND EXTRA_LIBS "boost_timer-mgw62-mt-x32-1_66")    #timer
-    list(APPEND EXTRA_LIBS "boost_system-mgw62-mt-x32-1_66")    #system
-    list(APPEND EXTRA_LIBS "boost_thread-mgw62-mt-x32-1_66")    #thread
+    set(BOOST_ROOT ${BOOST_DIR})
+#    IF (DEBUG_mode)
+#        set(Boost_DEBUG OFF)
+#    ENDIF()
+    set(Boost_USE_MULTITHREADED ON)
     if(WIN32)
-        list(APPEND EXTRA_LIBS "ws2_32")
+        set(Boost_USE_STATIC_LIBS ON)
+    endif(WIN32)
+    find_package(Boost)
+    message(STATUS "version: " ${Boost_VERSION})
+    if(NOT ${Boost_VERSION} LESS 106600)
+        list(APPEND EXTRA_INCLUDE ${BOOST_ROOT})
+        set(BOOST_LIBRARIES_DIR ${BOOST_ROOT}/stage/lib)
+        link_directories(${BOOST_LIBRARIES_DIR})
+        list(APPEND EXTRA_LIBS "boost_signals-mgw62-mt-x32-1_66")    #signals2
+        list(APPEND EXTRA_LIBS "boost_timer-mgw62-mt-x32-1_66")    #timer
+        list(APPEND EXTRA_LIBS "boost_system-mgw62-mt-x32-1_66")    #system
+        list(APPEND EXTRA_LIBS "boost_filesystem-mgw62-mt-x32-1_66")    #system
+        list(APPEND EXTRA_LIBS "boost_thread-mgw62-mt-x32-1_66")    #thread
+    else()
+        find_package(Boost COMPONENTS filesystem system thread timer signals REQUIRED)
+        if(NOT Boost_FOUND)
+            message(FATAL_ERROR "Boost is not found." ${Boost_INCLUDE_DIRS} ${Boost_VERSION})
+        endif()
+        list(APPEND EXTRA_INCLUDE ${Boost_INCLUDE_DIRS})
+        link_directories(${Boost_LIBRARY_DIRS})
+        list(APPEND EXTRA_LIBS ${Boost_LIBRARIES})
+    endif()
+    if(WIN32)
+        list(APPEND EXTRA_LIBS "ws2_32" "wsock32")
     endif()
 endif()
 

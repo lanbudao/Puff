@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-#include "signals2/signal.hpp"
-#include "signals2/signal_type.hpp"
+#include "boost/signals2/signal.hpp"
+#include "boost/signals2/signal_type.hpp"
 
 #include "AVGlobal.h"
 #include "DPTR.h"
