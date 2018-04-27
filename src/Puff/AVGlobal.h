@@ -50,6 +50,8 @@ using namespace std;
     Class &operator = (const Class &) = delete;
 #endif
 
+#define ONLY_RUN_ONES static bool run = false; if (run) return; run = true;
+
 typedef unsigned char uchar;
 typedef std::string String;
 typedef std::list<String> StringList;

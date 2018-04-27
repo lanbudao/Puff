@@ -3,6 +3,7 @@
 
 #include "DPTR.h"
 #include "AVGlobal.h"
+#include "ByteArray.h"
 #include <vector>
 
 namespace Puff {
@@ -24,7 +25,7 @@ public:
     std::vector<uchar *> planes; //slice
     std::vector<int> line_sizes; //stride
 //    QVariantMap metadata;
-    char *data;
+    ByteArray data;
     double timestamp;
 };
 

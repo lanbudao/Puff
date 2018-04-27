@@ -4,10 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
-
-#define DISABLE_COPY(Class) \
-    Class(const Class &); \
-    Class &operator = (const Class &);
+#include "AVGlobal.h"
 
 /**
  * Internal class
