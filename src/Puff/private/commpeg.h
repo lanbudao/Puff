@@ -4,10 +4,46 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
 #include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
+#include <libavutil/avstring.h>
+#include <libavutil/dict.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/log.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/cpu.h>
+#include <libavutil/error.h>
+#include <libavutil/opt.h>
+#include <libavutil/parseutils.h>
+#include <libavutil/pixdesc.h>
+#include <libavutil/avstring.h>
+#include <libavfilter/version.h>
 #ifdef __cplusplus
 }
 #endif
+
+#define PUFF_USE_FFMPEG(MODULE) (MODULE##_VERSION_MICRO >= 100)
+#define PUFF_USE_LIBAV(MODULE)  !PUFF_USE_FFMPEG(MODULE)
+#define FFMPEG_MODULE_CHECK(MODULE, MAJOR, MINOR, MICRO) \
+    (PUFF_USE_FFMPEG(MODULE) && MODULE##_VERSION_INT >= AV_VERSION_INT(MAJOR, MINOR, MICRO))
+#define LIBAV_MODULE_CHECK(MODULE, MAJOR, MINOR, MICRO) \
+    (PUFF_USE_LIBAV(MODULE) && MODULE##_VERSION_INT >= AV_VERSION_INT(MAJOR, MINOR, MICRO))
+#define AV_MODULE_CHECK(MODULE, MAJOR, MINOR, MICRO, MINOR2, MICRO2) \
+    (LIBAV_MODULE_CHECK(MODULE, MAJOR, MINOR, MICRO) || FFMPEG_MODULE_CHECK(MODULE, MAJOR, MINOR2, MICRO2))
+/// example: AV_ENSURE(avcodec_close(avctx), false) will print error and return false if failed. AV_WARN just prints error.
+#define AV_ENSURE_OK(FUNC, ...) AV_RUN_CHECK(FUNC, return, __VA_ARGS__)
+#define AV_ENSURE(FUNC, ...) AV_RUN_CHECK(FUNC, return, __VA_ARGS__)
+#define AV_WARN(FUNC) AV_RUN_CHECK(FUNC, void)
+
+#if AV_MODULE_CHECK(LIBAVUTIL, 55, 0, 0, 0, 100)
+#define DESC_VAL(X) (X)
+#else
+#define DESC_VAL(X) (X##_minus1 + 1)
+#endif
+
+#define PUFF_AV_PIX_FORMAT(f) AV_PIX_FMT_##f
 
 #define AV_RUN_CHECK(FUNC, RETURN, ...) do { \
     int ret = FUNC; \

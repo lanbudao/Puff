@@ -44,6 +44,10 @@ using namespace std;
 #define PU_SIGNALS public
 #define PU_EMIT
 
+#ifndef NULL
+#define NULL nullptr
+#endif
+
 #ifndef DISABLE_COPY
 #define DISABLE_COPY(Class) \
     Class(const Class &) = delete; \

@@ -67,17 +67,24 @@ int main(int argc, char *argv[])
 //    player->play("F:\\work_file\\video\\M.I.A.OfficialVideo.mp4");
 //
 //    printf("hello world\n");
-
-    CThread *t1 = new MyThread();
-    MyThread2 *t2 = new MyThread2();
-    MyReceive *receive = new MyReceive;
-    Connect(t1->finished, receive, &MyReceive::func);
-    Connect(t1->finished, func1);
-    Connect1(t2->Changed, receive, &MyReceive::func2);
-//    t2->Changed.connect(boost::bind(&MyReceive::func2, receive, _1));
-//    t->finished.connect(func1);
-    t1->start();
-    t2->start();
+    int value = 12;
+    const int a = value;
+    const int *ap = &a;
+    int* tmp = const_cast<int*>(ap);
+    *tmp = 11;
+    cout << value << endl;
+    cout << a << endl;
+    cout << *tmp << endl;
+//    CThread *t1 = new MyThread();
+//    MyThread2 *t2 = new MyThread2();
+//    MyReceive *receive = new MyReceive;
+//    Connect(t1->finished, receive, &MyReceive::func);
+//    Connect(t1->finished, func1);
+//    Connect1(t2->Changed, receive, &MyReceive::func2);
+////    t2->Changed.connect(boost::bind(&MyReceive::func2, receive, _1));
+////    t->finished.connect(func1);
+//    t1->start();
+//    t2->start();
 
     return 0;
 }

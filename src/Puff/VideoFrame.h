@@ -1,7 +1,11 @@
 ﻿#ifndef PUFF_VIDEOFRAME_H
 #define PUFF_VIDEOFRAME_H
 
+#include "VideoFormat.h"
 #include "Frame.h"
+#include "Size.h"
+
+#include <boost/range/size.hpp>
 
 namespace Puff {
 
@@ -12,6 +16,8 @@ class PU_AV_EXPORT VideoFrame: public Frame
 public:
     VideoFrame();
     virtual ~VideoFrame();
+
+    Size size();
 
 private:
 

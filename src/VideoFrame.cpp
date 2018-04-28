@@ -21,4 +21,8 @@ VideoFrame::~VideoFrame()
 
 }
 
+Size VideoFrame::size() {
+    return Size();
+}
+
 }
