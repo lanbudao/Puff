@@ -60,8 +60,8 @@ public:
     inline bool isFloat(SampleFormat format) {return !!(format & kFloat);}
     inline bool isPlanar(SampleFormat format) {return !!(format & kPlanar);}
     inline bool isUnsigned(SampleFormat format) {return !!(format & kUnsigned);}
-    SampleFormat toPlanar(SampleFormat format) {return isPlanar(format) ? format : SampleFormat((int)format | kPlanar);}
-    SampleFormat toPacked(SampleFormat format) {return isPlanar(format) ? SampleFormat((int)format ^ kPlanar) : format;}
+    inline SampleFormat toPlanar(SampleFormat format) {return isPlanar(format) ? format : SampleFormat((int)format | kPlanar);}
+    inline SampleFormat toPacked(SampleFormat format) {return isPlanar(format) ? SampleFormat((int)format ^ kPlanar) : format;}
 
     static ChannelLayout channelLayoutFromFFmpeg(int64_t clff);
     static int64_t channelLayoutToFFmpeg(ChannelLayout cl);
@@ -70,6 +70,19 @@ public:
     bool isFloat() const;
     bool isPlanar() const;
     bool isUnsigned() const;
+
+    int planeCount() const;
+
+    int channels() const;
+    void setChannels(int cls);
+
+    int sampleRate() const;
+    void setSampleRate(int rate);
+
+    int bytesPerSample() const;
+    int bytesPerFrame() const;
+
+    int64_t durationForBytes(int64_t bytes);
 
 private:
     DPTR_DECLARE(AudioFormat)

@@ -141,6 +141,8 @@ public:
     String name() const;
     int chromaWidth(int lumaWidth) const;
     int chromaHeight(int lumaHeight) const;
+    int width(int lumaWidth, int plane) const;
+    int height(int lumaHeight, int plane) const;
 
     bool isBigEndian() const;
     bool isBitStream() const;
@@ -153,6 +155,10 @@ public:
     static bool isPlanar(PixelFormat pixfmt);
     static bool isRGB(PixelFormat pixfmt);
     static bool hasAlpha(PixelFormat pixfmt);
+
+    bool isValid() const;
+
+    PixelFormat pixelFormat() const;
 
 private:
     DPTR_DECLARE(VideoFormat)

@@ -310,7 +310,8 @@ private:
     }
 };
 
-VideoFormat::VideoFormat() {
+VideoFormat::VideoFormat()
+{
 
 }
 
@@ -358,6 +359,18 @@ int VideoFormat::chromaWidth(int lumaWidth) const {
 int VideoFormat::chromaHeight(int lumaHeight) const {
     DPTR_D(const VideoFormat);
     return -((-lumaHeight) >> d.descriptor->log2_chroma_h);
+}
+
+int VideoFormat::width(int lumaWidth, int plane) const {
+    if (plane <= 0)
+        return lumaWidth;
+    return chromaWidth(lumaWidth);
+}
+
+int VideoFormat::height(int lumaHeight, int plane) const {
+    if (plane <= 0)
+        return lumaHeight;
+    return chromaHeight(lumaHeight);
 }
 
 String VideoFormat::name() const {
@@ -475,6 +488,16 @@ int VideoFormat::bytesPerPixel(int plane) const {
     if (plane >= d.bitsPerPixels.size() || plane < 0)
         return 0;
     return d.bitsPerPixels.at(plane);
+}
+
+bool VideoFormat::isValid() const {
+    DPTR_D(const VideoFormat);
+    return d.pixfmt != Format_Invalid && d.pixfmt_ff != AV_PIX_FMT_NONE;
+}
+
+Puff::VideoFormat::PixelFormat VideoFormat::pixelFormat() const {
+    DPTR_D(const VideoFormat);
+    return d.pixfmt;
 }
 
 }

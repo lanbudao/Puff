@@ -2,6 +2,7 @@
 #define PUFF_BYTEARRAY_H
 
 #include "AVGlobal.h"
+#include <boost/array.hpp>
 
 namespace Puff {
 
@@ -27,7 +28,8 @@ public:
             free(mData);
     }
 
-    const char *data() const {return mData;}
+    char *data()  {return mData;}
+    const char *constData() const {return mData;}
     size_t size() const {return mSize;}
 
     ByteArray& operator = (const ByteArray &other)
@@ -40,9 +42,10 @@ public:
                 free(mData);
             mData = (char *)malloc(other.size());
         }
-        memcpy(mData, other.data(), other.size());
+        memcpy(mData, other.constData(), other.size());
         return *this;
     }
+    inline bool isEmpty() const {return mSize <= 0;}
 
 private:
     char* mData;

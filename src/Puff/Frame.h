@@ -58,7 +58,7 @@ public:
     double timestamp() const;
     void setTimestamp(double t);
 
-private:
+protected:
     DPTR_DECLARE(Frame)
 };
 

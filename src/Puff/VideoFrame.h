@@ -17,7 +17,24 @@ public:
     VideoFrame();
     virtual ~VideoFrame();
 
+    int channelCount() const;
+
+    VideoFormat format() const;
+
+    VideoFormat::PixelFormat pixelFormat() const;
+
     Size size();
+    int width() const;
+    int height() const;
+
+    ColorSpace colorSpace() const;
+    void setColorSpace(ColorSpace space);
+
+    ColorRange colorRange() const;
+    void setColorRange(ColorRange range);
+
+    int planeWidth(int plane) const;
+    int planeHeight(int plane) const;
 
 private:
 

@@ -71,6 +71,25 @@ enum LogLevel {
     LogAll
 };
 
+enum ColorSpace {
+    ColorSpace_Unknown,
+    ColorSpace_RGB,
+    ColorSpace_GBR, // for planar gbr format(e.g. video from x264) used in glsl
+    ColorSpace_BT601,
+    ColorSpace_BT709,
+    ColorSpace_XYZ
+};
+
+/**
+ * @brief The ColorRange enum
+ * YUV or RGB color range
+ */
+enum ColorRange {
+    ColorRange_Unknown,
+    ColorRange_Limited, // TV, MPEG
+    ColorRange_Full     // PC, JPEG
+};
+
 PU_AV_EXPORT inline String GetVersion() {return String("");}
 
 }

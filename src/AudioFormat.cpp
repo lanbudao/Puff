@@ -100,4 +100,46 @@ bool AudioFormat::isUnsigned() const {
     return !!(d.sample_fmt & kUnsigned);
 }
 
+int AudioFormat::channels() const {
+    DPTR_D(const AudioFormat);
+    return d.channels;
+}
+
+void AudioFormat::setChannels(int cls) {
+    DPTR_D(AudioFormat);
+    d.setChannels(cls);
+}
+
+int AudioFormat::bytesPerSample() const {
+    DPTR_D(const AudioFormat);
+    return d.sample_fmt & (1 << (kSize + 1) - 1);
+}
+
+int AudioFormat::bytesPerFrame() const {
+    if (!isValid())
+        return 0;
+    return bytesPerSample() * channels();
+}
+
+int64_t AudioFormat::durationForBytes(int64_t bytes) {
+    DPTR_D(const AudioFormat);
+    if (!isValid() || bytes <= 0)
+        return 0;
+    return int64_t(kHz * (bytes / bytesPerFrame())) / sampleRate();
+}
+
+int AudioFormat::sampleRate() const {
+    DPTR_D(const AudioFormat);
+    return d.sample_rate;
+}
+
+void AudioFormat::setSampleRate(int rate) {
+    DPTR_D(AudioFormat);
+    d.sample_rate = rate;
+}
+
+int AudioFormat::planeCount() const {
+    return isPlanar() ? channels() : 1;
+}
+
 }
