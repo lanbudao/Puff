@@ -108,7 +108,8 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
     if (q.empty())
         return T();
 
-    T t = q.pop();
+    T t = q.front();
+    q.pop();
     full_cond.notify_one();
     onDequeue(t);
 

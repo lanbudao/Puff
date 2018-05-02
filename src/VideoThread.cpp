@@ -25,15 +25,21 @@ void VideoThread::run()
 {
     DPTR_D(VideoThread);
 
-    auto *decoder = dynamic_cast<VideoDecoder *>(d.decoder);
+    auto *dec = dynamic_cast<VideoDecoder *>(d.decoder);
 
     Packet pkt;
+    VideoFrame frame;
 
     while (!d.stopped) {
 
         if (!pkt.isValid()) {
-
+            pkt = d.packets.dequeue();
         }
+
+        if (!dec->decode(pkt)) {
+            continue;
+        }
+        frame = dec->frame();
     }
 
     AVThread::run();

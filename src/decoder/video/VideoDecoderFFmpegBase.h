@@ -1,0 +1,24 @@
+#ifndef PUFF_VIDEODECODERFFMPEGBASE_H
+#define PUFF_VIDEODECODERFFMPEGBASE_H
+
+#include "VideoDecoder.h"
+
+namespace Puff {
+
+class VideoDecoderFFmpegBasePrivate;
+class VideoDecoderFFmpegBase: public VideoDecoder
+{
+    DPTR_DECLARE_PRIVATE(VideoDecoderFFmpegBase)
+public:
+    VideoDecoderFFmpegBase();
+    ~VideoDecoderFFmpegBase();
+
+    virtual bool decode(const Packet &pkt);
+    VideoFrame frame() const;
+
+private:
+
+};
+
+}
+#endif //PUFF_VIDEODECODERFFMPEGBASE_H

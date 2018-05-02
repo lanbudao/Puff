@@ -1,20 +1,12 @@
-#include "VideoDecoder.h"
-#include "AVDecoder_p.h"
+#include "VideoDecoderFFmpegBase.h"
 
 namespace Puff {
 
-class VideoDecoderFFmpegPrivate PU_NO_COPY: public VideoDecoderPrivate
-{
-public:
-    VideoDecoderFFmpegPrivate() {}
-    ~VideoDecoderFFmpegPrivate() {}
-};
-
-class VideoDecoderFFmpeg: public VideoDecoder
+class VideoDecoderFFmpeg: public VideoDecoderFFmpegBase
 {
 public:
     VideoDecoderFFmpeg()
-        :VideoDecoder()
+        :VideoDecoderFFmpegBase()
     {
 
     }

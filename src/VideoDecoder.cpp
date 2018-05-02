@@ -21,7 +21,6 @@ static void VideoDecoder_RegisterAll()
 }
 
 VideoDecoder::VideoDecoder()
-    :AVDecoder()
 {
 
 }

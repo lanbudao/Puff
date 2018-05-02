@@ -30,7 +30,9 @@ public:
     void setCodecName(const String &name);
     String codecName() const;
 
-private:
+    bool isAvailable() const;
+
+protected:
     DPTR_DECLARE(AVDecoder)
 };
 

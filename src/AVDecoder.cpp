@@ -111,4 +111,9 @@ void AVDecoderPrivate::applyOptionsForDict()
     //TODO
 }
 
+bool AVDecoder::isAvailable() const {
+    DPTR_D(const AVDecoder);
+    return d.codec_ctx != NULL;
+}
+
 }

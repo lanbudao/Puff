@@ -3,6 +3,7 @@
 
 #include "AVDecoder.h"
 #include "VideoFrame.h"
+#include "Packet.h"
 #include <vector>
 
 namespace Puff {
@@ -42,6 +43,8 @@ public:
     static const char* name(VideoDecoderId id);
     static VideoDecoderId id(const char* name);
 
+    virtual bool decode(const Packet& packet) = 0;
+
 private:
     template<class T>
     static VideoDecoder * create() { return new T(); }
@@ -53,6 +56,7 @@ protected:
 protected:
     VideoDecoder();
     ~VideoDecoder();
+
 };
 
 
