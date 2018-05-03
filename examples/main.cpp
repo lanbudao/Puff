@@ -62,19 +62,19 @@ static void func1()
 
 int main(int argc, char *argv[])
 {
-//    AVPlayer *player = new AVPlayer();
-//
-//    player->play("F:\\work_file\\video\\M.I.A.OfficialVideo.mp4");
-//
-//    printf("hello world\n");
-    int value = 12;
-    const int a = value;
-    const int *ap = &a;
-    int* tmp = const_cast<int*>(ap);
-    *tmp = 11;
-    cout << value << endl;
-    cout << a << endl;
-    cout << *tmp << endl;
+    AVPlayer *player = new AVPlayer();
+
+    player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
+
+    printf("hello world\n");
+//    int value = 12;
+//    const int a = value;
+//    const int *ap = &a;
+//    int* tmp = const_cast<int*>(ap);
+//    *tmp = 11;
+//    cout << value << endl;
+//    cout << a << endl;
+//    cout << *tmp << endl;
 //    CThread *t1 = new MyThread();
 //    MyThread2 *t2 = new MyThread2();
 //    MyReceive *receive = new MyReceive;

@@ -9,9 +9,12 @@ class VideoThreadPrivate: public AVThreadPrivate
 public:
     VideoThreadPrivate() {}
     ~VideoThreadPrivate() {}
+
+    VideoFrame current_frame;
 };
 
-VideoThread::VideoThread()//: AVThread()
+VideoThread::VideoThread():
+    AVThread()
 {
 
 }
@@ -40,9 +43,22 @@ void VideoThread::run()
             continue;
         }
         frame = dec->frame();
+        if (!frame.isValid()) {
+            continue;
+        }
+        if (!sendVideoFrame(frame))
+            continue;
+        d.current_frame = frame;
     }
 
     AVThread::run();
+}
+
+bool VideoThread::sendVideoFrame(VideoFrame &frame)
+{
+    DPTR_D(VideoFrame);
+
+    return true;
 }
 
 }

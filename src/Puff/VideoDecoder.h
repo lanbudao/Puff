@@ -55,7 +55,6 @@ protected:
 
 protected:
     VideoDecoder();
-    ~VideoDecoder();
 
 };
 

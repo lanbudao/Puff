@@ -315,6 +315,12 @@ VideoFormat::VideoFormat()
 
 }
 
+VideoFormat::VideoFormat(int pix_fmt)
+{
+    DPTR_D(VideoFormat);
+    d.setFormat(AVPixelFormat(pix_fmt));
+}
+
 VideoFormat::~VideoFormat() {
 
 }
@@ -498,6 +504,11 @@ bool VideoFormat::isValid() const {
 Puff::VideoFormat::PixelFormat VideoFormat::pixelFormat() const {
     DPTR_D(const VideoFormat);
     return d.pixfmt;
+}
+
+int VideoFormat::pixelFormatFFmpeg() const {
+    DPTR_D(const VideoFormat);
+    return d.pixfmt_ff;
 }
 
 }

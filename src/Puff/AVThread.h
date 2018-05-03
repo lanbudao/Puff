@@ -5,7 +5,9 @@
 
 namespace Puff {
 
+class OutputSet;
 class PacketQueue;
+class AVDecoder;
 class AVThreadPrivate;
 class PU_AV_EXPORT AVThread: public CThread
 {
@@ -15,6 +17,10 @@ public:
     virtual ~AVThread();
 
     PacketQueue *packets();
+
+    void setDecoder(AVDecoder *decoder);
+
+    void setOutputSet(OutputSet *output);
 
 protected:
     DPTR_DECLARE(AVThread)

@@ -25,11 +25,6 @@ VideoDecoder::VideoDecoder()
 
 }
 
-VideoDecoder::~VideoDecoder()
-{
-
-}
-
 std::vector<VideoDecoderId> VideoDecoder::registered()
 {
     VideoDecoder_RegisterAll();

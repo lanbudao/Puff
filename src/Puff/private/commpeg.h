@@ -43,7 +43,12 @@ extern "C" {
 #define DESC_VAL(X) (X##_minus1 + 1)
 #endif
 
-#define PUFF_AV_PIX_FORMAT(f) AV_PIX_FMT_##f
+av_always_inline char* averror2str(int errnum)
+{
+    static char str[AV_ERROR_MAX_STRING_SIZE];
+    memset(str, 0, sizeof(str));
+    return av_make_error_string(str, AV_ERROR_MAX_STRING_SIZE, errnum);
+}
 
 #define AV_RUN_CHECK(FUNC, RETURN, ...) do { \
     int ret = FUNC; \

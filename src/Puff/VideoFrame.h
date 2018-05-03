@@ -15,6 +15,7 @@ class PU_AV_EXPORT VideoFrame: public Frame
     DPTR_DECLARE_PRIVATE(VideoFrame)
 public:
     VideoFrame();
+    VideoFrame(int width, int height, const VideoFormat &format, const ByteArray &data = ByteArray());
     virtual ~VideoFrame();
 
     int channelCount() const;
@@ -22,6 +23,9 @@ public:
     VideoFormat format() const;
 
     VideoFormat::PixelFormat pixelFormat() const;
+    int pixelFormatFFmpeg() const;
+
+    bool isValid() const;
 
     Size size();
     int width() const;
@@ -35,6 +39,8 @@ public:
 
     int planeWidth(int plane) const;
     int planeHeight(int plane) const;
+
+    void setDisplayAspectRatio(float aspect);
 
 private:
 

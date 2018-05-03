@@ -116,4 +116,24 @@ bool AVDecoder::isAvailable() const {
     return d.codec_ctx != NULL;
 }
 
+void AVDecoder::setCodecCtx(void *ctx)
+{
+    DPTR_D(AVDecoder);
+    AVCodecContext *codec_ctx = (AVCodecContext *)ctx;
+    if (codec_ctx == d.codec_ctx)
+        return;
+    if (isOpen())
+        close();
+    if (!codec_ctx) {
+        avcodec_free_context(&d.codec_ctx);
+        d.codec_ctx = NULL;
+        return;
+    }
+    if (!d.codec_ctx)
+        d.codec_ctx = avcodec_alloc_context3(codec_ctx->codec);
+    if (!d.codec_ctx)
+        return;
+    AV_ENSURE_OK(avcodec_copy_context(d.codec_ctx, codec_ctx));
+}
+
 }

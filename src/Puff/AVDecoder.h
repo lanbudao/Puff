@@ -32,6 +32,8 @@ public:
 
     bool isAvailable() const;
 
+    void setCodecCtx(void *ctx);
+
 protected:
     DPTR_DECLARE(AVDecoder)
 };

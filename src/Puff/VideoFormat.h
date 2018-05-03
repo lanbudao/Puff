@@ -115,6 +115,7 @@ public:
         Format_XYZ12BE,
         Format_User
     };
+    VideoFormat(int pix_fmt);
 
     static PixelFormat pixelFormatFromFFmpeg(int ff);
     static int pixelFormatToFFmpeg(VideoFormat::PixelFormat fmt);
@@ -159,6 +160,7 @@ public:
     bool isValid() const;
 
     PixelFormat pixelFormat() const;
+    int pixelFormatFFmpeg() const;
 
 private:
     DPTR_DECLARE(VideoFormat)

@@ -3,6 +3,7 @@
 
 #include "AVGlobal.h"
 #include "DPTR.h"
+#include "ByteArray.h"
 
 struct AVPacket;
 
@@ -16,15 +17,17 @@ public:
     Packet();
     ~Packet();
 
+    const AVPacket *asAVPacket() const;
+
     static Packet fromAVPacket(const AVPacket *packet, double time_base);
 
-    bool isEOF();
+    bool isEOF() const;
     inline bool isValid() const;
 
     bool containKeyFrame, isCorrupted;
     double pts, dts, duration;
     int64_t pos;
-    char *data;
+    ByteArray data;
     int size;
 
 private:

@@ -20,7 +20,6 @@ public:
 CThread::CThread():
     t(NULL)
 {
-    t = new boost::thread(boost::bind(&CThread::run, this));
 }
 
 CThread::~CThread()
@@ -32,12 +31,15 @@ void CThread::start()
 {
     DPTR_D(CThread);
     d.running = true;
+    t = new boost::thread(boost::bind(&CThread::run, this));
     t->join();
 }
 
 void CThread::exit() {
     DPTR_D(CThread);
-    t->interrupt();
+    if (t) {
+        t->interrupt();
+    }
 }
 
 void CThread::run()

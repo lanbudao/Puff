@@ -14,7 +14,7 @@ public:
     ~VideoDecoderFFmpegBase();
 
     virtual bool decode(const Packet &pkt);
-    VideoFrame frame() const;
+    VideoFrame frame();
 
 private:
 

@@ -2,6 +2,7 @@
 #define PUFF_VIDEOTHREAD_H
 
 #include "AVThread.h"
+#include "VideoFrame.h"
 
 namespace Puff {
 
@@ -15,6 +16,7 @@ public:
 
 protected:
     void run() PU_DECL_OVERRIDE;
+    bool sendVideoFrame(VideoFrame &frame);
 };
 }
 #endif //PUFF_VIDEOTHREAD_H

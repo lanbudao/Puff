@@ -20,8 +20,13 @@ public:
 
     void setFile(const String &fileName);
     void play(const String& fileName);
+    bool load();
+    bool isLoaded() const;
 
 private:
+    void loadInternal();
+    void playInternal();
+
     DPTR_DECLARE(AVPlayer)
 
 };

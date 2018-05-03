@@ -9,7 +9,8 @@ public:
         width(0),
         height(0),
         color_space(ColorSpace_Unknown),
-        color_range(ColorRange_Unknown)
+        color_range(ColorRange_Unknown),
+        displayAspectRatio(1.0)
     {
 
     }
@@ -27,12 +28,22 @@ public:
 
     ColorSpace color_space;
     ColorRange color_range;
+
+    float displayAspectRatio;
 };
 
 VideoFrame::VideoFrame():
     Frame()
 {
 
+}
+
+VideoFrame::VideoFrame(int width, int height, const VideoFormat &format, const ByteArray &data):
+    Frame()
+{
+    DPTR_D(VideoFrame);
+    d.data = data;
+    d.setFormat(format);
 }
 
 VideoFrame::~VideoFrame()
@@ -45,6 +56,11 @@ int VideoFrame::channelCount() const {
     if (!d.format.isValid())
         return 0;
     return d.format.channels();
+}
+
+bool VideoFrame::isValid() const {
+    DPTR_D(const VideoFrame);
+    return d.width > 0 && d.height > 0 && d.format.isValid();
 }
 
 Size VideoFrame::size() {
@@ -60,6 +76,11 @@ VideoFormat VideoFrame::format() const {
 VideoFormat::PixelFormat VideoFrame::pixelFormat() const {
     DPTR_D(const VideoFrame);
     return d.format.pixelFormat();
+}
+
+int VideoFrame::pixelFormatFFmpeg() const {
+    DPTR_D(const VideoFrame);
+    return d.format.pixelFormatFFmpeg();
 }
 
 int VideoFrame::width() const {
@@ -100,6 +121,11 @@ int VideoFrame::planeWidth(int plane) const {
 int VideoFrame::planeHeight(int plane) const {
     DPTR_D(VideoFrame);
     return d.format.height(d.height, plane);
+}
+
+void VideoFrame::setDisplayAspectRatio(float aspect) {
+    DPTR_D(VideoFrame);
+    d.displayAspectRatio = aspect;
 }
 
 }

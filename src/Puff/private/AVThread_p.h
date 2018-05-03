@@ -11,7 +11,8 @@ class AVThreadPrivate : public DptrPrivate<AVThread> {
 public:
     AVThreadPrivate() :
         decoder(NULL),
-        stopped(false)
+        stopped(false),
+        output(NULL)
     {
         packets.clear();
     }
@@ -20,6 +21,8 @@ public:
 
     AVDecoder *decoder;
     PacketQueue packets;
+
+    OutputSet *output;
 
     /*Must be volatile*/
     volatile bool stopped;

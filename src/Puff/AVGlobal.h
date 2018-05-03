@@ -56,6 +56,11 @@ using namespace std;
 
 #define ONLY_RUN_ONES static bool run = false; if (run) return; run = true;
 
+#define puMin(a, b) (a > b ? b : a)
+#define puMax(a, b) (a > b ? a : b)
+
+#define PU_UNUSED(X) (void)(X);
+
 typedef unsigned char uchar;
 typedef std::string String;
 typedef std::list<String> StringList;

@@ -1,4 +1,4 @@
-#include <libavcodec/avcodec.h>
+#include "commpeg.h"
 #include "Packet.h"
 
 namespace Puff {
@@ -8,12 +8,14 @@ class PacketPrivate: public DptrPrivate<Packet>
 public:
     PacketPrivate()
     {
-
+        av_init_packet(&avpkt);
     }
     ~PacketPrivate()
     {
-
+        av_free_packet(&avpkt);
     }
+
+    mutable AVPacket avpkt;
 };
 
 Packet::Packet()
@@ -61,15 +63,33 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
         pkt.duration = 0;
 
     pkt.size = packet->size;
-    pkt.data = (char *)malloc(packet->size);
-    memcpy(pkt.data, packet->data, packet->size);
+    pkt.data = ByteArray((char*)packet->data, packet->size);
 
     return pkt;
 }
 
-bool Packet::isEOF()
+bool Packet::isEOF() const
 {
-    return !memcmp(data, "eof", strlen(data)) && pts < 0.0 && dts < 0.0;
+    return !memcmp(data.constData(), "eof", data.size()) && pts < 0.0 && dts < 0.0;
+}
+
+const AVPacket *Packet::asAVPacket() const
+{
+    DPTR_D(Packet);
+    AVPacket *p = &d.avpkt;
+    p->pts = int64_t(pts * 1000.0);
+    p->dts = int64_t(dts * 1000.0);
+    p->duration = int(duration * 1000.0);
+    p->pos = pos;
+    if (isCorrupted)
+        p->flags |= AV_PKT_FLAG_CORRUPT;
+    if (containKeyFrame)
+        p->flags |= AV_PKT_FLAG_KEY;
+    if (!data.isEmpty()) {
+        p->data = (uint8_t *)data.constData();
+        p->size = data.size();
+    }
+    return p;
 }
 
 }

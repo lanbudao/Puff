@@ -1,16 +1,7 @@
 #include "AVDemuxer.h"
 #include "AVError.h"
 #include "Packet.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include "libavformat/avformat.h"
-#include "libavformat/avio.h"
-#include "libavcodec/avcodec.h"
-#ifdef __cplusplus
-}
-#endif
+#include "commpeg.h"
 
 namespace Puff {
 
@@ -125,23 +116,27 @@ public:
                 subtitle_stream_info.streams.empty())
             return false;
 
-        setMediaStream(AVMEDIA_TYPE_VIDEO, -1);
-        setMediaStream(AVMEDIA_TYPE_AUDIO, -1);
-        setMediaStream(AVMEDIA_TYPE_SUBTITLE, -1);
+        setMediaStream(AVDemuxer::Stream_Video, -1);
+        setMediaStream(AVDemuxer::Stream_Audio, -1);
+        setMediaStream(AVDemuxer::Stream_Subtitle, -1);
 
         return true;
     }
 
-    bool setMediaStream(AVMediaType type, int value)
+    bool setMediaStream(AVDemuxer::StreamType type, int value)
     {
         StreamInfo *info = NULL;
+        AVMediaType media_type = AVMEDIA_TYPE_UNKNOWN;
 
-        if (type == AVMEDIA_TYPE_VIDEO) {
+        if (type == AVDemuxer::Stream_Video) {
             info = &video_stream_info;
-        } else if (type == AVMEDIA_TYPE_AUDIO) {
+            media_type = AVMEDIA_TYPE_VIDEO;
+        } else if (type == AVDemuxer::Stream_Audio) {
             info = &audio_stream_info;
-        } else if (type == AVMEDIA_TYPE_SUBTITLE) {
+            media_type = AVMEDIA_TYPE_AUDIO;
+        } else if (type == AVDemuxer::Stream_Subtitle) {
             info = &subtitle_stream_info;
+            media_type = AVMEDIA_TYPE_SUBTITLE;
         }
 
         if (!info)
@@ -150,7 +145,7 @@ public:
         if (info->wanted_index >= 0 && info->wanted_index < info->streams.size()) {
             s = info->streams.at(info->wanted_index);
         } else {
-            s = av_find_best_stream(format_ctx, type, value, -1, NULL, 0);
+            s = av_find_best_stream(format_ctx, media_type, value, -1, NULL, 0);
         }
         if (s == AVERROR_STREAM_NOT_FOUND) {
             return false;
@@ -245,6 +240,12 @@ void AVDemuxer::unload()
     }
 }
 
+bool AVDemuxer::isLoaded() const
+{
+    DPTR_D(const AVDemuxer);
+    return d.format_ctx && (d.video_stream_info.codec_ctx || d.audio_stream_info.codec_ctx || d.subtitle_stream_info.codec_ctx);
+}
+
 int AVDemuxer::stream()
 {
     DPTR_D(const AVDemuxer);
@@ -306,6 +307,80 @@ int AVDemuxer::audioStream() {
 int AVDemuxer::subtitleStream() {
     DPTR_D(const AVDemuxer);
     return d.subtitle_stream_info.stream;
+}
+
+bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
+{
+    DPTR_D(AVDemuxer);
+    std::vector<int> streams;
+    AVDemuxerPrivate::StreamInfo *info = NULL;
+
+    if (type == Stream_Video) {
+        streams = d.video_stream_info.streams;
+        info = &d.video_stream_info;
+    } else if (type == Stream_Audio) {
+        streams = d.audio_stream_info.streams;
+        info = &d.audio_stream_info;
+    } else if (type == Stream_Subtitle) {
+        streams = d.subtitle_stream_info.streams;
+        info = &d.subtitle_stream_info;
+    }
+    if (!info)
+        return false;
+    if (streams.empty())
+        return false;
+    if (index >= streams.size())
+        return false;
+    if (index < 0) {
+        printf("disable %d stream.\n", type);
+        info->stream = -1;
+        info->wanted_stream = -1;
+        info->wanted_index = -1;
+        return true;
+    }
+    if (!d.setMediaStream(type, streams.at(index)))
+        return false;
+    info->wanted_index = index;
+    return true;
+}
+
+AVCodecContext *AVDemuxer::audioCodecCtx(int stream) const
+{
+    DPTR_D(AVDemuxer);
+    if (stream < 0)
+        return d.video_stream_info.codec_ctx;
+    if (stream >= d.format_ctx->nb_streams)
+        return NULL;
+    AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
+    if (ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+        return ctx;
+    return NULL;
+}
+
+AVCodecContext *AVDemuxer::videoCodecCtx(int stream) const
+{
+    DPTR_D(AVDemuxer);
+    if (stream < 0)
+        return d.audio_stream_info.codec_ctx;
+    if (stream >= d.format_ctx->nb_streams)
+        return NULL;
+    AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
+    if (ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+        return ctx;
+    return NULL;
+}
+
+AVCodecContext *AVDemuxer::subtitleCodecCtx(int stream) const
+{
+    DPTR_D(AVDemuxer);
+    if (stream < 0)
+        return d.subtitle_stream_info.codec_ctx;
+    if (stream >= d.format_ctx->nb_streams)
+        return NULL;
+    AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
+    if (ctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
+        return ctx;
+    return NULL;
 }
 
 }

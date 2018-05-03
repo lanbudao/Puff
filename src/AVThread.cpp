@@ -2,22 +2,10 @@
 #include "AVThread_p.h"
 
 namespace Puff {
-//
-//class AVThreadPrivate: public DptrPrivate<AVThread>
-//{
-//public:
-//    AVThreadPrivate():
-//        decoder(NULL)
-//    {
-//        packets.clear();
-//    }
-//    virtual ~AVThreadPrivate() {}
-//
-//    AVDecoder *decoder;
-//    PacketQueue packets;
-//};
 
-AVThread::AVThread() {
+AVThread::AVThread():
+    CThread()
+{
 
 }
 
@@ -29,6 +17,18 @@ PacketQueue * AVThread::packets()
 {
     DPTR_D(AVThread);
     return &(d.packets);
+}
+
+void AVThread::setDecoder(AVDecoder *decoder)
+{
+    DPTR_D(AVThread);
+    d.decoder = decoder;
+}
+
+void AVThread::setOutputSet(OutputSet *output)
+{
+    DPTR_D(AVThread);
+    d.output = output;
 }
 
 }

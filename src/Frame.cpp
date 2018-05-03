@@ -80,11 +80,25 @@ void Frame::setBits(const vector<uchar *> &bits) {
     }
 }
 
+void Frame::setBits(int8_t *slice[]) {
+    DPTR_D(Frame);
+    for (int i = 0; i < planeCount(); ++i) {
+        setBits((uchar *)slice[i], i);
+    }
+}
+
 void Frame::setBytesPerLine(int lineSize, int plane) {
     DPTR_D(Frame);
     if (plane < 0 || plane >= planeCount())
         return;
     d.line_sizes[plane] = lineSize;
+}
+
+void Frame::setBytesPerLine(int stride[]) {
+    DPTR_D(Frame);
+    for (int i = 0; i < planeCount(); ++i) {
+        setBytesPerLine(stride[i], i);
+    }
 }
 
 double Frame::timestamp() const {
