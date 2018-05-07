@@ -32,7 +32,7 @@ public:
     virtual String description() const;
 
     template<class T>
-    static bool Register(VideoDecoderId id, const char *name) { return Register(id, create<T>(), name); }
+    static bool Register(VideoDecoderId id, const char *name) { return Register(id, create<T>, name); }
 
     /**
      * @brief next
