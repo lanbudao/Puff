@@ -2,11 +2,12 @@
 #define PUFF_FACTORY_H
 
 #include <ctype.h>
-#include <cstring>
 #include <time.h>
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <strings.h>
+
 #include "Singleton.h"
 
 #define FACTORY_REGISTER(BASE, _ID, NAME) FACTORY_REGISTER_ID_TYPE(BASE, BASE##Id_##_ID, BASE##_ID, NAME)

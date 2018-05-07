@@ -2,6 +2,7 @@
 #define PUFF_BYTEARRAY_H
 
 #include "AVGlobal.h"
+#include <string.h>
 #include <boost/array.hpp>
 
 namespace Puff {
