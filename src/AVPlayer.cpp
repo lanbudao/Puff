@@ -68,7 +68,7 @@ public:
             delete dec;
         }
         if (!video_dec) {
-            debug("Can not found video decoder.\n");
+            avdebug("Can not found video decoder.\n");
             return false;
         }
         if (!video_thread) {
@@ -106,7 +106,7 @@ public:
 
 AVPlayer::AVPlayer()
 {
-    debug("AVPlayer Initialize...\n");
+    avdebug("AVPlayer Initialize...\n");
 }
 
 AVPlayer::~AVPlayer()

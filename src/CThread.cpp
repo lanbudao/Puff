@@ -46,7 +46,7 @@ void CThread::exit() {
 void CThread::run()
 {
     DPTR_D(CThread);
-    debug("CThread::finished\n");
+    avdebug("CThread::finished\n");
     d.running = false;
     PU_EMIT finished();
 }

@@ -333,7 +333,7 @@ bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
     if (index >= streams.size())
         return false;
     if (index < 0) {
-        debug("disable %d stream.\n", type);
+        avdebug("disable %d stream.\n", type);
         info->stream = -1;
         info->wanted_stream = -1;
         info->wanted_index = -1;

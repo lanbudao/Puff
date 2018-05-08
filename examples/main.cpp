@@ -3,6 +3,7 @@
 #include "AVPlayer.h"
 #include "CObject.h"
 #include "CThread.h"
+#include "AVLog.h"
 #include "signals2/signal_type.hpp"
 
 using namespace Puff;
@@ -62,11 +63,15 @@ static void func1()
 
 int main(int argc, char *argv[])
 {
+    logger.setLogFile("F:/log.txt");
+
     AVPlayer *player = new AVPlayer();
 
     player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
 
-    printf("hello world\n");
+    avdebug("hello world\n");
+    avdebug("hello world\n");
+    avdebug("hello world\n");
 //    int value = 12;
 //    const int a = value;
 //    const int *ap = &a;

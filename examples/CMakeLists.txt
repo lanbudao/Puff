@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 2.8.4)
 
 project(player)
 
+# Set Version
+set(PLAYER_MAJOR 1)
+set(PLAYER_MINOR 0)
+set(PLAYER_PATCH 0)
+set(PROJECT_VERSION ${PLAYER_MAJOR}.${PLAYER_MINOR}.${PLAYER_PATCH})
+
 # Use C++11
 #if(CMAKE_COMPILER_IS_GNUCXX)
 #    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")

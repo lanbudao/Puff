@@ -1,15 +1,15 @@
 #ifndef PUFF_AVLOG_H
 #define PUFF_AVLOG_H
 
-#include "AVGlobal.h"
 #include "DPTR.h"
 #include "Singleton.h"
 
 namespace Puff {
 
-#define debug(fmt, ...) AVLog::instance().log(LogDebug, fmt, __VA_ARGS__)
-#define warnning(fmt, ...) AVLog::instance().log(LogWarning, fmt, __VA_ARGS__)
-#define error(fmt, ...) AVLog::instance().log(LogError, fmt, __VA_ARGS__)
+#define logger AVLog::instance()
+#define avdebug(fmt, ...) logger.log(LogDebug, fmt, ##__VA_ARGS__)
+#define avwarnning(fmt, ...) logger.log(LogWarning, fmt, ##__VA_ARGS__)
+#define averror(fmt, ...) logger.log(LogError, fmt, ##__VA_ARGS__)
 
 class AVLogPrivate;
 class PU_AV_EXPORT AVLog: public Singleton<AVLog>
@@ -17,6 +17,8 @@ class PU_AV_EXPORT AVLog: public Singleton<AVLog>
     DPTR_DECLARE_PRIVATE(AVLog)
     DISABLE_COPY(AVLog)
 public:
+    void setLogFile(const String &file);
+
     void log(LogLevel level, const char *fmt, ...);
 
     void setLevel(LogLevel level);
@@ -24,7 +26,7 @@ public:
     LogLevel level() const;
 
 public:
-    explicit AVLog();
+    AVLog();
     ~AVLog();
 
 private:
