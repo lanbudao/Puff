@@ -1,15 +1,14 @@
 #ifndef PUFF_AVDECODER_H
 #define PUFF_AVDECODER_H
 
-#include "AVGlobal.h"
-#include "DPTR.h"
+#include "CObject.h"
 
 typedef struct AVCodecContext AVCodecContext;
 
 namespace Puff {
 
 class AVDecoderPrivate;
-class PU_AV_EXPORT AVDecoder
+class PU_AV_EXPORT AVDecoder: public CObject
 {
     DPTR_DECLARE_PRIVATE(AVDecoder)
 public:

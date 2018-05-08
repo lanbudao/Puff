@@ -10,7 +10,7 @@ class CList: public std::list<T>
 {
 public:
     T& at(int i);
-    T&operator [] (int i);
+    T& operator [] (int i);
 };
 
 template<typename T>

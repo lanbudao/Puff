@@ -18,7 +18,6 @@ class PU_AV_EXPORT VideoDecoder: public AVDecoder
 public:
     std::vector<VideoDecoderId> registered();
     static StringList supportedCodecs();
-    static VideoDecoder* create(VideoDecoderId id);
     /**
      * @brief create
      * create a decoder from registered name. FFmpeg decoder will be created for empty name
@@ -26,6 +25,8 @@ public:
      * @return 0 if not registered
      */
     static VideoDecoder* create(const char* name = "FFmpeg");
+    static VideoDecoder* create(VideoDecoderId id);
+
     virtual VideoDecoderId id() const = 0;
     virtual String name() const;
     virtual VideoFrame frame() = 0;
@@ -60,6 +61,9 @@ protected:
 
 
 extern PU_AV_EXPORT VideoDecoderId VideoDecoderId_FFmpeg;
+extern PU_AV_EXPORT VideoDecoderId VideoDecoderId_MMAL;
+extern PU_AV_EXPORT VideoDecoderId VideoDecoderId_QSV;
+extern PU_AV_EXPORT VideoDecoderId VideoDecoderId_CrystalHD;
 
 }
 #endif //PUFF_VIDEODECODER_H

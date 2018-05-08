@@ -29,7 +29,7 @@
 #define FACTORY_DEFINE(T) \
     class T##Factory : public Factory<T##Id, T, T##Factory> {}; \
     bool T::Register(T##Id id, T##Creator c, const char *name) { \
-        printf(#T "::Register(..., %s)\n", name); \
+        printf(#T "::Register(%s)\n", name); \
         return T##Factory::instance().registerCreator(id, c) && T##Factory::instance().registerIdName(id, name); \
     } \
     T* T::create(T##Id id) {return T##Factory::instance().create(id);} \

@@ -52,6 +52,9 @@ protected:
     String className() const;
     void setClassName(const String &name);
 
+    void setProperty(const String &key, const String &value);
+    String property(const String &key) const;
+
 private:
     DPTR_DECLARE(CObject)
 };

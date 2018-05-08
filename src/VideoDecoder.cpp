@@ -9,6 +9,9 @@ FACTORY_DEFINE(VideoDecoder)
 
 boost::hash<String> hashId;
 VideoDecoderId VideoDecoderId_FFmpeg = (int)hashId("FFmpeg");
+VideoDecoderId VideoDecoderId_MMAL = (int)hashId("FFMMAL");
+VideoDecoderId VideoDecoderId_QSV = (int)hashId("FFQSV");
+VideoDecoderId VideoDecoderId_CrystalHD = (int)hashId("FFCHD");
 
 static void VideoDecoder_RegisterAll()
 {
@@ -16,8 +19,8 @@ static void VideoDecoder_RegisterAll()
     // factory.h does not check whether an id is registered
     if (VideoDecoder::name(VideoDecoderId_FFmpeg)) //registered on load
         return;
-//    extern bool RegisterVideoDecoderFFmpeg_Man();
-//    RegisterVideoDecoderFFmpeg_Man();
+    extern bool RegisterVideoDecoderFFmpeg_Man();
+    RegisterVideoDecoderFFmpeg_Man();
 }
 
 VideoDecoder::VideoDecoder()

@@ -61,6 +61,20 @@ using namespace std;
 
 #define PU_UNUSED(X) (void)(X);
 
+#define PUFF_MAJOR 1
+#define PUFF_MINOR 0
+#define PUFF_PATCH 0
+
+
+#define PUFF_VERSION_MAJOR(V) ((V & 0xff0000) >> 16)
+#define PUFF_VERSION_MINOR(V) ((V & 0xff00) >> 8)
+#define PUFF_VERSION_PATCH(V) (V & 0xff)
+
+#define PUFF_VERSION_CHK(major, minor, patch) \
+    (((major & 0xff) << 16) | ((minor & 0xff) << 8) | (patch & 0xff))
+
+#define PUFF_VERSION PUFF_VERSION_CHK(PUFF_MAJOR, PUFF_MINOR, PUFF_PATCH)
+
 typedef unsigned char uchar;
 typedef std::string String;
 typedef std::list<String> StringList;
