@@ -27,14 +27,12 @@ AVLog::~AVLog() {
 
 }
 
-AVLog *AVLog::instance() {
-    static AVLog log;
-    return &log;
-}
-
 void AVLog::log(LogLevel level, const char *fmt, ...)
 {
+    DPTR_D(AVLog);
 
+//    if (level < d.level)
+//        printf(fmt, __VA_ARGS__);
 }
 
 void AVLog::setLevel(LogLevel level)

@@ -6,7 +6,9 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#ifndef _MSC_VER
 #include <strings.h>
+#endif
 
 #include "Singleton.h"
 

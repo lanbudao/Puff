@@ -30,6 +30,8 @@ public:
     ByteArray data;
     int size;
 
+    AVPacket *avpacket();
+
 private:
     DPTR_DECLARE(Packet)
 };

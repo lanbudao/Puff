@@ -36,6 +36,8 @@
 #ifndef PUFF_DPTR_H
 #define PUFF_DPTR_H
 
+#include "AVGlobal.h"
+
 #define DPTR_DECLARE(Class) DptrPrivateInterface<Class, Class##Private> dptr_d;
 #define DPTR_DECLARE_PRIVATE(Class) friend class Class##Private;
 #define DPTR_DECLARE_PUBLIC(Class) friend class Class;
@@ -47,6 +49,7 @@ template <typename PUB>
 class DptrPrivate
 {
 public:
+    DptrPrivate() {ptr = NULL;}
     virtual ~DptrPrivate() {}
     inline void setPublic(PUB* pub) {ptr = pub;}
 protected:
@@ -57,7 +60,7 @@ private:
 };
 
 template <typename PUB, typename PVT>
-class DptrPrivateInterface
+class PU_AV_EXPORT DptrPrivateInterface
 {
     friend class DptrPrivate<PUB>;
 public:

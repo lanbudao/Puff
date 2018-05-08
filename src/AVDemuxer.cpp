@@ -2,6 +2,7 @@
 #include "AVError.h"
 #include "Packet.h"
 #include "commpeg.h"
+#include "AVLog.h"
 
 namespace Puff {
 
@@ -332,7 +333,7 @@ bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
     if (index >= streams.size())
         return false;
     if (index < 0) {
-        printf("disable %d stream.\n", type);
+        debug("disable %d stream.\n", type);
         info->stream = -1;
         info->wanted_stream = -1;
         info->wanted_index = -1;

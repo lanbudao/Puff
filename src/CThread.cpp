@@ -1,6 +1,7 @@
 #include "CThread.h"
 #include "boost/thread.hpp"
 #include "boost/bind.hpp"
+#include "AVLog.h"
 
 namespace Puff {
 
@@ -45,7 +46,7 @@ void CThread::exit() {
 void CThread::run()
 {
     DPTR_D(CThread);
-    printf("CThread::finished\n");
+    debug("CThread::finished\n");
     d.running = false;
     PU_EMIT finished();
 }

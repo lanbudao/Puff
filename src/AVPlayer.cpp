@@ -8,6 +8,7 @@
 #include "AudioDecoder.h"
 #include "OutputSet.h"
 #include "commpeg.h"
+#include "AVLog.h"
 
 namespace Puff {
 
@@ -67,7 +68,7 @@ public:
             delete dec;
         }
         if (!video_dec) {
-            printf("Can not found video decoder.\n");
+            debug("Can not found video decoder.\n");
             return false;
         }
         if (!video_thread) {
@@ -105,7 +106,7 @@ public:
 
 AVPlayer::AVPlayer()
 {
-    printf("AVPlayer Initialize...\n");
+    debug("AVPlayer Initialize...\n");
 }
 
 AVPlayer::~AVPlayer()

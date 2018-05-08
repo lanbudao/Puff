@@ -1,5 +1,6 @@
 #include "VideoDecoderFFmpegBase.h"
 #include "AVDecoder_p.h"
+#include "AVLog.h"
 
 namespace Puff {
 
@@ -33,7 +34,7 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
         return false;
     }
     if (!got_picture) {
-        printf("no frame could be decompressed: %s %d/%d", averror2str(ret), d.undecoded_size, pkt.data.size());
+        debug("no frame could be decompressed: %s %d/%d", averror2str(ret), d.undecoded_size, pkt.data.size());
         return !pkt.isEOF();
     }
     if (!d.codec_ctx->width || !d.codec_ctx->height)

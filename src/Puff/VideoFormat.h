@@ -24,7 +24,7 @@ public:
      * TODO: 0RGB, XRGB, not native endia use R8 or R16. ffmpeg does not have native endian format
      * currently 0rgb xrgb use rgba formats and check hasAlpha() is required
      */
-    enum PixelFormat {
+    enum EPixelFormat {
         Format_Invalid = -1,
         Format_ARGB32, // AARRGGBB or 00RRGGBB, check hasAlpha is required
         Format_BGRA32, //BBGGRRAA
@@ -117,8 +117,8 @@ public:
     };
     VideoFormat(int pix_fmt);
 
-    static PixelFormat pixelFormatFromFFmpeg(int ff);
-    static int pixelFormatToFFmpeg(VideoFormat::PixelFormat fmt);
+    static EPixelFormat pixelFormatFromFFmpeg(int ff);
+    static int pixelFormatToFFmpeg(VideoFormat::EPixelFormat fmt);
     static std::vector<int> pixelFormatsFFmpeg();
 
     /*The number of components each pixel has, (1-4)*/
@@ -153,13 +153,13 @@ public:
     bool isXYZ() const;
     bool hasAlpha() const;
 
-    static bool isPlanar(PixelFormat pixfmt);
-    static bool isRGB(PixelFormat pixfmt);
-    static bool hasAlpha(PixelFormat pixfmt);
+    static bool isPlanar(EPixelFormat pixfmt);
+    static bool isRGB(EPixelFormat pixfmt);
+    static bool hasAlpha(EPixelFormat pixfmt);
 
     bool isValid() const;
 
-    PixelFormat pixelFormat() const;
+    VideoFormat::EPixelFormat pixelFormat() const;
     int pixelFormatFFmpeg() const;
 
 private:

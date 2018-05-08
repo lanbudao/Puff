@@ -22,7 +22,7 @@ public:
 
     VideoFormat format() const;
 
-    VideoFormat::PixelFormat pixelFormat() const;
+    VideoFormat::EPixelFormat pixelFormat() const;
     int pixelFormatFFmpeg() const;
 
     bool isValid() const;

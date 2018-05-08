@@ -33,8 +33,8 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
     Packet pkt;
 
     pkt.pos = packet->pos;
-    pkt.containKeyFrame = (bool)(packet->flags & AV_PKT_FLAG_KEY);
-    pkt.isCorrupted = (bool)(packet->flags & AV_PKT_FLAG_CORRUPT);
+    pkt.containKeyFrame = !!(packet->flags & AV_PKT_FLAG_KEY);
+    pkt.isCorrupted = !!(packet->flags & AV_PKT_FLAG_CORRUPT);
 
     /*Set pts*/
     if (packet->pts != AV_NOPTS_VALUE) {
@@ -62,6 +62,9 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
     if (pkt.duration < 0)
         pkt.duration = 0;
 
+    AVPacket *p = pkt.avpacket();
+    av_packet_ref(p, packet);  //properties are copied internally
+
     pkt.size = packet->size;
     pkt.data = ByteArray((char*)packet->data, packet->size);
 
@@ -71,6 +74,12 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
 bool Packet::isEOF() const
 {
     return !memcmp(data.constData(), "eof", data.size()) && pts < 0.0 && dts < 0.0;
+}
+
+AVPacket *Packet::avpacket()
+{
+    DPTR_D(Packet);
+    return &d.avpkt;
 }
 
 const AVPacket *Packet::asAVPacket() const

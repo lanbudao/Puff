@@ -22,7 +22,7 @@ protected:
     Singleton() {}
     virtual ~Singleton() {}
 
-private:
+protected:
     static void destroy();
     static T* m_instance;
     static bool m_destroyed;
@@ -40,11 +40,9 @@ T &Singleton<T>::instance()
     if (!m_instance) {
         if (m_destroyed) {
             m_destroyed = false;
-            printf("Dead Reference Detected\n");
             exit(1);
         }
         m_instance = new T();
-        printf("Singleton %p created...\n", m_instance);
         std::atexit(&destroy);
     }
     return *m_instance;
@@ -53,7 +51,6 @@ T &Singleton<T>::instance()
 template<typename T>
 void Singleton<T>::destroy()
 {
-    printf("DestroySingleton...\n");
     assert(!m_destroyed);
     delete m_instance;
     m_instance = NULL;

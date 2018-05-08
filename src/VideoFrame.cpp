@@ -42,6 +42,8 @@ VideoFrame::VideoFrame(int width, int height, const VideoFormat &format, const B
     Frame()
 {
     DPTR_D(VideoFrame);
+    d.width = width;
+    d.height = height;
     d.data = data;
     d.setFormat(format);
 }
@@ -73,7 +75,7 @@ VideoFormat VideoFrame::format() const {
     return d.format;
 }
 
-VideoFormat::PixelFormat VideoFrame::pixelFormat() const {
+VideoFormat::EPixelFormat VideoFrame::pixelFormat() const {
     DPTR_D(const VideoFrame);
     return d.format.pixelFormat();
 }

@@ -112,7 +112,7 @@ void AudioFormat::setChannels(int cls) {
 
 int AudioFormat::bytesPerSample() const {
     DPTR_D(const AudioFormat);
-    return d.sample_fmt & (1 << (kSize + 1) - 1);
+    return d.sample_fmt & (((1 << (kSize + 1)) - 1));
 }
 
 int AudioFormat::bytesPerFrame() const {

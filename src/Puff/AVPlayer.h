@@ -28,7 +28,6 @@ private:
     void playInternal();
 
     DPTR_DECLARE(AVPlayer)
-
 };
 
 };

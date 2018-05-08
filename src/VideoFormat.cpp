@@ -7,7 +7,7 @@ namespace Puff {
 #define FF_HAS_YUV12BITS FFMPEG_MODULE_CHECK(LIBAVUTIL, 51, 73, 101)
 
 static const struct {
-    VideoFormat::PixelFormat fmt;
+    VideoFormat::EPixelFormat fmt;
     AVPixelFormat ff;
 } pixfmt_map[] = {
     { VideoFormat::Format_YUV420P, AV_PIX_FMT_YUV420P },   ///< planar YUV 4:2:0, 12bpp, (1 Cr & Cb sample per 2x2 Y samples)
@@ -224,7 +224,7 @@ public:
 
     }
 
-    void setFormat(VideoFormat::PixelFormat fmt)
+    void setFormat(VideoFormat::EPixelFormat fmt)
     {
         pixfmt = fmt;
         pixfmt_ff = (AVPixelFormat)VideoFormat::pixelFormatToFFmpeg(fmt);
@@ -234,7 +234,7 @@ public:
     void setFormat(AVPixelFormat ff)
     {
         pixfmt_ff = ff;
-        pixfmt = (VideoFormat::PixelFormat)VideoFormat::pixelFormatFromFFmpeg(ff);
+        pixfmt = (VideoFormat::EPixelFormat)VideoFormat::pixelFormatFromFFmpeg(ff);
         init();
     }
 
@@ -242,7 +242,7 @@ public:
     {
         if (pixfmt_ff == AV_PIX_FMT_NONE)
             return;
-        planes = (uint8_t)max(av_pix_fmt_count_planes(pixfmt_ff), 0);
+        planes = (uint8_t)puMax(av_pix_fmt_count_planes(pixfmt_ff), 0);
         bitsPerPixels.reserve(planes);
         bitsPerPixels.resize(planes);
 
@@ -259,7 +259,7 @@ public:
         if (!descriptor)
             return 0;
         return descriptor->flags;
-    };
+    }
 
     int bytesPerLine(int width, int plane) const {
         return av_image_get_linesize(pixfmt_ff, width, plane);
@@ -269,7 +269,7 @@ public:
         return av_get_pix_fmt_name(pixfmt_ff);
     }
 
-    VideoFormat::PixelFormat pixfmt;
+    VideoFormat::EPixelFormat pixfmt;
     AVPixelFormat pixfmt_ff;
     AVPixFmtDescriptor *descriptor;
 
@@ -325,7 +325,7 @@ VideoFormat::~VideoFormat() {
 
 }
 
-VideoFormat::AVPixelFormat VideoFormat::pixelFormatFromFFmpeg(int ff) {
+VideoFormat::EPixelFormat VideoFormat::pixelFormatFromFFmpeg(int ff) {
     for (int i = 0; i < sizeof(pixfmt_map) / sizeof(pixfmt_map[0]); ++i) {
         if (pixfmt_map[i].ff == ff)
             return pixfmt_map[i].fmt;
@@ -333,7 +333,7 @@ VideoFormat::AVPixelFormat VideoFormat::pixelFormatFromFFmpeg(int ff) {
     return Format_Invalid;
 }
 
-int VideoFormat::pixelFormatToFFmpeg(VideoFormat::PixelFormat fmt) {
+int VideoFormat::pixelFormatToFFmpeg(VideoFormat::EPixelFormat fmt) {
     for (int i = 0; i < sizeof(pixfmt_map) / sizeof(pixfmt_map[0]); ++i) {
         if (pixfmt_map[i].fmt == fmt)
             return pixfmt_map[i].ff;
@@ -420,7 +420,7 @@ bool VideoFormat::hasAlpha() const {
     return (d.flags() & AV_PIX_FMT_FLAG_ALPHA) == AV_PIX_FMT_FLAG_ALPHA;
 }
 
-bool VideoFormat::isPlanar(VideoFormat::AVPixelFormat pixfmt) {
+bool VideoFormat::isPlanar(EPixelFormat pixfmt) {
     return pixfmt == Format_YUV420P || pixfmt == Format_NV12 || pixfmt == Format_NV21 ||
            pixfmt == Format_YV12 || pixfmt == Format_YUV410P || pixfmt == Format_YUV411P ||
            pixfmt == Format_YUV422P || pixfmt == Format_YUV444P || pixfmt == Format_AYUV444 ||
@@ -428,7 +428,7 @@ bool VideoFormat::isPlanar(VideoFormat::AVPixelFormat pixfmt) {
            pixfmt == Format_IMC4;
 }
 
-bool VideoFormat::isRGB(VideoFormat::AVPixelFormat pixfmt) {
+bool VideoFormat::isRGB(EPixelFormat pixfmt) {
     return pixfmt == Format_RGB32 || pixfmt == Format_ARGB32 || pixfmt == Format_RGB24 ||
            pixfmt == Format_BGRA32 || pixfmt == Format_ABGR32 || pixfmt == Format_RGBA32 ||
            pixfmt == Format_BGR565 || pixfmt == Format_RGB555 || pixfmt == Format_RGB565 ||
@@ -439,7 +439,7 @@ bool VideoFormat::isRGB(VideoFormat::AVPixelFormat pixfmt) {
            pixfmt == Format_BGRA64 || pixfmt == Format_BGRA64LE || pixfmt == Format_BGRA64BE;
 }
 
-bool VideoFormat::hasAlpha(VideoFormat::AVPixelFormat pixfmt) {
+bool VideoFormat::hasAlpha(EPixelFormat pixfmt) {
     return pixfmt == Format_ABGR32 || pixfmt == Format_ARGB32 || pixfmt == Format_AYUV444;
 }
 
@@ -501,7 +501,7 @@ bool VideoFormat::isValid() const {
     return d.pixfmt != Format_Invalid && d.pixfmt_ff != AV_PIX_FMT_NONE;
 }
 
-Puff::VideoFormat::PixelFormat VideoFormat::pixelFormat() const {
+VideoFormat::EPixelFormat VideoFormat::pixelFormat() const {
     DPTR_D(const VideoFormat);
     return d.pixfmt;
 }
