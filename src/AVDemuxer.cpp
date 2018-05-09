@@ -73,7 +73,7 @@ public:
         input_format(NULL),
         format_opts(NULL),
         interruptHandler(NULL),
-        isEOF(true),
+        isEOF(false),
         stream(-1)
     {
         av_register_all();
@@ -241,6 +241,15 @@ void AVDemuxer::unload()
     }
 }
 
+bool AVDemuxer::atEnd()
+{
+    DPTR_D(AVDemuxer);
+
+    if (!d.format_ctx)
+        return true;
+    return d.isEOF;
+}
+
 bool AVDemuxer::isLoaded() const
 {
     DPTR_D(const AVDemuxer);
@@ -253,7 +262,7 @@ int AVDemuxer::stream()
     return d.stream;
 }
 
-Packet AVDemuxer::packet() const
+const Packet &AVDemuxer::packet() const
 {
     DPTR_D(const AVDemuxer);
     return d.curPkt;
@@ -288,7 +297,7 @@ int AVDemuxer::readFrame()
         return -1;
     }
 
-    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
+//    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
     av_packet_unref(&avpkt);
     d.isEOF = false;
 

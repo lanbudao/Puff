@@ -27,11 +27,12 @@ public:
     void setMedia(const String &fileName);
     bool load();
     void unload();
+    bool atEnd();
 
     bool isLoaded() const;
 
     int  stream();
-    Packet packet() const;
+    const Packet &packet() const;
     int  readFrame();
     int  videoStream();
     int  audioStream();

@@ -16,6 +16,8 @@ class PU_AV_EXPORT Packet
 public:
     Packet();
     ~Packet();
+    Packet(const Packet& other);
+    Packet &operator = (const Packet &other);
 
     const AVPacket *asAVPacket() const;
 

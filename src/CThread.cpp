@@ -33,7 +33,7 @@ void CThread::start()
     DPTR_D(CThread);
     d.running = true;
     t = new boost::thread(boost::bind(&CThread::run, this));
-    t->join();
+//    t->join();
 }
 
 void CThread::exit() {
@@ -58,7 +58,7 @@ void CThread::sleep(int second)
 
 void CThread::msleep(int ms)
 {
-    boost::this_thread::sleep(boost::posix_time::milliseconds(ms));
+//    boost::this_thread::sleep(boost::posix_time::milliseconds(ms));
 }
 
 int CThread::id() const

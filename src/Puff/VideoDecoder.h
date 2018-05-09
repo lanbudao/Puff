@@ -16,7 +16,7 @@ class PU_AV_EXPORT VideoDecoder: public AVDecoder
     DISABLE_COPY(VideoDecoder)
     DPTR_DECLARE_PRIVATE(VideoDecoder)
 public:
-    std::vector<VideoDecoderId> registered();
+    static std::vector<VideoDecoderId> registered();
     static StringList supportedCodecs();
     /**
      * @brief create

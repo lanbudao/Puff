@@ -30,6 +30,8 @@ public:
         demuxer = new AVDemuxer();
         demux_thread = new AVDemuxThread();
         demux_thread->setDemuxer(demuxer);
+
+        video_dec_ids = VideoDecoder::registered();
     }
     ~AVPlayerPrivate()
     {
@@ -56,7 +58,7 @@ public:
             video_dec = NULL;
         }
 
-        for (int i = 0; i < video_dec_ids.size(); ++i) {
+        for (size_t i = 0; i < video_dec_ids.size(); ++i) {
             VideoDecoder *dec = VideoDecoder::create(video_dec_ids.at(i));
             if (!dec)
                 continue;

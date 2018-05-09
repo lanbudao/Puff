@@ -11,6 +11,10 @@ namespace Puff {
 #define avwarnning(fmt, ...) logger.log(LogWarning, fmt, ##__VA_ARGS__)
 #define averror(fmt, ...) logger.log(LogError, fmt, ##__VA_ARGS__)
 
+/**
+ * @brief If you need to print the output to the local file, you need to
+ * call 'setLogFile' to specify the file to print.
+ */
 class AVLogPrivate;
 class PU_AV_EXPORT AVLog: public Singleton<AVLog>
 {

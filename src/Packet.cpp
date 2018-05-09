@@ -28,6 +28,33 @@ Packet::~Packet()
 
 }
 
+Packet::Packet(const Packet &other)
+{
+    dptr_d = other.dptr_d;
+    containKeyFrame = other.containKeyFrame;
+    isCorrupted = other.isCorrupted;
+    pts = other.pts;
+    duration = other.duration;
+    dts = other.dts;
+    pos = other.pos;
+    data = other.data;
+}
+
+Packet &Packet::operator =(const Packet &other)
+{
+    if (this == &other)
+        return *this;
+    dptr_d = other.dptr_d;
+    containKeyFrame = other.containKeyFrame;
+    isCorrupted = other.isCorrupted;
+    pts = other.pts;
+    duration = other.duration;
+    dts = other.dts;
+    pos = other.pos;
+    data = other.data;
+    return *this;
+}
+
 Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
 {
     Packet pkt;

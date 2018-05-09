@@ -91,6 +91,12 @@ void AVDemuxThread::run()
 
     while (!d.isEnd) {
 
+        if (d.demuxer->atEnd()) {
+            // wait for a/v thread finished
+            msleep(100);
+            continue;
+        }
+
         ret = d.demuxer->readFrame();
         if (ret < 0)
             continue;
