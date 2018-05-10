@@ -39,6 +39,14 @@ void VideoThread::run()
             pkt = d.packets.dequeue();
         }
 
+        if (pkt.isEOF()) {
+
+        } else {
+            if (!pkt.isValid()) {
+                continue;
+            }
+        }
+
         if (!dec->decode(pkt)) {
             continue;
         }

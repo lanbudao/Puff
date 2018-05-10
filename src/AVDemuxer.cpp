@@ -297,7 +297,7 @@ int AVDemuxer::readFrame()
         return -1;
     }
 
-//    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
+    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
     av_packet_unref(&avpkt);
     d.isEOF = false;
 

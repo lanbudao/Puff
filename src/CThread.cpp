@@ -1,6 +1,7 @@
 #include "CThread.h"
-#include "boost/thread.hpp"
-#include "boost/bind.hpp"
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 #include "AVLog.h"
 
 namespace Puff {
@@ -33,14 +34,17 @@ void CThread::start()
     DPTR_D(CThread);
     d.running = true;
     t = new boost::thread(boost::bind(&CThread::run, this));
-//    t->join();
 }
 
-void CThread::exit() {
+void CThread::stop() {
     DPTR_D(CThread);
     if (t) {
         t->interrupt();
+        t->join();
     }
+    avdebug("CThread::stoped\n");
+    d.running = false;
+    PU_EMIT finished();
 }
 
 void CThread::run()
@@ -58,18 +62,18 @@ void CThread::sleep(int second)
 
 void CThread::msleep(int ms)
 {
-//    boost::this_thread::sleep(boost::posix_time::milliseconds(ms));
+    boost::this_thread::sleep(boost::posix_time::milliseconds(ms));
 }
 
-int CThread::id() const
+unsigned long CThread::id() const
 {
-//    thread::id t_id = t->get_id();
-//    return t->get_id();
-    return 0;
+    String id;
+    id = boost::lexical_cast<String>(boost::this_thread::get_id());
+    return std::stoul(id, NULL, 16);;
 }
 
-bool CThread::isRunning() {
-    DPTR_D(CThread);
+bool CThread::isRunning() const {
+    DPTR_D(const CThread);
     return d.running;
 }
 

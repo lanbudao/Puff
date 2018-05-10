@@ -16,12 +16,12 @@ public:
     virtual ~CThread();
 
     void start();
-    void exit();
+    void stop();
     void sleep(int second);
     void msleep(int ms);
-    bool isRunning();
+    bool isRunning() const;
 
-    int id() const;
+    unsigned long id() const;
 
 PU_SIGNALS:
     signals2::signal<void()> finished;

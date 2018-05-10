@@ -18,7 +18,14 @@ public:
     mutable AVPacket avpkt;
 };
 
-Packet::Packet()
+Packet::Packet():
+    containKeyFrame(false),
+    isCorrupted(false),
+    pts(0),
+    dts(0),
+    duration(0),
+    pos(0),
+    size(0)
 {
 
 }

@@ -83,6 +83,7 @@ void BlockQueue<T>::enqueue(const T &t, unsigned long timeout)
     WriteLock lock(mutex);
     if (q.size() >= capacity) {
         if (block_full) {
+            printf("is full\n");
             full_cond.timed_wait(mutex, boost::get_system_time() + boost::posix_time::milliseconds(timeout));
         }
     }
