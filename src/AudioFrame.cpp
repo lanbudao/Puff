@@ -27,7 +27,7 @@ AudioFrame::~AudioFrame()
 }
 
 bool AudioFrame::isValid() const {
-    DPTR_D(AudioFrame);
+    DPTR_D(const AudioFrame);
     return d.format.isValid() && d.samples_per_channel > 0;
 }
 

@@ -32,7 +32,7 @@ public:
     bool isLoaded() const;
 
     int  stream();
-    const Packet &packet() const;
+    const Packet& packet() const;
     int  readFrame();
     int  videoStream();
     int  audioStream();

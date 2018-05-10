@@ -111,7 +111,7 @@ AVPacket *Packet::avpacket()
 
 const AVPacket *Packet::asAVPacket() const
 {
-    DPTR_D(Packet);
+    DPTR_D(const Packet);
     AVPacket *p = &d.avpkt;
     p->pts = int64_t(pts * 1000.0);
     p->dts = int64_t(dts * 1000.0);

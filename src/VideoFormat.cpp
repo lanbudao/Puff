@@ -353,7 +353,7 @@ std::vector<int> VideoFormat::pixelFormatsFFmpeg() {
 }
 
 int VideoFormat::bytesPerLine(int width, int plane) const {
-    DPTR_D(VideoFormat);
+    DPTR_D(const VideoFormat);
     return d.bytesPerLine(width, plane);
 }
 

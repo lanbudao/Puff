@@ -79,24 +79,24 @@ int64_t AudioFormat::channelLayoutToFFmpeg(AudioFormat::ChannelLayout cl) {
 }
 
 bool AudioFormat::isValid() const {
-    DPTR_D(AudioFormat);
+    DPTR_D(const AudioFormat);
     return d.sample_fmt > 0 &&
             (d.channels > 0 || d.channel_layout > 0) &&
             d.sample_fmt != AudioFormat::SampleFormat_Unknown;
 }
 
 bool AudioFormat::isFloat() const {
-    DPTR_D(AudioFormat);
+    DPTR_D(const AudioFormat);
     return !!(d.sample_fmt & kFloat);
 }
 
 bool AudioFormat::isPlanar() const {
-    DPTR_D(AudioFormat);
+    DPTR_D(const AudioFormat);
     return !!(d.sample_fmt & kPlanar);
 }
 
 bool AudioFormat::isUnsigned() const {
-    DPTR_D(AudioFormat);
+    DPTR_D(const AudioFormat);
     return !!(d.sample_fmt & kUnsigned);
 }
 

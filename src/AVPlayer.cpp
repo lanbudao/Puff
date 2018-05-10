@@ -148,7 +148,7 @@ bool AVPlayer::load()
 
 bool AVPlayer::isLoaded() const
 {
-    DPTR_D(AVPlayer);
+    DPTR_D(const AVPlayer);
     return d.loaded;
 }
 

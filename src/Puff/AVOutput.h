@@ -18,7 +18,7 @@ public:
     void pause(bool p);
     bool isPaused() const;
 
-private:
+protected:
     DPTR_DECLARE(AVOutput)
 };
 

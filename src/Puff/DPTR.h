@@ -39,10 +39,13 @@
 #include "AVGlobal.h"
 
 #define DPTR_DECLARE(Class) DptrPrivateInterface<Class, Class##Private> dptr_d;
-#define DPTR_DECLARE_PRIVATE(Class) friend class Class##Private;
+#define DPTR_DECLARE_PRIVATE(Class) \
+    inline Class##Private& d_func() { return dptr_d.pri<Class##Private>(); } \
+    inline const Class##Private& d_func() const { return dptr_d.pri<Class##Private>(); }\
+    friend class Class##Private;
 #define DPTR_DECLARE_PUBLIC(Class) friend class Class;
 #define DPTR_INIT_PRIVATE(Class) dptr_d.setPublic(this);
-#define DPTR_D(Class) /*Class##Private*/auto& d = dptr_d.pri<Class##Private>()//dptr_d()
+#define DPTR_D(Class) Class##Private& d = dptr_d.pri<Class##Private>()
 #define DPTR_P(Class) Class& p = dptr_p()
 
 template <typename PUB>
@@ -58,9 +61,9 @@ protected:
 private:
     PUB* ptr;
 };
-
+#if 0
 template <typename PUB, typename PVT>
-class PU_AV_EXPORT DptrPrivateInterface
+class DptrPrivateInterface
 {
     friend class DptrPrivate<PUB>;
 public:
@@ -76,5 +79,26 @@ public:
 private:
     DptrPrivate<PUB>* pvt;
 };
+#else
+#include "boost/shared_ptr.hpp"
+template <typename PUB, typename PVT>
+class DptrPrivateInterface
+{
+    friend class DptrPrivate<PUB>;
+    typedef boost::shared_ptr<DptrPrivate<PUB>> SharedDptrPrivate;
+public:
+    DptrPrivateInterface() { pvt = SharedDptrPrivate(new PVT); }
+    ~DptrPrivateInterface() { }
+    template <typename T>
+    inline T& pri() { return *reinterpret_cast<T*>(pvt.get()); }
+    template <typename T>
+    inline const T& pri() const { return *reinterpret_cast<T*>(pvt.get()); }
+    inline void setPublic(PUB* pub) { pvt.get()->setPublic(pub); }
+    inline PVT& operator()() { return *static_cast<PVT*>(pvt.get()); }
+    inline const PVT& operator()() const { return *static_cast<PVT*>(pvt.get()); }
+private:
+    SharedDptrPrivate pvt;
+};
+#endif
 
 #endif //PUFF_DPTR_H

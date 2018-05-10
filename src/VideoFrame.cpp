@@ -116,12 +116,12 @@ void VideoFrame::setColorRange(ColorRange range) {
 }
 
 int VideoFrame::planeWidth(int plane) const {
-    DPTR_D(VideoFrame);
+    DPTR_D(const VideoFrame);
     return d.format.width(d.width, plane);
 }
 
 int VideoFrame::planeHeight(int plane) const {
-    DPTR_D(VideoFrame);
+    DPTR_D(const VideoFrame);
     return d.format.height(d.height, plane);
 }
 

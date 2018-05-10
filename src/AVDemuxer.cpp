@@ -262,7 +262,7 @@ int AVDemuxer::stream()
     return d.stream;
 }
 
-const Packet &AVDemuxer::packet() const
+const Packet& AVDemuxer::packet() const
 {
     DPTR_D(const AVDemuxer);
     return d.curPkt;
@@ -356,7 +356,7 @@ bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
 
 AVCodecContext *AVDemuxer::audioCodecCtx(int stream) const
 {
-    DPTR_D(AVDemuxer);
+    DPTR_D(const AVDemuxer);
     if (stream < 0)
         return d.video_stream_info.codec_ctx;
     if (stream >= d.format_ctx->nb_streams)
@@ -369,7 +369,7 @@ AVCodecContext *AVDemuxer::audioCodecCtx(int stream) const
 
 AVCodecContext *AVDemuxer::videoCodecCtx(int stream) const
 {
-    DPTR_D(AVDemuxer);
+    DPTR_D(const AVDemuxer);
     if (stream < 0)
         return d.audio_stream_info.codec_ctx;
     if (stream >= d.format_ctx->nb_streams)
@@ -382,7 +382,7 @@ AVCodecContext *AVDemuxer::videoCodecCtx(int stream) const
 
 AVCodecContext *AVDemuxer::subtitleCodecCtx(int stream) const
 {
-    DPTR_D(AVDemuxer);
+    DPTR_D(const AVDemuxer);
     if (stream < 0)
         return d.subtitle_stream_info.codec_ctx;
     if (stream >= d.format_ctx->nb_streams)
