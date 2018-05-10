@@ -101,7 +101,7 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
     if (isValid)
         *isValid = false;
 
-    ReadLock lock(mutex);
+    WriteLock lock(mutex);
     if (q.empty()) {
         if (block_empty)
             empty_cond.timed_wait(mutex, boost::get_system_time() + boost::posix_time::milliseconds(timeout));

@@ -52,6 +52,8 @@ public:
     void setData(const char* data, size_t size)
     {
         if (size > 0) {
+            if (mData)
+                free(mData);
             mData = (char *) malloc(size);
             memcpy(mData, data, size);
             mSize = size;

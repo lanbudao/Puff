@@ -34,6 +34,7 @@ void CThread::start()
     DPTR_D(CThread);
     d.running = true;
     t = new boost::thread(boost::bind(&CThread::run, this));
+//    t->detach();
 }
 
 void CThread::stop() {

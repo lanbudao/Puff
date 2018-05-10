@@ -31,6 +31,7 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
     }
     d.undecoded_size = puMin(pkt.data.size() - ret, pkt.data.size());
     if (ret < 0) {
+        avwarnning("video decode error: %s", averror2str(ret));
         return false;
     }
     if (!got_picture) {

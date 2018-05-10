@@ -45,6 +45,7 @@ Packet::Packet(const Packet &other)
     dts = other.dts;
     pos = other.pos;
     data = other.data;
+    size = other.size;
 }
 
 Packet &Packet::operator =(const Packet &other)
@@ -59,6 +60,7 @@ Packet &Packet::operator =(const Packet &other)
     dts = other.dts;
     pos = other.pos;
     data = other.data;
+    size = other.size;
     return *this;
 }
 
