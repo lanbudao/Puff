@@ -15,6 +15,12 @@ public:
     virtual ~VideoRenderer();
 
     void receiveFrame(const VideoFrame &frame);
+
+    void resizeRenderer(const Size &size);
+    void resizeRenderer(int width, int height);
+
+protected:
+    virtual void onResizeRenderer(int width, int height);
 };
 
 }

@@ -13,7 +13,7 @@ namespace Puff {
 class AVPlayerPrivate;
 class PU_AV_EXPORT AVPlayer
 {
-    DPTR_DECLARE_PRIVATE(AVPlayer);
+    DPTR_DECLARE_PRIVATE(AVPlayer)
 public:
     AVPlayer();
     ~AVPlayer();
@@ -30,5 +30,5 @@ private:
     DPTR_DECLARE(AVPlayer)
 };
 
-};
+}
 #endif //PUFF_AVPLAYER_H

@@ -109,10 +109,19 @@ if (EXISTS ${FFMPEG_DIR})
     endif()
 endif()
 
+# Check SDL2 modules
+CHECK_ENV(SDL_DIR)
+if (EXISTS ${SDL_DIR})
+    list(APPEND EXTRA_INCLUDE ${SDL_DIR}/include)
+    link_directories(${SDL_DIR}/lib)
+    list(APPEND EXTRA_LIBS "SDL2" "SDL2main")
+endif()
+
 list(APPEND EXTRA_DEFS -DBUILD_PUFF_LIB -D__STDC_CONSTANT_MACROS)
 
 file(GLOB SDK_HEADERS *.h)
 file(GLOB SDK_HEADERS_PUFF Puff/*.h)
+file(GLOB SDK_HEADERS_RENDERER Puff/renderer/*.h)
 file(GLOB SDK_HEADERS_UTIL util/*.h)
 file(GLOB SDK_PRIVATE_HEADERS Puff/private/*.h)
 
@@ -122,7 +131,7 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/util SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder/video SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder/audio SOURCES)
-list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS} ${SDK_HEADERS_PUFF} ${SDK_HEADERS_UTIL})
+list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS} ${SDK_HEADERS_PUFF} ${SDK_HEADERS_UTIL} ${SDK_HEADERS_RENDERER})
 
 # Include path
 list(APPEND INCLUDE_DIR ${EXTRA_INCLUDE})
