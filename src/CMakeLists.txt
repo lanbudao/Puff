@@ -112,7 +112,7 @@ endif()
 # Check SDL2 modules
 CHECK_ENV(SDL_DIR)
 if (EXISTS ${SDL_DIR})
-    list(APPEND EXTRA_INCLUDE ${SDL_DIR}/include)
+    list(APPEND EXTRA_INCLUDE ${SDL_DIR}/include ${SDL_DIR}/include/SDL2)
     link_directories(${SDL_DIR}/lib)
     list(APPEND EXTRA_LIBS "SDL2" "SDL2main")
 endif()

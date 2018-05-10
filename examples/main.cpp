@@ -67,7 +67,6 @@ int main(int argc, char *argv[])
     logger.setLogFile("F:/log.txt");
 
     AVPlayer *player = new AVPlayer();
-
     SDLRenderer *renderer = new SDLRenderer();
     renderer->init(400, 300);
 

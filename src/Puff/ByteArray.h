@@ -39,6 +39,7 @@ public:
             return *this;
         }
         if (mSize != other.size()) {
+            mSize = other.size();
             if (mData)
                 free(mData);
             mData = (char *)malloc(other.size());
@@ -47,6 +48,15 @@ public:
         return *this;
     }
     inline bool isEmpty() const {return mSize <= 0;}
+
+    void setData(const char* data, size_t size)
+    {
+        if (size > 0) {
+            mData = (char *) malloc(size);
+            memcpy(mData, data, size);
+            mSize = size;
+        }
+    }
 
 private:
     char* mData;

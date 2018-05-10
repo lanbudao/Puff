@@ -1,6 +1,6 @@
 #include "renderer/SDLRenderer.h"
 #include "private/AVOutput_p.h"
-#include "SDL2/SDL.h"
+#include "SDL.h"
 #include "AVLog.h"
 
 namespace Puff {

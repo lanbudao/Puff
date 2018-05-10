@@ -100,7 +100,7 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
     av_packet_ref(p, packet);  //properties are copied internally
 
     pkt.size = packet->size;
-    pkt.data = ByteArray((char*)packet->data, packet->size);
+    pkt.data.setData((char*)packet->data, packet->size);
 
     return pkt;
 }
