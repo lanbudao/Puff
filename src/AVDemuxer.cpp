@@ -4,6 +4,12 @@
 #include "commpeg.h"
 #include "AVLog.h"
 
+#include "boost/thread/locks.hpp"
+#include "boost/thread/shared_mutex.hpp"
+
+typedef boost::shared_mutex Mutex;
+typedef boost::shared_lock<Mutex> ReadLock;
+
 namespace Puff {
 
 class InterruptHandler
@@ -181,6 +187,7 @@ public:
     int stream;
     Packet curPkt;
     bool isEOF;
+    Mutex mutex;
 };
 
 AVDemuxer::AVDemuxer()
@@ -205,6 +212,8 @@ bool AVDemuxer::load()
     DPTR_D(AVDemuxer);
     unload();
 
+    ReadLock lock(d.mutex);
+    PU_UNUSED(lock);
     int ret = 0;
 
     if (d.fileName.empty()) {
@@ -212,6 +221,7 @@ bool AVDemuxer::load()
     }
     if (!d.format_ctx) {
         d.format_ctx = avformat_alloc_context();
+        d.format_ctx->interrupt_callback = *(d.interruptHandler->handler());
     }
 
     /*Open Stream*/
@@ -234,6 +244,8 @@ void AVDemuxer::unload()
 {
     DPTR_D(AVDemuxer);
 
+    ReadLock lock(d.mutex);
+    PU_UNUSED(lock);
     d.resetStreams();
     if (d.format_ctx) {
         avformat_close_input(&d.format_ctx);
@@ -272,6 +284,9 @@ int AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);
 
+    ReadLock lock(d.mutex);
+    PU_UNUSED(lock);
+
     int ret = -1;
     AVPacket avpkt;
 
@@ -296,6 +311,21 @@ int AVDemuxer::readFrame()
         av_packet_unref(&avpkt);
         return -1;
     }
+
+    /*test*/
+//    if (d.stream == 0) {
+//        AVFrame *frame = av_frame_alloc();
+//        int got_frame = false;
+//        ret = avcodec_decode_video2(videoCodecCtx(), frame, &got_frame, &avpkt);
+//        int a = 0;
+//        int b = 0;
+//        a = b;
+//        av_frame_free(&frame);
+//    } else if (d.stream == 1) {
+//        int a = 0;
+//        int b = 0;
+//        a = b;
+//    }
 
     d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
     av_packet_unref(&avpkt);

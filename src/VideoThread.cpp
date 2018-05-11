@@ -48,6 +48,7 @@ void VideoThread::run()
         }
 
         if (!dec->decode(pkt)) {
+            pkt = Packet();
             continue;
         }
         frame = dec->frame();

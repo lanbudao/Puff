@@ -36,6 +36,7 @@ public:
     ByteArray& operator = (const ByteArray &other)
     {
         if (other.size() == 0) {
+            mSize = 0;
             return *this;
         }
         if (mSize != other.size()) {

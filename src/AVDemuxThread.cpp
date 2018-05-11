@@ -94,7 +94,7 @@ void AVDemuxThread::run()
         if (d.demuxer->atEnd()) {
             // wait for a/v thread finished
 //            msleep(100);
-//            continue;
+            continue;
             break;
         }
 

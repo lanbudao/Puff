@@ -4,15 +4,16 @@
 #include "AVGlobal.h"
 #include "DPTR.h"
 #include "ByteArray.h"
+#include "commpeg.h"
 
-struct AVPacket;
+//struct AVPacket;
 
 namespace Puff {
 
-class PacketPrivate;
+//class PacketPrivate;
 class PU_AV_EXPORT Packet
 {
-    DPTR_DECLARE_PRIVATE(Packet)
+//    DPTR_DECLARE_PRIVATE(Packet)
 public:
     Packet();
     ~Packet();
@@ -30,17 +31,17 @@ public:
     double pts, dts, duration;
     int64_t pos;
     ByteArray data;
-    int size;
 
     AVPacket *avpacket();
 
-private:
-    DPTR_DECLARE(Packet)
+//private:
+//    DPTR_DECLARE(Packet)
+    mutable AVPacket avpkt;
 };
 
 bool Packet::isValid() const
 {
-    return !isCorrupted && size > 0 && pts >= 0 && duration >= 0;
+    return !isCorrupted && data.size() > 0 && pts >= 0 && duration >= 0;
 }
 
 }

@@ -12,7 +12,7 @@ namespace Puff {
 class AVDemuxerPrivate;
 class PU_AV_EXPORT AVDemuxer: public CObject
 {
-    DPTR_DECLARE_PRIVATE(AVDemuxer);
+    DPTR_DECLARE_PRIVATE(AVDemuxer)
 
 public:
     AVDemuxer();
