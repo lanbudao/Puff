@@ -80,12 +80,12 @@ private:
     DptrPrivate<PUB>* pvt;
 };
 #else
-#include "boost/shared_ptr.hpp"
+#include <memory>
 template <typename PUB, typename PVT>
 class DptrPrivateInterface
 {
     friend class DptrPrivate<PUB>;
-    typedef boost::shared_ptr<DptrPrivate<PUB>> SharedDptrPrivate;
+    typedef std::shared_ptr<DptrPrivate<PUB>> SharedDptrPrivate;
 public:
     DptrPrivateInterface() { pvt = SharedDptrPrivate(new PVT); }
     ~DptrPrivateInterface() { }

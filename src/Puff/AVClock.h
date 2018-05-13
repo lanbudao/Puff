@@ -3,11 +3,8 @@
 
 #include "AVGlobal.h"
 #include "DPTR.h"
-#include "boost/asio/deadline_timer.hpp"
 
 namespace Puff {
-
-using namespace boost::asio;
 
 class AVClockPrivate;
 class AVClock

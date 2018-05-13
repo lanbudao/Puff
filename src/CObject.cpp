@@ -1,7 +1,5 @@
 #include "CObject.h"
 
-#include "boost/thread.hpp"
-#include "boost/bind.hpp"
 #include <map>
 
 namespace Puff {

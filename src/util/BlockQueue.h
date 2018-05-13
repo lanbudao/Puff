@@ -1,13 +1,20 @@
 #ifndef PUFF_BLOCKQUEUE_H
 #define PUFF_BLOCKQUEUE_H
 
-#include "boost/thread/locks.hpp"
-#include "boost/thread/shared_mutex.hpp"
-#include "boost/thread/condition.hpp"
+//#include "boost/thread/locks.hpp"
+//#include "boost/thread/shared_mutex.hpp"
+//#include "boost/thread/condition.hpp"
+
+#include "SDL_mutex.h"
 #include <queue>
 
-typedef boost::shared_mutex Mutex;
-typedef boost::unique_lock<Mutex> WriteLock;
+//typedef boost::shared_mutex Mutex;
+//typedef boost::unique_lock<Mutex> WriteLock;
+//typedef boost::shared_lock<Mutex> ReadLock;
+//typedef boost::condition Condition;
+
+typedef SDL_mutex Mutex;
+typedef SDL_LockMutex<Mutex> WriteLock;
 typedef boost::shared_lock<Mutex> ReadLock;
 typedef boost::condition Condition;
 

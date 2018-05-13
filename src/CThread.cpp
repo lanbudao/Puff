@@ -1,20 +1,34 @@
 #include "CThread.h"
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/lexical_cast.hpp>
 #include "AVLog.h"
+#include "SDL_thread.h"
 
 namespace Puff {
+
+static int running(void *context)
+{
+    CThread *thread = static_cast<CThread *>(context);
+    if (thread)
+        thread->run();
+}
+
+static void ending(unsigned code)
+{
+    CThread *thread = static_cast<CThread *>(context);
+    if (thread)
+        thread->end(code);
+}
 
 class CThreadPrivate: public DptrPrivate<CThread>
 {
 public:
-    CThreadPrivate(): running(false) {
-
+    CThreadPrivate():
+        running(false)
+    {
     }
     ~CThreadPrivate() {
 
     }
+
 
     bool running;
 };
@@ -33,8 +47,9 @@ void CThread::start()
 {
     DPTR_D(CThread);
     d.running = true;
-    t = new boost::thread(boost::bind(&CThread::run, this));
-//    t->detach();
+    thread = SDL_CreateThread(running, "", this,
+                              (pfnSDL_CurrentBeginThread)_beginthreadex,
+                              (pfnSDL_CurrentEndThread)ending);
 }
 
 void CThread::stop() {
@@ -54,6 +69,11 @@ void CThread::run()
     avdebug("CThread::finished\n");
     d.running = false;
     PU_EMIT finished();
+}
+
+void CThread::end(unsigned code)
+{
+
 }
 
 void CThread::sleep(int second)

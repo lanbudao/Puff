@@ -3,10 +3,9 @@
 
 #include "CObject.h"
 
-namespace boost {class thread;}
-
 namespace Puff {
 
+struct SDL_Thread;
 class CThreadPrivate;
 class PU_AV_EXPORT CThread: public CObject
 {
@@ -23,15 +22,12 @@ public:
 
     unsigned long id() const;
 
-PU_SIGNALS:
-    signals2::signal<void()> finished;
-
 public:
     virtual void run();
+    virtual void end(unsigned code);
 
 protected:
-    boost::thread *t;
-
+    SDL_Thread *t;
 private:
     DPTR_DECLARE(CThread)
 };

@@ -1,6 +1,6 @@
 #include "AVDecoder.h"
 #include "AVDecoder_p.h"
-#include <boost/format.hpp>
+//#include <boost/format.hpp>
 
 namespace Puff {
 
@@ -10,7 +10,8 @@ static AVCodec *findCodec(const String &name, const String &hwaccel, AVCodecID i
     if (fullName.empty()) {
         if (hwaccel.empty())
             return avcodec_find_decoder(id);
-        fullName = boost::str(boost::format("%s_%s") % avcodec_get_name(id) % hwaccel);
+//        sprintf(fullName, "%s_%s", avcodec_get_name(id), hwaccel);
+//        fullName = boost::str(boost::format("%s_%s") % avcodec_get_name(id) % hwaccel);
     }
     AVCodec *codec = avcodec_find_decoder_by_name(fullName.c_str());
     if (!codec)

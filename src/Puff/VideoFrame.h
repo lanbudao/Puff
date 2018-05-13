@@ -5,8 +5,6 @@
 #include "Frame.h"
 #include "Size.h"
 
-#include <boost/range/size.hpp>
-
 namespace Puff {
 
 class VideoFramePrivate;
