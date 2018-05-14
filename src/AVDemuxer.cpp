@@ -308,19 +308,19 @@ int AVDemuxer::readFrame()
     }
 
     /*test*/
-    if (d.stream == 0) {
-        AVFrame *frame = av_frame_alloc();
-        int got_frame = false;
-        ret = avcodec_decode_video2(videoCodecCtx(), frame, &got_frame, &avpkt);
-        int a = 0;
-        int b = 0;
-        a = b;
-        av_frame_free(&frame);
-    } else if (d.stream == 1) {
-        int a = 0;
-        int b = 0;
-        a = b;
-    }
+//    if (d.stream == 0) {
+//        AVFrame *frame = av_frame_alloc();
+//        int got_frame = false;
+//        ret = avcodec_decode_video2(videoCodecCtx(), frame, &got_frame, &avpkt);
+//        int a = 0;
+//        int b = 0;
+//        a = b;
+//        av_frame_free(&frame);
+//    } else if (d.stream == 1) {
+//        int a = 0;
+//        int b = 0;
+//        a = b;
+//    }
 
     d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
     av_packet_unref(&avpkt);
@@ -383,11 +383,11 @@ AVCodecContext *AVDemuxer::audioCodecCtx(int stream) const
 {
     DPTR_D(const AVDemuxer);
     if (stream < 0)
-        return d.video_stream_info.codec_ctx;
+        return d.audio_stream_info.codec_ctx;
     if (stream >= d.format_ctx->nb_streams)
         return NULL;
     AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
-    if (ctx->codec_type == AVMEDIA_TYPE_VIDEO)
+    if (ctx->codec_type == AVMEDIA_TYPE_AUDIO)
         return ctx;
     return NULL;
 }
@@ -396,11 +396,11 @@ AVCodecContext *AVDemuxer::videoCodecCtx(int stream) const
 {
     DPTR_D(const AVDemuxer);
     if (stream < 0)
-        return d.audio_stream_info.codec_ctx;
+        return d.video_stream_info.codec_ctx;
     if (stream >= d.format_ctx->nb_streams)
         return NULL;
     AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
-    if (ctx->codec_type == AVMEDIA_TYPE_AUDIO)
+    if (ctx->codec_type == AVMEDIA_TYPE_VIDEO)
         return ctx;
     return NULL;
 }

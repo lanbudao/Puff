@@ -15,12 +15,19 @@ public:
         codec_ctx(NULL),
         dict(NULL),
         opened(false),
-        undecoded_size(0)
+        undecoded_size(0),
+        frame(NULL)
     {
+        avcodec_register_all();
         codec_ctx = avcodec_alloc_context3(NULL);
+        frame = av_frame_alloc();
     }
     ~AVDecoderPrivate()
     {
+        if (frame) {
+            av_frame_free(&frame);
+            frame = NULL;
+        }
         if (dict)
             av_dict_free(&dict);
         avcodec_free_context(&codec_ctx);
@@ -40,6 +47,7 @@ public:
     std::hash<std::string> options;
     AVDictionary *dict;
     int undecoded_size;
+    AVFrame *frame;
 };
 
 class VideoDecoderPrivate: public AVDecoderPrivate
@@ -55,18 +63,11 @@ extern ColorRange colorRangeFromFFmpeg(AVColorRange range);
 class VideoDecoderFFmpegBasePrivate: public VideoDecoderPrivate
 {
 public:
-    VideoDecoderFFmpegBasePrivate():
-            frame(NULL)
+    VideoDecoderFFmpegBasePrivate()
     {
-        avcodec_register_all();
-        frame = av_frame_alloc();
     }
     ~VideoDecoderFFmpegBasePrivate()
     {
-        if (frame) {
-            av_frame_free(&frame);
-            frame = NULL;
-        }
     }
 
     void setColorDetails(VideoFrame &f)
@@ -143,7 +144,6 @@ public:
         return dar;
     }
 
-    AVFrame *frame;
 };
 
 class AudioDecoderPrivate: public AVDecoderPrivate
