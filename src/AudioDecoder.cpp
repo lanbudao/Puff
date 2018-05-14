@@ -1,14 +1,20 @@
 #include "AudioDecoder.h"
 #include "AVDecoder_p.h"
+#include "Factory.h"
 
 namespace Puff {
 
-class AudioDecoderPrivate: public AVDecoderPrivate
+FACTORY_DEFINE(AudioDecoder)
+
+static void AudioDecoder_RegisterAll()
 {
-public:
-    AudioDecoderPrivate() {}
-    ~AudioDecoderPrivate() {}
-};
+    ONLY_RUN_ONES;
+    if (AudioDecoder::name(AudioDecoderId_FFmpeg)) {
+        return;
+    }
+    extern bool RegisterAudioDecoderFFmpeg_Man();
+    RegisterAudioDecoderFFmpeg_Man();
+}
 
 AudioDecoder::AudioDecoder()
 {

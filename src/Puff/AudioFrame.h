@@ -11,7 +11,7 @@ class PU_AV_EXPORT AudioFrame: public Frame
 {
     DPTR_DECLARE_PRIVATE(AudioFrame)
 public:
-    AudioFrame();
+    AudioFrame(const AudioFormat &format = AudioFormat(), const ByteArray& data = ByteArray());
     virtual ~AudioFrame();
 
     bool isValid() const;
@@ -24,11 +24,7 @@ public:
 
     int samplePerChannel() const;
     void setSamplePerChannel(int channel);
-
-private:
-
 };
-
 
 }
 #endif //PUFF_AUDIOFRAME_H

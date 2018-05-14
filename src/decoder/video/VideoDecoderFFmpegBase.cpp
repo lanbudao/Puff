@@ -50,7 +50,7 @@ VideoFrame VideoDecoderFFmpegBase::frame()
         return VideoFrame();
     VideoFrame frame(d.frame->width, d.frame->height, VideoFormat(d.codec_ctx->pix_fmt));
     frame.setDisplayAspectRatio(d.getDisplayAspectRatio(d.frame));
-    frame.setBits((int8_t**)d.frame->data);
+    frame.setBits(d.frame->data);
     frame.setBytesPerLine(d.frame->linesize);
     frame.setTimestamp((double)d.frame->pts / 1000.0);
     d.setColorDetails(frame);

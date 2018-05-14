@@ -2,6 +2,7 @@
 #define PUFF_AUDIOFORMAT_H
 
 #include "AVGlobal.h"
+#include "ByteArray.h"
 #include "DPTR.h"
 
 namespace Puff {
@@ -63,6 +64,8 @@ public:
     inline SampleFormat toPlanar(SampleFormat format) {return isPlanar(format) ? format : SampleFormat((int)format | kPlanar);}
     inline SampleFormat toPacked(SampleFormat format) {return isPlanar(format) ? SampleFormat((int)format ^ kPlanar) : format;}
 
+    static AudioFormat::SampleFormat sampleFormatFromFFmpeg(int fffmt);
+    static int sampleFormatToFFmpeg(AudioFormat::SampleFormat fmt);
     static ChannelLayout channelLayoutFromFFmpeg(int64_t clff);
     static int64_t channelLayoutToFFmpeg(ChannelLayout cl);
 
@@ -83,6 +86,16 @@ public:
     int bytesPerFrame() const;
 
     int64_t durationForBytes(int64_t bytes);
+
+    void setSampleFormat(SampleFormat sampleFormat);
+    SampleFormat sampleFormat() const;
+    void setSampleFormatFFmpeg(int ffSampleFormat);
+    int sampleFormatFFmpeg() const;
+
+    void setChannelLayoutFFmpeg(int64_t layout);
+    int64_t channelLayoutFFmpeg() const;
+    void setChannelLayout(ChannelLayout layout);
+    ChannelLayout channelLayout() const;
 
 private:
     DPTR_DECLARE(AudioFormat)

@@ -15,6 +15,25 @@ static const struct {
         { 0, AudioFormat::ChannelLayout_Unsupported}
 };
 
+typedef struct {
+    AVSampleFormat avfmt;
+    AudioFormat::SampleFormat fmt;
+    const char* name;
+} sample_fmt_entry;
+static const sample_fmt_entry samplefmts[] = {
+    { AV_SAMPLE_FMT_U8, AudioFormat::SampleFormat_Unsigned8, "u8" },
+    { AV_SAMPLE_FMT_S16, AudioFormat::SampleFormat_Signed16, "s16" },
+    { AV_SAMPLE_FMT_S32, AudioFormat::SampleFormat_Signed32, "s32" },
+    { AV_SAMPLE_FMT_FLT, AudioFormat::SampleFormat_Float, "float" },
+    { AV_SAMPLE_FMT_DBL, AudioFormat::SampleFormat_Double, "double" },
+    { AV_SAMPLE_FMT_U8P, AudioFormat::SampleFormat_Unsigned8Planar, "u8p" },
+    { AV_SAMPLE_FMT_S16P, AudioFormat::SampleFormat_Signed16Planar, "s16p" },
+    { AV_SAMPLE_FMT_S32P, AudioFormat::SampleFormat_Signed32Planar, "s32p" },
+    { AV_SAMPLE_FMT_FLTP, AudioFormat::SampleFormat_FloatPlanar, "floatp" },
+    { AV_SAMPLE_FMT_DBLP, AudioFormat::SampleFormat_DoublePlanar, "doublep" },
+    { AV_SAMPLE_FMT_NONE, AudioFormat::SampleFormat_Unknown, "unknown" }
+};
+
 class AudioFormatPrivate: public DptrPrivate<AudioFormat>
 {
 public:
@@ -60,6 +79,24 @@ AudioFormat::AudioFormat() {
 
 AudioFormat::~AudioFormat() {
 
+}
+
+AudioFormat::SampleFormat AudioFormat::sampleFormatFromFFmpeg(int fffmt)
+{
+    for (int i = 0; samplefmts[i].fmt != AudioFormat::SampleFormat_Unknown; ++i) {
+        if ((int)samplefmts[i].avfmt == fffmt)
+            return samplefmts[i].fmt;
+    }
+    return AudioFormat::SampleFormat_Unknown;
+}
+
+int AudioFormat::sampleFormatToFFmpeg(AudioFormat::SampleFormat fmt)
+{
+    for (int i = 0; samplefmts[i].fmt != AudioFormat::SampleFormat_Unknown; ++i) {
+        if (samplefmts[i].fmt == fmt)
+            return (int)samplefmts[i].avfmt;
+    }
+    return (int)AV_SAMPLE_FMT_NONE;
 }
 
 AudioFormat::ChannelLayout AudioFormat::channelLayoutFromFFmpeg(int64_t clff) {
@@ -126,6 +163,58 @@ int64_t AudioFormat::durationForBytes(int64_t bytes) {
     if (!isValid() || bytes <= 0)
         return 0;
     return int64_t(kHz * (bytes / bytesPerFrame())) / sampleRate();
+}
+
+void AudioFormat::setSampleFormat(AudioFormat::SampleFormat sampleFormat)
+{
+    DPTR_D(AudioFormat);
+    d.sample_fmt = sampleFormat;
+    d.av_sample_fmt = (AVSampleFormat)AudioFormat::sampleFormatToFFmpeg(sampleFormat);
+}
+
+AudioFormat::SampleFormat AudioFormat::sampleFormat() const
+{
+    DPTR_D(const AudioFormat);
+    return d.sample_fmt;
+}
+
+void AudioFormat::setSampleFormatFFmpeg(int ffSampleFormat)
+{
+    DPTR_D(AudioFormat);
+    d.av_sample_fmt = (AVSampleFormat)ffSampleFormat;
+    d.sample_fmt = AudioFormat::sampleFormatFromFFmpeg(ffSampleFormat);
+}
+
+int AudioFormat::sampleFormatFFmpeg() const
+{
+    DPTR_D(const AudioFormat);
+    return d.av_sample_fmt;
+}
+
+void AudioFormat::setChannelLayoutFFmpeg(int64_t layout)
+{
+    DPTR_D(AudioFormat);
+    d.channel_layout_ff = layout;
+    d.channel_layout = AudioFormat::channelLayoutFromFFmpeg(layout);
+}
+
+int64_t AudioFormat::channelLayoutFFmpeg() const
+{
+    DPTR_D(const AudioFormat);
+    return d.channel_layout_ff;
+}
+
+void AudioFormat::setChannelLayout(AudioFormat::ChannelLayout layout)
+{
+    DPTR_D(AudioFormat);
+    d.channel_layout = layout;
+    d.channel_layout_ff = AudioFormat::channelLayoutToFFmpeg(layout);
+}
+
+AudioFormat::ChannelLayout AudioFormat::channelLayout() const
+{
+    DPTR_D(const AudioFormat);
+    return d.channel_layout;
 }
 
 int AudioFormat::sampleRate() const {

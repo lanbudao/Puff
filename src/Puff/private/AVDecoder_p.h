@@ -14,7 +14,8 @@ public:
     AVDecoderPrivate():
         codec_ctx(NULL),
         dict(NULL),
-        opened(false)
+        opened(false),
+        undecoded_size(0)
     {
         codec_ctx = avcodec_alloc_context3(NULL);
     }
@@ -38,6 +39,7 @@ public:
     std::string hwaccel;
     std::hash<std::string> options;
     AVDictionary *dict;
+    int undecoded_size;
 };
 
 class VideoDecoderPrivate: public AVDecoderPrivate
@@ -54,8 +56,7 @@ class VideoDecoderFFmpegBasePrivate: public VideoDecoderPrivate
 {
 public:
     VideoDecoderFFmpegBasePrivate():
-            frame(NULL),
-            undecoded_size(0)
+            frame(NULL)
     {
         avcodec_register_all();
         frame = av_frame_alloc();
@@ -143,7 +144,17 @@ public:
     }
 
     AVFrame *frame;
-    int undecoded_size;
+};
+
+class AudioDecoderPrivate: public AVDecoderPrivate
+{
+public:
+    AudioDecoderPrivate()
+    {
+    }
+    ~AudioDecoderPrivate()
+    {
+    }
 };
 
 }

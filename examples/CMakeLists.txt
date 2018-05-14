@@ -14,7 +14,6 @@ set(PROJECT_VERSION ${PLAYER_MAJOR}.${PLAYER_MINOR}.${PLAYER_PATCH})
 #    message(STATUS "optional:-std=c++11")
 #endif(CMAKE_COMPILER_IS_GNUCXX)
 
-set(BOOST_DIR "")
 set(FFMPEG_DIR "")
 set(SDL_DIR "")
 function(CHECK_ENV arg)
@@ -28,14 +27,13 @@ function(CHECK_ENV arg)
         endif()
     endif()
 endfunction ()
-CHECK_ENV(BOOST_DIR)
 CHECK_ENV(FFMPEG_DIR)
 CHECK_ENV(SDL_DIR)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
-link_directories(${BOOST_DIR}/stage/lib ${FFMPEG_DIR}/lib ${SDL_DIR}/lib)
-include_directories(${BOOST_DIR} ${BOOST_DIR}/boost ${FFMPEG_DIR}/include ${CMAKE_SOURCE_DIR}/src/Puff)
+link_directories(${FFMPEG_DIR}/lib ${SDL_DIR}/lib)
+include_directories(${FFMPEG_DIR}/include ${CMAKE_SOURCE_DIR}/src/Puff)
 
 aux_source_directory(. DIR_SRCS)
 

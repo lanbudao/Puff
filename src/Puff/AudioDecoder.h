@@ -2,9 +2,12 @@
 #define PUFF_AUDIODECODER_H
 
 #include "AVDecoder.h"
+#include "AudioFrame.h"
+#include "Packet.h"
 
 namespace Puff {
 
+typedef int AudioDecoderId;
 class AudioDecoderPrivate;
 class PU_AV_EXPORT AudioDecoder: public AVDecoder
 {
@@ -18,9 +21,38 @@ public:
     virtual std::string name() const;
     virtual std::string description() const;
 
+    static AudioDecoder * create(const char *name = "FFmpeg");
+    static AudioDecoder* create(AudioDecoderId id);
+
+    virtual AudioDecoderId id() const = 0;
+
+    virtual AudioFrame frame() = 0;
+
+    template<class T>
+    static bool Register(AudioDecoderId id, const char *name) { return Register(id, create<T>, name); }
+
+    /**
+     * @brief next
+     * @param id NULL to get the first id address
+     * @return address of id or NULL if not found/end
+     */
+    static AudioDecoderId* next(AudioDecoderId* id = 0);
+    static const char* name(AudioDecoderId id);
+    static AudioDecoderId id(const char* name);
+
+    virtual bool decode(const Packet& packet) = 0;
+
 private:
+    template<class T>
+    static AudioDecoder * create() { return new T(); }
+    typedef AudioDecoder* (*AudioDecoderCreator)();
+
+protected:
+    static bool Register(AudioDecoderId id, AudioDecoderCreator, const char *name);
 
 };
+
+extern AudioDecoderId AudioDecoderId_FFmpeg;
 
 }
 #endif //PUFF_AUDIODECODER_H

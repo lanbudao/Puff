@@ -52,7 +52,7 @@ public:
 
     void setBits(uchar *b, int plane = 0);
     void setBits(const std::vector<uchar *> &bits);
-    void setBits(int8_t *slice[]);
+    void setBits(uchar *slice[]);
 
     void setBytesPerLine(int lineSize, int plane);
     void setBytesPerLine(int stride[]);

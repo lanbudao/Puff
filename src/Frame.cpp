@@ -80,10 +80,10 @@ void Frame::setBits(const vector<uchar *> &bits) {
     }
 }
 
-void Frame::setBits(int8_t *slice[]) {
+void Frame::setBits(uchar *slice[]) {
     DPTR_D(Frame);
     for (int i = 0; i < planeCount(); ++i) {
-        setBits((uchar *)slice[i], i);
+        setBits(slice[i], i);
     }
 }
 
