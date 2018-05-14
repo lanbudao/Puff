@@ -15,8 +15,8 @@ public:
 
     static StringList supportedCodecs();
 
-    virtual String name() const;
-    virtual String description() const;
+    virtual std::string name() const;
+    virtual std::string description() const;
 
 private:
 

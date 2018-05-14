@@ -3,6 +3,7 @@
 #include "AudioThread.h"
 #include "VideoThread.h"
 #include "PacketQueue.h"
+#include "AVLog.h"
 
 namespace Puff {
 
@@ -71,6 +72,7 @@ void AVDemuxThread::run()
     Packet pkt;
     int ret = -1;
 
+    avdebug("demux thread id:%d.\n", id());
     if (d.audio_thread && !d.audio_thread->isRunning()) {
         d.audio_thread->start();
     }
@@ -93,9 +95,8 @@ void AVDemuxThread::run()
 
         if (d.demuxer->atEnd()) {
             // wait for a/v thread finished
-//            msleep(100);
+            msleep(100);
             continue;
-            break;
         }
 
         ret = d.demuxer->readFrame();

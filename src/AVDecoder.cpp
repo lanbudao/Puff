@@ -4,9 +4,9 @@
 
 namespace Puff {
 
-static AVCodec *findCodec(const String &name, const String &hwaccel, AVCodecID id)
+static AVCodec *findCodec(const std::string &name, const std::string &hwaccel, AVCodecID id)
 {
-    String fullName(name);
+    std::string fullName(name);
     if (fullName.empty()) {
         if (hwaccel.empty())
             return avcodec_find_decoder(id);
@@ -84,7 +84,7 @@ void AVDecoder::flush()
     d.flush();
 }
 
-void AVDecoder::setCodecName(const String &name)
+void AVDecoder::setCodecName(const std::string &name)
 {
     DPTR_D(AVDecoder);
 
@@ -93,7 +93,7 @@ void AVDecoder::setCodecName(const String &name)
     d.codec_name = name;
 }
 
-String AVDecoder::codecName() const
+std::string AVDecoder::codecName() const
 {
     DPTR_D(const AVDecoder);
     return d.codec_name;

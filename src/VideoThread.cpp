@@ -1,6 +1,7 @@
 #include "VideoThread.h"
 #include "AVThread_p.h"
 #include "VideoDecoder.h"
+#include "AVLog.h"
 
 namespace Puff {
 
@@ -28,6 +29,7 @@ void VideoThread::run()
 {
     DPTR_D(VideoThread);
 
+    avdebug("video thread id:%d.\n", id());
     auto *dec = dynamic_cast<VideoDecoder *>(d.decoder);
 
     Packet pkt;

@@ -51,7 +51,7 @@ bool CMutex::readLock()
     if (SDL_LockMutex(d.mutex) != 0) {
         return false;
     }
-    if (d.readerCount++ == 1) {
+    if (++d.readerCount == 1) {
         if (SDL_SemWait(d.sem) != 0) {
             SDL_UnlockMutex(d.mutex);
             return false;
@@ -68,7 +68,7 @@ bool CMutex::readUnlock()
     if (SDL_LockMutex(d.mutex) != 0) {
         return false;
     }
-    if (d.readerCount-- == 0) {
+    if (--d.readerCount == 0) {
         if (SDL_SemPost(d.sem) != 0) {
             SDL_UnlockMutex(d.mutex);
             return false;
@@ -81,17 +81,102 @@ bool CMutex::readUnlock()
 bool CMutex::writeLock()
 {
     DPTR_D(CMutex);
-    if (SDL_SemWait(d.sem) != 0)
+    if (SDL_LockMutex(d.mutex) != 0)
         return false;
+//    if (SDL_SemWait(d.sem) != 0)
+//        return false;
     return true;
 }
 
 bool CMutex::writeUnlock()
 {
     DPTR_D(CMutex);
-    if (SDL_SemPost(d.sem) != 0)
+    if (SDL_UnlockMutex(d.mutex) != 0)
         return false;
+//    if (SDL_SemPost(d.sem) != 0)
+//        return false;
     return true;
+}
+
+SDL_mutex *CMutex::mutex()
+{
+    DPTR_D(CMutex);
+    return d.mutex;
+}
+
+
+class CConditionPrivate: public DptrPrivate<CCondition>
+{
+public:
+    CConditionPrivate():
+        cond(NULL)
+    {
+        cond = SDL_CreateCond();
+    }
+    ~CConditionPrivate()
+    {
+        SDL_DestroyCond(cond);
+    }
+
+    SDL_cond *cond;
+};
+
+CCondition::CCondition()
+{
+
+}
+
+CCondition::~CCondition()
+{
+
+}
+
+void CCondition::notifyOne()
+{
+    DPTR_D(CCondition);
+    SDL_CondSignal(d.cond);
+}
+
+void CCondition::notifyAll()
+{
+    DPTR_D(CCondition);
+    SDL_CondBroadcast(d.cond);
+}
+
+void CCondition::timeWait(CMutex *mutex, int timeout)
+{
+    DPTR_D(CCondition);
+    SDL_CondWaitTimeout(d.cond, mutex->mutex(), timeout);
+}
+
+WriteLock::WriteLock(CMutex *mtx)
+{
+    mutex = mtx;
+    if (mutex) {
+        mutex->writeLock();
+    }
+}
+
+WriteLock::~WriteLock()
+{
+    if (mutex) {
+        mutex->writeUnlock();
+    }
+}
+
+ReadLock::ReadLock(CMutex *mtx)
+{
+    mutex = mtx;
+    if (mutex) {
+        mutex->readLock();
+    }
+}
+
+ReadLock::~ReadLock()
+{
+    if (mutex) {
+        mutex->readUnlock();
+    }
 }
 
 }

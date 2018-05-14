@@ -1,17 +1,16 @@
 #include "VideoDecoder.h"
 #include "AVDecoder_p.h"
 #include "Factory.h"
-#include "boost/functional/hash.hpp"
+#include "mkid.h"
 
 namespace Puff {
 
 FACTORY_DEFINE(VideoDecoder)
 
-boost::hash<String> hashId;
-VideoDecoderId VideoDecoderId_FFmpeg = (int)hashId("FFmpeg");
-VideoDecoderId VideoDecoderId_MMAL = (int)hashId("FFMMAL");
-VideoDecoderId VideoDecoderId_QSV = (int)hashId("FFQSV");
-VideoDecoderId VideoDecoderId_CrystalHD = (int)hashId("FFCHD");
+VideoDecoderId VideoDecoderId_FFmpeg = mkid::id32base36_6<'F', 'F', 'm', 'p', 'e', 'g'>::value;
+VideoDecoderId VideoDecoderId_MMAL = mkid::id32base36_6<'F', 'F', 'M', 'M', 'A', 'L'>::value;
+VideoDecoderId VideoDecoderId_QSV = mkid::id32base36_5<'F', 'F', 'Q', 'S', 'V'>::value;
+VideoDecoderId VideoDecoderId_CrystalHD = mkid::id32base36_5<'F', 'F', 'C', 'H', 'D'>::value;
 
 static void VideoDecoder_RegisterAll()
 {
@@ -49,12 +48,12 @@ StringList VideoDecoder::supportedCodecs()
     return codecs;
 }
 
-String VideoDecoder::name() const {
-    return String();
+std::string VideoDecoder::name() const {
+    return std::string();
 }
 
-String VideoDecoder::description() const {
-    return String();
+std::string VideoDecoder::description() const {
+    return std::string();
 }
 
 }

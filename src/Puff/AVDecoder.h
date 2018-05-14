@@ -17,8 +17,8 @@ public:
 
     AVCodecContext * codecCtx();
 
-    virtual String name() const = 0;
-    virtual String description() const = 0;
+    virtual std::string name() const = 0;
+    virtual std::string description() const = 0;
 
     virtual bool open();
     virtual bool close();
@@ -26,8 +26,8 @@ public:
     bool isOpen();
     void flush();
 
-    void setCodecName(const String &name);
-    String codecName() const;
+    void setCodecName(const std::string &name);
+    std::string codecName() const;
 
     bool isAvailable() const;
 

@@ -3,9 +3,10 @@
 
 #include "CObject.h"
 
+struct SDL_Thread;
+
 namespace Puff {
 
-struct SDL_Thread;
 class CThreadPrivate;
 class PU_AV_EXPORT CThread: public CObject
 {
@@ -24,7 +25,7 @@ public:
 
 public:
     virtual void run();
-    virtual void end(unsigned code);
+    virtual void stoped();
 
 protected:
     SDL_Thread *t;

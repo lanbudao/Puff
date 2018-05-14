@@ -1,22 +1,8 @@
 #ifndef PUFF_BLOCKQUEUE_H
 #define PUFF_BLOCKQUEUE_H
 
-//#include "boost/thread/locks.hpp"
-//#include "boost/thread/shared_mutex.hpp"
-//#include "boost/thread/condition.hpp"
-
-#include "SDL_mutex.h"
 #include <queue>
-
-//typedef boost::shared_mutex Mutex;
-//typedef boost::unique_lock<Mutex> WriteLock;
-//typedef boost::shared_lock<Mutex> ReadLock;
-//typedef boost::condition Condition;
-
-typedef SDL_mutex Mutex;
-typedef SDL_LockMutex<Mutex> WriteLock;
-typedef boost::shared_lock<Mutex> ReadLock;
-typedef boost::condition Condition;
+#include "CMutex.h"
 
 namespace Puff {
 
@@ -56,8 +42,8 @@ protected:
     std::queue<T> q;
 
     /*Must be mutable*/
-    mutable Mutex mutex, lock_change_mutex;
-    Condition empty_cond, full_cond;
+    mutable CMutex mutex, lock_change_mutex;
+    CCondition empty_cond, full_cond;
     int capacity, threshold;
     bool block_full, block_empty;
 };
@@ -75,8 +61,9 @@ BlockQueue<T>::BlockQueue():
 template<typename T>
 void BlockQueue<T>::clear()
 {
-    WriteLock lock(mutex);
-    full_cond.notify_all();
+    WriteLock lock(&mutex);
+    (void)lock;
+    full_cond.notifyAll();
 
     /*Clear the queue*/
     std::queue<T> null;
@@ -87,18 +74,18 @@ void BlockQueue<T>::clear()
 template<typename T>
 void BlockQueue<T>::enqueue(const T &t, unsigned long timeout)
 {
-    WriteLock lock(mutex);
-    if (q.size() >= capacity) {
+    WriteLock lock(&mutex);
+    (void)lock;
+    if (q.size() >= (unsigned int)capacity) {
         if (block_full) {
-            printf("is full\n");
-            full_cond.timed_wait(mutex, boost::get_system_time() + boost::posix_time::milliseconds(timeout));
+            full_cond.timeWait(&mutex, timeout);
         }
     }
     q.push(t);
     onEnqueue(t);
 
-    if (q.size() >= threshold && !q.empty()) {
-        empty_cond.notify_one();
+    if (q.size() >= (unsigned int)threshold && !q.empty()) {
+        empty_cond.notifyOne();
     }
 }
 
@@ -108,17 +95,18 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
     if (isValid)
         *isValid = false;
 
-    WriteLock lock(mutex);
+    WriteLock lock(&mutex);
+    (void)lock;
     if (q.empty()) {
         if (block_empty)
-            empty_cond.timed_wait(mutex, boost::get_system_time() + boost::posix_time::milliseconds(timeout));
+            empty_cond.timeWait(&mutex, timeout);
     }
     if (q.empty())
         return T();
 
     T t = q.front();
     q.pop();
-    full_cond.notify_one();
+    full_cond.notifyOne();
     onDequeue(t);
 
     if (isValid)
@@ -129,11 +117,12 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
 template<typename T>
 void BlockQueue<T>::setBlock(bool block)
 {
-    WriteLock lock(mutex);
+    WriteLock lock(&mutex);
+    (void)lock;
     block_full = block_empty = block;
     if (!block) {
-        full_cond.notify_all();
-        empty_cond.notify_all();
+        full_cond.notifyAll();
+        empty_cond.notifyAll();
     }
 }
 
@@ -149,25 +138,28 @@ void BlockQueue<T>::setThreshold(int thr) {
 
 template<typename T>
 bool BlockQueue<T>::isFull() const {
-    ReadLock lock(mutex);
+    ReadLock lock(&mutex);
+    (void)lock;
     return q.size() >= capacity;
 }
 
 template<typename T>
 bool BlockQueue<T>::isEmpty() const {
-    ReadLock lock(mutex);
+    ReadLock lock(&mutex);
+    (void)lock;
     return q.empty();
 }
 
 template<typename T>
 bool BlockQueue<T>::isEnough() const {
-    ReadLock lock(mutex);
-    return q.size() >= threshold;
+    ReadLock lock(&mutex);
+    (void)lock;
+    return q.size() >= (unsigned int)threshold;
 }
 
 template<typename T>
 bool BlockQueue<T>::checkFull() const {
-    return q.size() >= capacity;
+    return q.size() >= (unsigned int)capacity;
 }
 
 template<typename T>
@@ -177,22 +169,24 @@ bool BlockQueue<T>::checkEmpty() const {
 
 template<typename T>
 bool BlockQueue<T>::checkEnough() const {
-    return q.size() >= threshold && !q.empty();
+    return q.size() >= (unsigned int)threshold && !q.empty();
 }
 
 template<typename T>
 void BlockQueue<T>::blockEmpty(bool block) {
     if (!block)
-        empty_cond.notify_all();
+        empty_cond.notifyAll();
     WriteLock lock(lock_change_mutex);
+    (void)lock;
     block_empty = block;
 }
 
 template<typename T>
 void BlockQueue<T>::blockFull(bool block) {
     if (!block)
-        full_cond.notify_all();
-    WriteLock lock(lock_change_mutex);
+        full_cond.notifyAll();
+    WriteLock lock(&lock_change_mutex);
+    (void)lock;
     block_full = block;
 }
 

@@ -2,7 +2,7 @@
 #include "Factory.h"
 #include "AVDecoder_p.h"
 #include "commpeg.h"
-#include <boost/format.hpp>
+#include "util.h"
 
 namespace Puff {
 
@@ -64,10 +64,10 @@ public:
         setProperty("detail_skip_idct", ("Force skipping of idct to speed up decoding for frame types (-1=None, "
                                            "0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames)"));
         setProperty("detail_skip_frame", ("Force skipping frames for speed up decoding."));
-        setProperty("detail_threads", boost::str(boost::format("%s\n%s\n%s\n")
-                % ("Number of decoding threads. Set before open. Maybe no effect for some decoders")
-                % ("0: auto")
-                % ("1: single thread decoding")));
+        setProperty("detail_threads", format("%s\n%s\n%s\n",
+                "Number of decoding threads. Set before open. Maybe no effect for some decoders",
+                "0: auto",
+                "1: single thread decoding"));
     }
     ~VideoDecoderFFmpeg()
     {
@@ -98,7 +98,7 @@ public:
     }
 
     VideoDecoderId id() const PU_DECL_OVERRIDE;
-    String description() const PU_DECL_OVERRIDE;
+    std::string description() const PU_DECL_OVERRIDE;
 
     void setSkipLoopFilter(DiscardType value);
     DiscardType skipLoopFilter() const;
@@ -116,8 +116,8 @@ public:
     MotionVectorVisFlag motionVectorVisFlags() const;
     void setBugFlags(BugFlag value);
     BugFlag bugFlags() const;
-    void setHwaccel(const String& value);
-    String hwaccel() const;
+    void setHwaccel(const std::string& value);
+    std::string hwaccel() const;
 };
 
 extern VideoDecoderId VideoDecoderId_FFmpeg;
@@ -175,7 +175,7 @@ public:
     int threads;
     int vismv;
     int bug;
-    String hwa;
+    std::string hwa;
 };
 
 VideoDecoderId VideoDecoderFFmpeg::id() const
@@ -190,14 +190,14 @@ VideoDecoderId VideoDecoderFFmpeg::id() const
     return VideoDecoderId_FFmpeg;
 }
 
-String VideoDecoderFFmpeg::description() const
+std::string VideoDecoderFFmpeg::description() const
 {
     const int patch = PUFF_VERSION_PATCH((int)avcodec_version());
-    return boost::str(boost::format("%s avcodec %d.%d.%d")
-            % (patch >= 100 ? "FFmpeg" : "Libav")
-            % (PUFF_VERSION_MAJOR((int)avcodec_version()))
-            % (PUFF_VERSION_MINOR((int)avcodec_version()))
-            % patch);
+    return format("%s avcodec %d.%d.%d",
+            (patch >= 100 ? "FFmpeg" : "Libav"),
+            (PUFF_VERSION_MAJOR((int)avcodec_version())),
+            (PUFF_VERSION_MINOR((int)avcodec_version())),
+            patch);
 }
 
 void VideoDecoderFFmpeg::setSkipLoopFilter(VideoDecoderFFmpeg::DiscardType value) {
@@ -296,12 +296,12 @@ VideoDecoderFFmpeg::BugFlag VideoDecoderFFmpeg::bugFlags() const {
     return (BugFlag)d.bug;
 }
 
-void VideoDecoderFFmpeg::setHwaccel(const String &value) {
+void VideoDecoderFFmpeg::setHwaccel(const std::string &value) {
     DPTR_D(VideoDecoderFFmpeg);
     d.hwaccel = value;
 }
 
-String VideoDecoderFFmpeg::hwaccel() const {
+std::string VideoDecoderFFmpeg::hwaccel() const {
     DPTR_D(const VideoDecoderFFmpeg);
     return d.hwaccel;
 }

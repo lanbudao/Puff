@@ -21,7 +21,7 @@ class PU_AV_EXPORT AVLog: public Singleton<AVLog>
     DPTR_DECLARE_PRIVATE(AVLog)
     DISABLE_COPY(AVLog)
 public:
-    void setLogFile(const String &file);
+    void setLogFile(const std::string &file);
 
     void log(LogLevel level, const char *fmt, ...);
 

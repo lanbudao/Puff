@@ -49,11 +49,11 @@ public:
     virtual ~CObject();
 
 protected:
-    String className() const;
-    void setClassName(const String &name);
+    std::string className() const;
+    void setClassName(const std::string &name);
 
-    void setProperty(const String &key, const String &value);
-    String property(const String &key) const;
+    void setProperty(const std::string &key, const std::string &value);
+    std::string property(const std::string &key) const;
 
 private:
     DPTR_DECLARE(CObject)

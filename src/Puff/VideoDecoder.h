@@ -28,9 +28,9 @@ public:
     static VideoDecoder* create(VideoDecoderId id);
 
     virtual VideoDecoderId id() const = 0;
-    virtual String name() const;
+    virtual std::string name() const;
     virtual VideoFrame frame() = 0;
-    virtual String description() const;
+    virtual std::string description() const;
 
     template<class T>
     static bool Register(VideoDecoderId id, const char *name) { return Register(id, create<T>, name); }

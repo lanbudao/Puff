@@ -1,13 +1,14 @@
 #ifndef PUFF_CMUTEX_H
 #define PUFF_CMUTEX_H
 
-#include "AVGlobal.h"
 #include "DPTR.h"
+
+struct SDL_mutex;
 
 namespace Puff {
 
 class CMutexPrivate;
-class PU_AV_EXPORT CMutex
+class CMutex
 {
     DPTR_DECLARE_PRIVATE(CMutex)
 public:
@@ -19,8 +20,43 @@ public:
     bool writeLock();
     bool writeUnlock();
 
+    SDL_mutex *mutex();
 private:
     DPTR_DECLARE(CMutex)
+};
+
+class ReadLock
+{
+public:
+    ReadLock(CMutex *mtx);
+    ~ReadLock();
+private:
+    CMutex *mutex;
+};
+
+class WriteLock
+{
+public:
+    WriteLock(CMutex *mtx);
+    ~WriteLock();
+private:
+    CMutex *mutex;
+};
+
+class CConditionPrivate;
+class CCondition
+{
+    DPTR_DECLARE_PRIVATE(CCondition)
+public:
+    CCondition();
+    ~CCondition();
+
+    void notifyOne();
+    void notifyAll();
+    void timeWait(CMutex *mutex, int timeout = ULONG_MAX);
+
+private:
+    DPTR_DECLARE(CCondition)
 };
 
 }

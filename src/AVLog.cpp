@@ -2,12 +2,7 @@
 #include <cstdarg>
 #include <direct.h>
 #include <vector>
-#include <boost/filesystem.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/shared_mutex.hpp>
-
-typedef boost::shared_mutex Mutex;
-typedef boost::unique_lock<Mutex> WriteLock;
+#include "CMutex.h"
 
 namespace Puff {
 
@@ -26,12 +21,11 @@ public:
         }
     }
 
-    void writeOutput(const String &output)
+    void writeOutput(const std::string &output)
     {
         if (log_file.empty())
             return;
-        WriteLock lock(mutex);
-        PU_UNUSED(lock)
+        WriteLock lock(&mutex);
         if (!stream) {
             stream = fopen(log_file.c_str(), "a+");
             if (!stream)
@@ -41,10 +35,10 @@ public:
         fflush(stream);
     }
 
+    CMutex mutex;
     LogLevel level;
-    String log_file;
+    std::string log_file;
     FILE *stream;
-    Mutex mutex;
 };
 
 AVLog::AVLog()
@@ -62,7 +56,7 @@ void AVLog::log(LogLevel level, const char *fmt, ...)
 
     if (level > d.level)
         return;
-    String output;
+    std::string output;
     va_list marker = NULL;
     va_start(marker, fmt);
     int length = _vscprintf(fmt, marker) + 1;
@@ -72,6 +66,7 @@ void AVLog::log(LogLevel level, const char *fmt, ...)
         output = &buffer[0];
     va_end(marker);
     printf(output.c_str());
+    fflush(stdout);
     d.writeOutput(output);
 }
 
@@ -89,7 +84,7 @@ LogLevel AVLog::level() const
     return d.level;
 }
 
-void AVLog::setLogFile(const String &file)
+void AVLog::setLogFile(const std::string &file)
 {
     DPTR_D(AVLog);
     if (d.log_file == file) {

@@ -1,6 +1,8 @@
 #include "CThread.h"
 #include "AVLog.h"
 #include "SDL_thread.h"
+#include "SDL_timer.h"
+#include "util.h"
 
 namespace Puff {
 
@@ -9,13 +11,7 @@ static int running(void *context)
     CThread *thread = static_cast<CThread *>(context);
     if (thread)
         thread->run();
-}
-
-static void ending(unsigned code)
-{
-    CThread *thread = static_cast<CThread *>(context);
-    if (thread)
-        thread->end(code);
+    return 0;
 }
 
 class CThreadPrivate: public DptrPrivate<CThread>
@@ -40,38 +36,32 @@ CThread::CThread():
 
 CThread::~CThread()
 {
-    delete t;
 }
 
 void CThread::start()
 {
     DPTR_D(CThread);
     d.running = true;
-    thread = SDL_CreateThread(running, "", this,
-                              (pfnSDL_CurrentBeginThread)_beginthreadex,
-                              (pfnSDL_CurrentEndThread)ending);
+    t = SDL_CreateThread(running, guid().c_str(), this);
 }
 
 void CThread::stop() {
     DPTR_D(CThread);
-    if (t) {
-        t->interrupt();
-        t->join();
-    }
-    avdebug("CThread::stoped\n");
+    stoped();
+    int status;
+    SDL_WaitThread(t, &status);
+    avdebug("thread stoped!\n");
     d.running = false;
-    PU_EMIT finished();
 }
 
 void CThread::run()
 {
     DPTR_D(CThread);
-    avdebug("CThread::finished\n");
+    avdebug("thread finished!\n");
     d.running = false;
-    PU_EMIT finished();
 }
 
-void CThread::end(unsigned code)
+void CThread::stoped()
 {
 
 }
@@ -83,14 +73,12 @@ void CThread::sleep(int second)
 
 void CThread::msleep(int ms)
 {
-    boost::this_thread::sleep(boost::posix_time::milliseconds(ms));
+    SDL_Delay(ms);
 }
 
 unsigned long CThread::id() const
 {
-    String id;
-    id = boost::lexical_cast<String>(boost::this_thread::get_id());
-    return std::stoul(id, NULL, 16);;
+    return (unsigned long)SDL_GetThreadID(t);
 }
 
 bool CThread::isRunning() const {

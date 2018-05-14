@@ -18,8 +18,8 @@ public:
     AVPlayer();
     ~AVPlayer();
 
-    void setFile(const String &fileName);
-    void play(const String& fileName);
+    void setFile(const std::string &fileName);
+    void play(const std::string& fileName);
     bool load();
     bool isLoaded() const;
 

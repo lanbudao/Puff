@@ -24,7 +24,7 @@ public:
         Stream_Subtitle
     };
 
-    void setMedia(const String &fileName);
+    void setMedia(const std::string &fileName);
     bool load();
     void unload();
     bool atEnd();

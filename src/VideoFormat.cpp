@@ -265,7 +265,7 @@ public:
         return av_image_get_linesize(pixfmt_ff, width, plane);
     }
 
-    String name() const {
+    std::string name() const {
         return av_get_pix_fmt_name(pixfmt_ff);
     }
 
@@ -379,7 +379,7 @@ int VideoFormat::height(int lumaHeight, int plane) const {
     return chromaHeight(lumaHeight);
 }
 
-String VideoFormat::name() const {
+std::string VideoFormat::name() const {
     DPTR_D(const VideoFormat);
     return d.name();
 }

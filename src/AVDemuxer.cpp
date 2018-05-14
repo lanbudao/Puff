@@ -3,12 +3,7 @@
 #include "Packet.h"
 #include "commpeg.h"
 #include "AVLog.h"
-
-#include "boost/thread/locks.hpp"
-#include "boost/thread/shared_mutex.hpp"
-
-typedef boost::shared_mutex Mutex;
-typedef boost::shared_lock<Mutex> ReadLock;
+#include "CMutex.h"
 
 namespace Puff {
 
@@ -163,11 +158,11 @@ public:
         return true;
     }
 
-    String fileName;
+    std::string fileName;
     AVFormatContext *format_ctx;
     AVInputFormat *input_format;
     AVDictionary *format_opts;
-    std::hash<String> format_dict;
+    std::hash<std::string> format_dict;
     InterruptHandler *interruptHandler;
 
     struct StreamInfo {
@@ -187,7 +182,7 @@ public:
     int stream;
     Packet curPkt;
     bool isEOF;
-    Mutex mutex;
+    CMutex mutex;
 };
 
 AVDemuxer::AVDemuxer()
@@ -201,7 +196,7 @@ AVDemuxer::~AVDemuxer()
 
 }
 
-void AVDemuxer::setMedia(const String &fileName)
+void AVDemuxer::setMedia(const std::string &fileName)
 {
     DPTR_D(AVDemuxer);
     d.fileName = fileName;
@@ -212,7 +207,7 @@ bool AVDemuxer::load()
     DPTR_D(AVDemuxer);
     unload();
 
-    ReadLock lock(d.mutex);
+    ReadLock lock(&d.mutex);
     PU_UNUSED(lock);
     int ret = 0;
 
@@ -244,7 +239,7 @@ void AVDemuxer::unload()
 {
     DPTR_D(AVDemuxer);
 
-    ReadLock lock(d.mutex);
+    ReadLock lock(&d.mutex);
     PU_UNUSED(lock);
     d.resetStreams();
     if (d.format_ctx) {
@@ -284,7 +279,7 @@ int AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);
 
-    ReadLock lock(d.mutex);
+    ReadLock lock(&d.mutex);
     PU_UNUSED(lock);
 
     int ret = -1;

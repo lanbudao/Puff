@@ -1,7 +1,9 @@
 #ifndef PUFF_CLIST_H
 #define PUFF_CLIST_H
 
-#include "AVGlobal.h"
+#include <iterator>
+#include <list>
+#include <assert.h>
 
 namespace Puff {
 

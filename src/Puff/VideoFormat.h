@@ -139,7 +139,7 @@ public:
      * @param lumaWidth
      * @return U, V component (or channel) width for the given luma width.
      */
-    String name() const;
+    std::string name() const;
     int chromaWidth(int lumaWidth) const;
     int chromaHeight(int lumaHeight) const;
     int width(int lumaWidth, int plane) const;

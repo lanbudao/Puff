@@ -35,12 +35,12 @@ StringList AudioDecoder::supportedCodecs()
     return codecs;
 }
 
-String AudioDecoder::name() const {
-    return String();
+std::string AudioDecoder::name() const {
+    return std::string();
 }
 
-String AudioDecoder::description() const {
-    return String();
+std::string AudioDecoder::description() const {
+    return std::string();
 }
 
 }

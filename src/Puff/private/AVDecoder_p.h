@@ -34,9 +34,9 @@ public:
 
     bool opened;
     AVCodecContext *codec_ctx;
-    String codec_name;
-    String hwaccel;
-    std::hash<String> options;
+    std::string codec_name;
+    std::string hwaccel;
+    std::hash<std::string> options;
     AVDictionary *dict;
 };
 

@@ -83,8 +83,8 @@ public:
     }
 
     bool loaded;
-    String fileName;
-    std::hash<String> format_dict;
+    std::string fileName;
+    std::hash<std::string> format_dict;
 
     /*Demuxer*/
     AVDemuxer *demuxer;
@@ -116,14 +116,14 @@ AVPlayer::~AVPlayer()
 
 }
 
-void AVPlayer::setFile(const String &fileName)
+void AVPlayer::setFile(const std::string &fileName)
 {
     DPTR_D(AVPlayer);
 
     d.fileName = fileName;
 }
 
-void AVPlayer::play(const String& fileName)
+void AVPlayer::play(const std::string& fileName)
 {
     DPTR_D(AVPlayer);
 

@@ -76,8 +76,7 @@ using namespace std;
 #define PUFF_VERSION PUFF_VERSION_CHK(PUFF_MAJOR, PUFF_MINOR, PUFF_PATCH)
 
 typedef unsigned char uchar;
-typedef std::string String;
-typedef std::list<String> StringList;
+typedef std::list<std::string> StringList;
 
 namespace Puff {
 
@@ -109,7 +108,7 @@ enum ColorRange {
     ColorRange_Full     // PC, JPEG
 };
 
-PU_AV_EXPORT inline String GetVersion() {return String("");}
+PU_AV_EXPORT inline std::string GetVersion() {return std::string("");}
 
 }
 #endif //PUFF_GLOBAL_H
