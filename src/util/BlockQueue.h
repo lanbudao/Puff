@@ -61,8 +61,7 @@ BlockQueue<T>::BlockQueue():
 template<typename T>
 void BlockQueue<T>::clear()
 {
-    WriteLock lock(&mutex);
-    (void)lock;
+    DeclWriteLockMutex(&mutex);
     full_cond.notifyAll();
 
     /*Clear the queue*/
@@ -74,8 +73,7 @@ void BlockQueue<T>::clear()
 template<typename T>
 void BlockQueue<T>::enqueue(const T &t, unsigned long timeout)
 {
-    WriteLock lock(&mutex);
-    (void)lock;
+    DeclWriteLockMutex(&mutex);
     if (q.size() >= (unsigned int)capacity) {
         if (block_full) {
             full_cond.timeWait(&mutex, timeout);
@@ -95,8 +93,7 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
     if (isValid)
         *isValid = false;
 
-    WriteLock lock(&mutex);
-    (void)lock;
+    DeclWriteLockMutex(&mutex);
     if (q.empty()) {
         if (block_empty)
             empty_cond.timeWait(&mutex, timeout);
@@ -117,8 +114,7 @@ T BlockQueue<T>::dequeue(bool *isValid, unsigned long timeout)
 template<typename T>
 void BlockQueue<T>::setBlock(bool block)
 {
-    WriteLock lock(&mutex);
-    (void)lock;
+    DeclWriteLockMutex(&mutex);
     block_full = block_empty = block;
     if (!block) {
         full_cond.notifyAll();
@@ -138,22 +134,19 @@ void BlockQueue<T>::setThreshold(int thr) {
 
 template<typename T>
 bool BlockQueue<T>::isFull() const {
-    ReadLock lock(&mutex);
-    (void)lock;
+    DeclReadLockMutex(&mutex);
     return q.size() >= capacity;
 }
 
 template<typename T>
 bool BlockQueue<T>::isEmpty() const {
-    ReadLock lock(&mutex);
-    (void)lock;
+    DeclReadLockMutex(&mutex);
     return q.empty();
 }
 
 template<typename T>
 bool BlockQueue<T>::isEnough() const {
-    ReadLock lock(&mutex);
-    (void)lock;
+    DeclReadLockMutex(&mutex);
     return q.size() >= (unsigned int)threshold;
 }
 
@@ -176,8 +169,7 @@ template<typename T>
 void BlockQueue<T>::blockEmpty(bool block) {
     if (!block)
         empty_cond.notifyAll();
-    WriteLock lock(lock_change_mutex);
-    (void)lock;
+    DeclWriteLockMutex(&lock_change_mutex);
     block_empty = block;
 }
 
@@ -185,8 +177,7 @@ template<typename T>
 void BlockQueue<T>::blockFull(bool block) {
     if (!block)
         full_cond.notifyAll();
-    WriteLock lock(&lock_change_mutex);
-    (void)lock;
+    DeclWriteLockMutex(&lock_change_mutex);
     block_full = block;
 }
 

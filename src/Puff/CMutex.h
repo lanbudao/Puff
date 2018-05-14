@@ -7,6 +7,8 @@ struct SDL_mutex;
 
 namespace Puff {
 
+#define DeclReadLockMutex(x) ReadLock lock(x);(void)lock;
+#define DeclWriteLockMutex(x) WriteLock lock(x);(void)lock;
 class CMutexPrivate;
 class CMutex
 {
