@@ -224,6 +224,11 @@ public:
 
     }
 
+    ~VideoFormatPrivate()
+    {
+        descriptor = NULL;
+    }
+
     void setFormat(VideoFormat::EPixelFormat fmt)
     {
         pixfmt = fmt;
@@ -318,7 +323,13 @@ VideoFormat::VideoFormat()
 VideoFormat::VideoFormat(int pix_fmt)
 {
     DPTR_D(VideoFormat);
-    d.setFormat(AVPixelFormat(pix_fmt));
+    d.setFormat((AVPixelFormat)pix_fmt);
+}
+
+VideoFormat &VideoFormat::operator =(const VideoFormat &other)
+{
+    dptr_d = other.dptr_d;
+    return *this;
 }
 
 VideoFormat::~VideoFormat() {

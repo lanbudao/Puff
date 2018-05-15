@@ -59,14 +59,14 @@ protected:
 private:
     PUB* ptr;
 };
-#if 0
+
 template <typename PUB, typename PVT>
 class DptrPrivateInterface
 {
     friend class DptrPrivate<PUB>;
 public:
     DptrPrivateInterface() { pvt = new PVT; }
-    ~DptrPrivateInterface() { delete pvt; }
+    ~DptrPrivateInterface() { if (pvt) {delete pvt; pvt = 0;}}
     template <typename T>
     inline T& pri() { return *reinterpret_cast<T*>(pvt); }
     template <typename T>
@@ -77,26 +77,5 @@ public:
 private:
     DptrPrivate<PUB>* pvt;
 };
-#else
-#include <memory>
-template <typename PUB, typename PVT>
-class DptrPrivateInterface
-{
-    friend class DptrPrivate<PUB>;
-    typedef std::shared_ptr<DptrPrivate<PUB>> SharedDptrPrivate;
-public:
-    DptrPrivateInterface() { pvt = SharedDptrPrivate(new PVT); }
-    ~DptrPrivateInterface() { }
-    template <typename T>
-    inline T& pri() { return *reinterpret_cast<T*>(pvt.get()); }
-    template <typename T>
-    inline const T& pri() const { return *reinterpret_cast<T*>(pvt.get()); }
-    inline void setPublic(PUB* pub) { pvt.get()->setPublic(pub); }
-    inline PVT& operator()() { return *static_cast<PVT*>(pvt.get()); }
-    inline const PVT& operator()() const { return *static_cast<PVT*>(pvt.get()); }
-private:
-    SharedDptrPrivate pvt;
-};
-#endif
 
 #endif //PUFF_DPTR_H

@@ -13,6 +13,8 @@ class PU_AV_EXPORT VideoFormat
     DPTR_DECLARE_PRIVATE(VideoFormat)
 public:
     VideoFormat();
+    VideoFormat(int pix_fmt);
+    VideoFormat &operator = (const VideoFormat &other);
     ~VideoFormat();
 
     /**
@@ -115,7 +117,6 @@ public:
         Format_XYZ12BE,
         Format_User
     };
-    VideoFormat(int pix_fmt);
 
     static EPixelFormat pixelFormatFromFFmpeg(int ff);
     static int pixelFormatToFFmpeg(VideoFormat::EPixelFormat fmt);

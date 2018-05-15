@@ -1,6 +1,7 @@
 #ifndef PUFF_CMUTEX_H
 #define PUFF_CMUTEX_H
 
+#include <memory>
 #include "DPTR.h"
 
 struct SDL_mutex;

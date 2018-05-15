@@ -48,7 +48,8 @@ VideoFrame VideoDecoderFFmpegBase::frame()
     DPTR_D(VideoDecoderFFmpegBase);
     if (d.frame->width <= 0 || d.frame->height <= 0 || !d.codec_ctx)
         return VideoFrame();
-    VideoFrame frame(d.frame->width, d.frame->height, VideoFormat(d.codec_ctx->pix_fmt));
+    VideoFormat format(d.codec_ctx->pix_fmt);
+    VideoFrame frame(d.frame->width, d.frame->height, format);
     frame.setDisplayAspectRatio(d.getDisplayAspectRatio(d.frame));
     frame.setBits(d.frame->data);
     frame.setBytesPerLine(d.frame->linesize);
