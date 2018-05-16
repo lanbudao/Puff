@@ -2,7 +2,7 @@
 #define PUFF_VIDEOFORMAT_H
 
 #include "AVGlobal.h"
-#include "DPTR.h"
+#include <memory>
 #include <vector>
 
 namespace Puff {
@@ -10,13 +10,7 @@ namespace Puff {
 class VideoFormatPrivate;
 class PU_AV_EXPORT VideoFormat
 {
-    DPTR_DECLARE_PRIVATE(VideoFormat)
 public:
-    VideoFormat();
-    VideoFormat(int pix_fmt);
-    VideoFormat &operator = (const VideoFormat &other);
-    ~VideoFormat();
-
     /**
      * @brief The PixelFormat enum
      * 32 bit rgba format enum name indicates it's channel layout. For example,
@@ -122,6 +116,11 @@ public:
     static int pixelFormatToFFmpeg(VideoFormat::EPixelFormat fmt);
     static std::vector<int> pixelFormatsFFmpeg();
 
+    VideoFormat(EPixelFormat fmt = Format_Invalid);
+    VideoFormat(int pix_fmt);
+    VideoFormat &operator=(const VideoFormat &other);
+    ~VideoFormat();
+
     /*The number of components each pixel has, (1-4)*/
     int channels() const;
     int channels(int plane) const;
@@ -164,7 +163,7 @@ public:
     int pixelFormatFFmpeg() const;
 
 private:
-    DPTR_DECLARE(VideoFormat)
+    std::shared_ptr<VideoFormatPrivate> d;
 };
 
 }

@@ -98,13 +98,6 @@ bool CMutex::writeUnlock()
     return true;
 }
 
-SDL_mutex *CMutex::mutex()
-{
-    DPTR_D(CMutex);
-    return d.mutex;
-}
-
-
 class CConditionPrivate: public DptrPrivate<CCondition>
 {
 public:
@@ -146,7 +139,7 @@ void CCondition::notifyAll()
 void CCondition::timeWait(CMutex *mutex, int timeout)
 {
     DPTR_D(CCondition);
-    SDL_CondWaitTimeout(d.cond, mutex->mutex(), timeout);
+    SDL_CondWaitTimeout(d.cond, mutex->dptr_d().mutex, timeout);
 }
 
 WriteLock::WriteLock(CMutex *mtx)

@@ -4,13 +4,12 @@
 #include <memory>
 #include "DPTR.h"
 
-struct SDL_mutex;
-
 namespace Puff {
 
 #define DeclReadLockMutex(x) ReadLock lock(x);(void)lock;
 #define DeclWriteLockMutex(x) WriteLock lock(x);(void)lock;
 class CMutexPrivate;
+class CCondition;
 class CMutex
 {
     DPTR_DECLARE_PRIVATE(CMutex)
@@ -23,7 +22,7 @@ public:
     bool writeLock();
     bool writeUnlock();
 
-    SDL_mutex *mutex();
+    friend class CCondition;
 private:
     DPTR_DECLARE(CMutex)
 };
