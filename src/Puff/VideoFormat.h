@@ -3,6 +3,7 @@
 
 #include "AVGlobal.h"
 #include <memory>
+#include <atomic>
 #include <vector>
 
 namespace Puff {
@@ -118,6 +119,7 @@ public:
 
     VideoFormat(EPixelFormat fmt = Format_Invalid);
     VideoFormat(int pix_fmt);
+    VideoFormat(const VideoFormat &other);
     VideoFormat &operator=(const VideoFormat &other);
     ~VideoFormat();
 

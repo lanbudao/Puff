@@ -316,15 +316,20 @@ private:
 };
 
 VideoFormat::VideoFormat(EPixelFormat fmt):
-    d(new VideoFormatPrivate)
+    d(new VideoFormatPrivate())
 {
     d->setFormat(fmt);
 }
 
 VideoFormat::VideoFormat(int pix_fmt):
-    d(new VideoFormatPrivate)
+    d(new VideoFormatPrivate())
 {
     d->setFormat((AVPixelFormat)pix_fmt);
+}
+
+VideoFormat::VideoFormat(const VideoFormat &other)
+{
+    d = other.d;
 }
 
 VideoFormat &VideoFormat::operator=(const VideoFormat &other)
