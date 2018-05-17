@@ -17,6 +17,7 @@ public:
 
     void start();
     void stop();
+    int  wait();
     void sleep(int second);
     void msleep(int ms);
     bool isRunning() const;

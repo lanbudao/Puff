@@ -54,6 +54,13 @@ void CThread::stop() {
     d.running = false;
 }
 
+int CThread::wait()
+{
+    int status;
+    SDL_WaitThread(t, &status);
+    return status;
+}
+
 void CThread::run()
 {
     DPTR_D(CThread);
