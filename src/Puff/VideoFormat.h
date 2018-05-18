@@ -5,12 +5,14 @@
 #include <memory>
 #include <atomic>
 #include <vector>
+#include "DPTR.h"
 
 namespace Puff {
 
 class VideoFormatPrivate;
 class PU_AV_EXPORT VideoFormat
 {
+    DPTR_DECLARE_PRIVATE(VideoFormat)
 public:
     /**
      * @brief The PixelFormat enum
@@ -165,7 +167,7 @@ public:
     int pixelFormatFFmpeg() const;
 
 private:
-    std::shared_ptr<VideoFormatPrivate> d;
+    DPTR_DECLARE(VideoFormat)
 };
 
 }

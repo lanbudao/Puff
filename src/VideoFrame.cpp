@@ -15,7 +15,7 @@ public:
 
     }
 
-    void setFormat(VideoFormat fmt)
+    void setFormat(const VideoFormat &fmt)
     {
         format = fmt;
         planes.reserve(fmt.planeCount());

@@ -35,6 +35,8 @@
 ****************************************************************************/
 #ifndef PUFF_DPTR_H
 #define PUFF_DPTR_H
+#include <memory>
+#include <mutex>
 
 #define DPTR_DECLARE(Class) DptrPrivateInterface<Class, Class##Private> dptr_d;
 #define DPTR_DECLARE_PRIVATE(Class) \
@@ -60,22 +62,37 @@ private:
     PUB* ptr;
 };
 
+typedef std::mutex Mutex;
+typedef std::unique_lock<Mutex> Lock;
 template <typename PUB, typename PVT>
 class DptrPrivateInterface
 {
     friend class DptrPrivate<PUB>;
+    typedef std::shared_ptr<DptrPrivate<PUB>> SharedDptrPrivate;
 public:
-    DptrPrivateInterface() { pvt = new PVT; }
-    ~DptrPrivateInterface() { if (pvt) {delete pvt; pvt = 0;}}
+    DptrPrivateInterface() {pvt = SharedDptrPrivate(new PVT);}
+    DptrPrivateInterface &operator=(const DptrPrivateInterface &other)
+    {
+        Lock locker(mtx); (void) locker;
+        pvt = other.pvt;
+        return *this;
+    }
+    DptrPrivateInterface(const DptrPrivateInterface &other)
+    {
+        Lock locker(mtx); (void) locker;
+        pvt = other.pvt;
+    }
+    ~DptrPrivateInterface() {/* if (pvt) {delete pvt; pvt = 0;}*/}
     template <typename T>
-    inline T& pri() { return *reinterpret_cast<T*>(pvt); }
+    inline T& pri() { return *reinterpret_cast<T*>(pvt.get()); }
     template <typename T>
-    inline const T& pri() const { return *reinterpret_cast<T*>(pvt); }
+    inline const T& pri() const { return *reinterpret_cast<T*>(pvt.get()); }
     inline void setPublic(PUB* pub) { pvt->setPublic(pub); }
-    inline PVT& operator()() { return *static_cast<PVT*>(pvt); }
-    inline const PVT& operator()() const { return *static_cast<PVT*>(pvt); }
+    inline PVT& operator()() { return *static_cast<PVT*>(pvt.get()); }
+    inline const PVT& operator()() const { return *static_cast<PVT*>(pvt.get()); }
 private:
-    DptrPrivate<PUB>* pvt;
+    SharedDptrPrivate pvt;
+    mutable Mutex mtx;
 };
 
 #endif //PUFF_DPTR_H

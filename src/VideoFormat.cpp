@@ -210,7 +210,7 @@ static const struct {
     { VideoFormat::Format_Invalid, AV_PIX_FMT_NONE },
 };
 
-class VideoFormatPrivate
+class VideoFormatPrivate: public DptrPrivate<VideoFormat>
 {
 public:
     VideoFormatPrivate():
@@ -315,26 +315,28 @@ private:
     }
 };
 
-VideoFormat::VideoFormat(EPixelFormat fmt):
-    d(new VideoFormatPrivate())
+VideoFormat::VideoFormat(EPixelFormat fmt)
 {
-    d->setFormat(fmt);
+    DPTR_D(VideoFormat);
+    d.setFormat(fmt);
 }
 
-VideoFormat::VideoFormat(int pix_fmt):
-    d(new VideoFormatPrivate())
+VideoFormat::VideoFormat(int pix_fmt)
 {
-    d->setFormat((AVPixelFormat)pix_fmt);
+    DPTR_D(VideoFormat);
+    d.setFormat((AVPixelFormat)pix_fmt);
 }
 
 VideoFormat::VideoFormat(const VideoFormat &other)
 {
-    d = other.d;
+    DPTR_D(VideoFormat);
+    dptr_d = other.dptr_d;
 }
 
 VideoFormat &VideoFormat::operator=(const VideoFormat &other)
 {
-    d = other.d;
+    DPTR_D(VideoFormat);
+    dptr_d = other.dptr_d;
     return *this;
 }
 
@@ -370,60 +372,73 @@ std::vector<int> VideoFormat::pixelFormatsFFmpeg() {
 }
 
 int VideoFormat::bytesPerLine(int width, int plane) const {
-    return d->bytesPerLine(width, plane);
+    DPTR_D(const VideoFormat);
+    return d.bytesPerLine(width, plane);
 }
 
 int VideoFormat::chromaWidth(int lumaWidth) const {
-    return -((-lumaWidth) >> d->descriptor->log2_chroma_w);
+    DPTR_D(const VideoFormat);
+    return -((-lumaWidth) >> d.descriptor->log2_chroma_w);
 }
 
 int VideoFormat::chromaHeight(int lumaHeight) const {
-    return -((-lumaHeight) >> d->descriptor->log2_chroma_h);
+    DPTR_D(const VideoFormat);
+    return -((-lumaHeight) >> d.descriptor->log2_chroma_h);
 }
 
 int VideoFormat::width(int lumaWidth, int plane) const {
+    DPTR_D(const VideoFormat);
     if (plane <= 0)
         return lumaWidth;
     return chromaWidth(lumaWidth);
 }
 
 int VideoFormat::height(int lumaHeight, int plane) const {
+    DPTR_D(const VideoFormat);
     if (plane <= 0)
         return lumaHeight;
     return chromaHeight(lumaHeight);
 }
 
 std::string VideoFormat::name() const {
-    return d->name();
+    DPTR_D(const VideoFormat);
+    return d.name();
 }
 
 bool VideoFormat::isBigEndian() const {
-    return (d->flags() & AV_PIX_FMT_FLAG_BE) == AV_PIX_FMT_FLAG_BE;
+    DPTR_D(const VideoFormat);
+    return (d.flags() & AV_PIX_FMT_FLAG_BE) == AV_PIX_FMT_FLAG_BE;
 }
 
 bool VideoFormat::isBitStream() const {
-    return (d->flags() & AV_PIX_FMT_FLAG_BITSTREAM) == AV_PIX_FMT_FLAG_BITSTREAM;
+    DPTR_D(const VideoFormat);
+    return (d.flags() & AV_PIX_FMT_FLAG_BITSTREAM) == AV_PIX_FMT_FLAG_BITSTREAM;
 }
 
 bool VideoFormat::isHwaccel() const {
-    return (d->flags() & AV_PIX_FMT_FLAG_HWACCEL) == AV_PIX_FMT_FLAG_HWACCEL;
+    DPTR_D(const VideoFormat);
+    return (d.flags() & AV_PIX_FMT_FLAG_HWACCEL) == AV_PIX_FMT_FLAG_HWACCEL;
 }
 
 bool VideoFormat::isPlanar() const {
-    return (d->flags() & AV_PIX_FMT_FLAG_PLANAR) == AV_PIX_FMT_FLAG_PLANAR;
+    DPTR_D(const VideoFormat);
+    return (d.flags() & AV_PIX_FMT_FLAG_PLANAR) == AV_PIX_FMT_FLAG_PLANAR;
 }
 
 bool VideoFormat::isRGB() const {
-    return (d->flags() & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB &&
-            d->pixfmt != Format_VYU;
+    DPTR_D(const VideoFormat);
+    return (d.flags() & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB &&
+            d.pixfmt != Format_VYU;
 }
 
 bool VideoFormat::isXYZ() const {
-    return d->pixfmt == Format_XYZ12 || d->pixfmt == Format_XYZ12BE || d->pixfmt == Format_XYZ12LE;
+    DPTR_D(const VideoFormat);
+    return d.pixfmt == Format_XYZ12 || d.pixfmt == Format_XYZ12BE || d.pixfmt == Format_XYZ12LE;
 }
 
 bool VideoFormat::hasAlpha() const {
-    return (d->flags() & AV_PIX_FMT_FLAG_ALPHA) == AV_PIX_FMT_FLAG_ALPHA;
+    DPTR_D(const VideoFormat);
+    return (d.flags() & AV_PIX_FMT_FLAG_ALPHA) == AV_PIX_FMT_FLAG_ALPHA;
 }
 
 bool VideoFormat::isPlanar(EPixelFormat pixfmt) {
@@ -450,59 +465,71 @@ bool VideoFormat::hasAlpha(EPixelFormat pixfmt) {
 }
 
 int VideoFormat::channels() const {
-    if (!d->descriptor)
+    DPTR_D(const VideoFormat);
+    if (!d.descriptor)
         return 0;
-    return d->descriptor->nb_components;
+    return d.descriptor->nb_components;
 }
 
 int VideoFormat::channels(int plane) const {
-    if (plane >= d->channels.size() || plane < 0)
+    DPTR_D(const VideoFormat);
+    if (plane >= d.channels.size() || plane < 0)
         return 0;
-    return d->channels.at(plane);
+    return d.channels.at(plane);
 }
 
 int VideoFormat::planeCount() const {
-    return d->planes;
+    DPTR_D(const VideoFormat);
+    return d.planes;
 }
 
 int VideoFormat::bitsPerPixel() const {
-    return d->bitsPerPixel;
+    DPTR_D(const VideoFormat);
+    return d.bitsPerPixel;
 }
 
 int VideoFormat::bitsPerPixelPadded() const {
-    return d->bitsPerPixel_pad;
+    DPTR_D(const VideoFormat);
+    return d.bitsPerPixel_pad;
 }
 
 int VideoFormat::bitsPerPixel(int plane) const {
-    if (plane >= d->bitsPerPixels.size() || plane < 0)
+    DPTR_D(const VideoFormat);
+    if (plane >= d.bitsPerPixels.size() || plane < 0)
         return 0;
-    return d->bitsPerPixels.at(plane);
+    return d.bitsPerPixels.at(plane);
 }
 
 int VideoFormat::bitsPerComponent() const {
-    return d->bitsPerComponent;
+    DPTR_D(const VideoFormat);
+    return d.bitsPerComponent;
 }
 
 int VideoFormat::bytesPerPixel() const {
-    return (d->bitsPerPixel + 7) >> 3;
+    DPTR_D(const VideoFormat);
+    return (d.bitsPerPixel + 7) >> 3;
 }
 
 int VideoFormat::bytesPerPixel(int plane) const {
-    if (plane >= d->bitsPerPixels.size() || plane < 0)
+    DPTR_D(const VideoFormat);
+    if (plane >= d.bitsPerPixels.size() || plane < 0)
         return 0;
-    return d->bitsPerPixels.at(plane);
+    return d.bitsPerPixels.at(plane);
 }
 
 bool VideoFormat::isValid() const {
-    return d->pixfmt != Format_Invalid && d->pixfmt_ff != AV_PIX_FMT_NONE;
+    DPTR_D(const VideoFormat);
+    return d.pixfmt != Format_Invalid && d.pixfmt_ff != AV_PIX_FMT_NONE;
 }
 
 VideoFormat::EPixelFormat VideoFormat::pixelFormat() const {
-    return d->pixfmt;
+    DPTR_D(const VideoFormat);
+    return d.pixfmt;
 }
 
 int VideoFormat::pixelFormatFFmpeg() const {
-    return d->pixfmt_ff;
+    DPTR_D(const VideoFormat);
+    return d.pixfmt_ff;
 }
 
 }
