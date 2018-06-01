@@ -20,6 +20,12 @@ bool AVOutput::isAvaliable() const
     return d->avaliable;
 }
 
+void AVOutput::setAvaliable(bool avaliable)
+{
+    DPTR_D(AVOutput);
+    d->avaliable = avaliable;
+}
+
 void AVOutput::pause(bool p)
 {
     DPTR_D(AVOutput);

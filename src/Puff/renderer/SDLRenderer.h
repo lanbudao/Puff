@@ -19,6 +19,7 @@ public:
     void show();
 
 protected:
+    bool receiveFrame(const VideoFrame& frame);
     void onResizeRenderer(int width, int height) PU_DECL_OVERRIDE;
 };
 

@@ -44,6 +44,12 @@ int Frame::bytesPerLine(int plane) const {
     return d->line_sizes[plane];
 }
 
+const int *Frame::lineSize() const
+{
+    DPTR_D(const Frame);
+    return d->line_sizes.data();
+}
+
 ByteArray Frame::frameData() {
     DPTR_D(Frame);
     return d->data;

@@ -153,6 +153,12 @@ bool AVPlayer::isLoaded() const
     return d->loaded;
 }
 
+void AVPlayer::addVideoRenderer(VideoRenderer *renderer)
+{
+    DPTR_D(AVPlayer);
+    d->video_output_set.addOutput((AVOutput*)renderer);
+}
+
 void AVPlayer::loadInternal()
 {
     DPTR_D(AVPlayer);

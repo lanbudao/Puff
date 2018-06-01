@@ -51,7 +51,6 @@ VideoFrame::VideoFrame(int width, int height, const VideoFormat &format, const B
     d->width = width;
     d->height = height;
     d->data = data;
-//    d->format = format;
     d->setFormat(format);
 }
 

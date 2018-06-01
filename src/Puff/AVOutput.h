@@ -14,6 +14,7 @@ public:
     virtual ~AVOutput();
 
     bool isAvaliable() const;
+    void setAvaliable(bool avaliable);
     void pause(bool p);
     bool isPaused() const;
 

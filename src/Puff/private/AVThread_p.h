@@ -7,6 +7,7 @@
 
 namespace Puff {
 
+class OutputSet;
 class AVThreadPrivate
 {
 public:

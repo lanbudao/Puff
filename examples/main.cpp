@@ -76,6 +76,7 @@ int main(int argc, char *argv[])
     SDLRenderer *renderer = new SDLRenderer();
     renderer->init(400, 300);
 
+    player->addVideoRenderer(renderer);
     player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
 
     renderer->show();

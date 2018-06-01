@@ -10,7 +10,7 @@ class AVOutputPrivate
 {
 public:
     AVOutputPrivate():
-        avaliable(false),
+        avaliable(true),
         pause(false)
     {
 

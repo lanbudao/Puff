@@ -13,12 +13,13 @@ class PU_AV_EXPORT VideoRenderer: public AVOutput
 public:
     virtual ~VideoRenderer();
 
-    void receiveFrame(const VideoFrame &frame);
+    void receive(const VideoFrame &frame);
 
     void resizeRenderer(const Size &size);
     void resizeRenderer(int width, int height);
 
 protected:
+    virtual bool receiveFrame(const VideoFrame& frame) = 0;
     virtual void onResizeRenderer(int width, int height);
     VideoRenderer(VideoRendererPrivate *d);
 };

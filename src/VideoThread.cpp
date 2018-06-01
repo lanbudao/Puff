@@ -2,6 +2,7 @@
 #include "AVThread_p.h"
 #include "VideoDecoder.h"
 #include "AVLog.h"
+#include "OutputSet.h"
 
 namespace Puff {
 
@@ -33,7 +34,6 @@ void VideoThread::run()
     auto *dec = dynamic_cast<VideoDecoder *>(d->decoder);
 
     Packet pkt;
-    VideoFrame current_frame;
 
     while (!d->stopped) {
 
@@ -59,7 +59,7 @@ void VideoThread::run()
         }
         if (!sendVideoFrame(frame))
             continue;
-        current_frame = frame;
+        d->current_frame = frame;
     }
 
     AVThread::run();
@@ -68,7 +68,7 @@ void VideoThread::run()
 bool VideoThread::sendVideoFrame(VideoFrame &frame)
 {
     DPTR_D(VideoThread);
-
+    d->output->sendVideoFrame(frame);
     return true;
 }
 

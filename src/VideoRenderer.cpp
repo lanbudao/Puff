@@ -14,9 +14,9 @@ VideoRenderer::~VideoRenderer()
 
 }
 
-void VideoRenderer::receiveFrame(const VideoFrame &frame)
+void VideoRenderer::receive(const VideoFrame &frame)
 {
-
+    receiveFrame(frame);
 }
 
 void VideoRenderer::resizeRenderer(const Size &size) {

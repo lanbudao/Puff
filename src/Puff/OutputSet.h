@@ -13,7 +13,6 @@ class OutputSetPrivate;
 class PU_AV_EXPORT OutputSet
 {
     DPTR_DECLARE_PRIVATE(OutputSet)
-
 public:
     OutputSet();
     ~OutputSet();

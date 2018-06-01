@@ -21,7 +21,8 @@ public:
     CMutex mutex;
 };
 
-OutputSet::OutputSet()
+OutputSet::OutputSet():
+    d_ptr(new OutputSetPrivate)
 {
 
 }
@@ -80,7 +81,7 @@ void OutputSet::sendVideoFrame(const VideoFrame &frame)
         VideoRenderer *renderer = static_cast<VideoRenderer *>(d->outputs.at(i));
         if (!renderer->isAvaliable())
             continue;
-        renderer->receiveFrame(frame);
+        renderer->receive(frame);
     }
 }
 

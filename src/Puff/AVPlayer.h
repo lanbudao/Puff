@@ -9,7 +9,7 @@
  *
  */
 namespace Puff {
-
+class VideoRenderer;
 class AVPlayerPrivate;
 class PU_AV_EXPORT AVPlayer
 {
@@ -22,6 +22,8 @@ public:
     void play(const std::string& fileName);
     bool load();
     bool isLoaded() const;
+
+    void addVideoRenderer(VideoRenderer *renderer);
 
 private:
     void loadInternal();

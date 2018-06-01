@@ -42,6 +42,8 @@ public:
      */
     int bytesPerLine(int plane = 0) const;
 
+    const int *lineSize() const;
+
     ByteArray frameData();
 
     ByteArray data(int plane = 0) const;
