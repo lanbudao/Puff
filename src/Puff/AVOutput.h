@@ -11,7 +11,6 @@ class PU_AV_EXPORT AVOutput
 {
     DPTR_DECLARE_PRIVATE(AVOutput)
 public:
-    AVOutput();
     virtual ~AVOutput();
 
     bool isAvaliable() const;
@@ -19,6 +18,7 @@ public:
     bool isPaused() const;
 
 protected:
+    AVOutput(AVOutputPrivate *d);
     DPTR_DECLARE(AVOutput)
 };
 

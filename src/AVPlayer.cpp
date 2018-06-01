@@ -12,7 +12,7 @@
 
 namespace Puff {
 
-class AVPlayerPrivate: public DptrPrivate<AVPlayer>
+class AVPlayerPrivate
 {
 public:
     AVPlayerPrivate():
@@ -106,7 +106,8 @@ public:
     OutputSet audio_output_set;
 };
 
-AVPlayer::AVPlayer()
+AVPlayer::AVPlayer():
+    d_ptr(new AVPlayerPrivate)
 {
     avdebug("AVPlayer Initialize...\n");
 }
@@ -120,14 +121,14 @@ void AVPlayer::setFile(const std::string &fileName)
 {
     DPTR_D(AVPlayer);
 
-    d.fileName = fileName;
+    d->fileName = fileName;
 }
 
 void AVPlayer::play(const std::string& fileName)
 {
     DPTR_D(AVPlayer);
 
-    d.fileName = fileName;
+    d->fileName = fileName;
     if (fileName.empty())
         return;
     if (!load()) {
@@ -141,41 +142,41 @@ void AVPlayer::play(const std::string& fileName)
 bool AVPlayer::load()
 {
     DPTR_D(AVPlayer);
-    d.loaded = false;
+    d->loaded = false;
     loadInternal();
-    return d.loaded;
+    return d->loaded;
 }
 
 bool AVPlayer::isLoaded() const
 {
     DPTR_D(const AVPlayer);
-    return d.loaded;
+    return d->loaded;
 }
 
 void AVPlayer::loadInternal()
 {
     DPTR_D(AVPlayer);
 
-    d.demuxer->setMedia(d.fileName);
-    d.demuxer->load();
-    d.loaded = d.demuxer->isLoaded();
+    d->demuxer->setMedia(d->fileName);
+    d->demuxer->load();
+    d->loaded = d->demuxer->isLoaded();
 }
 
 void AVPlayer::playInternal()
 {
     DPTR_D(AVPlayer);
 
-    if (!d.demuxer->isLoaded())
+    if (!d->demuxer->isLoaded())
         return;
-    if (!d.setupVideoThread(this)) {
-        d.demux_thread->setVideoThread(NULL);
-        if (d.video_thread) {
-            delete d.video_thread;
-            d.video_thread = NULL;
+    if (!d->setupVideoThread(this)) {
+        d->demux_thread->setVideoThread(NULL);
+        if (d->video_thread) {
+            delete d->video_thread;
+            d->video_thread = NULL;
         }
     }
 
-    d.demux_thread->start();
+    d->demux_thread->start();
 }
 
 }

@@ -10,7 +10,7 @@ class VideoDecoderFFmpegBase: public VideoDecoder
 {
     DPTR_DECLARE_PRIVATE(VideoDecoderFFmpegBase)
 public:
-    VideoDecoderFFmpegBase();
+    VideoDecoderFFmpegBase(VideoDecoderFFmpegBasePrivate *d);
     ~VideoDecoderFFmpegBase();
 
     virtual bool decode(const Packet &pkt);

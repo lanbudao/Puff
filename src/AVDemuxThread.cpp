@@ -7,7 +7,7 @@
 
 namespace Puff {
 
-class AVDemuxThreadPrivate: public DptrPrivate<AVDemuxThread>
+class AVDemuxThreadPrivate
 {
 public:
     AVDemuxThreadPrivate():
@@ -27,7 +27,9 @@ public:
     bool isEnd;
 };
 
-AVDemuxThread::AVDemuxThread() {
+AVDemuxThread::AVDemuxThread():
+    d_ptr(new AVDemuxThreadPrivate)
+{
 
 }
 
@@ -38,31 +40,31 @@ AVDemuxThread::~AVDemuxThread() {
 void AVDemuxThread::setDemuxer(AVDemuxer *demuxer)
 {
     DPTR_D(AVDemuxThread);
-    d.demuxer = demuxer;
+    d->demuxer = demuxer;
 }
 
 void AVDemuxThread::setAudioThread(AVThread *thread)
 {
     DPTR_D(AVDemuxThread);
-    d.audio_thread = thread;
+    d->audio_thread = thread;
 }
 
 AVThread *AVDemuxThread::audioThread()
 {
     DPTR_D(const AVDemuxThread);
-    return d.audio_thread;
+    return d->audio_thread;
 }
 
 void AVDemuxThread::setVideoThread(AVThread *thread)
 {
     DPTR_D(AVDemuxThread);
-    d.video_thread = thread;
+    d->video_thread = thread;
 }
 
 AVThread *AVDemuxThread::videoThread()
 {
     DPTR_D(const AVDemuxThread);
-    return d.video_thread;
+    return d->video_thread;
 }
 
 void AVDemuxThread::run()
@@ -73,14 +75,14 @@ void AVDemuxThread::run()
     int ret = -1;
 
     avdebug("demux thread id:%d.\n", id());
-    if (d.audio_thread && !d.audio_thread->isRunning()) {
-        d.audio_thread->start();
+    if (d->audio_thread && !d->audio_thread->isRunning()) {
+        d->audio_thread->start();
     }
-    if (d.video_thread && !d.video_thread->isRunning()) {
-        d.video_thread->start();
+    if (d->video_thread && !d->video_thread->isRunning()) {
+        d->video_thread->start();
     }
-    PacketQueue *vbuffer = d.video_thread ? d.video_thread->packets() : NULL;
-    PacketQueue *abuffer = d.audio_thread ? d.audio_thread->packets() : NULL;
+    PacketQueue *vbuffer = d->video_thread ? d->video_thread->packets() : NULL;
+    PacketQueue *abuffer = d->audio_thread ? d->audio_thread->packets() : NULL;
 
     if (vbuffer) {
         vbuffer->clear();
@@ -91,41 +93,41 @@ void AVDemuxThread::run()
         abuffer->setBlock(true);
     }
 
-    while (!d.isEnd) {
+    while (!d->isEnd) {
 
-        if (d.demuxer->atEnd()) {
+        if (d->demuxer->atEnd()) {
             // wait for a/v thread finished
             msleep(100);
             continue;
         }
 
-        ret = d.demuxer->readFrame();
+        ret = d->demuxer->readFrame();
         if (ret < 0)
             continue;
-        stream = d.demuxer->stream();
-        pkt = d.demuxer->packet();
+        stream = d->demuxer->stream();
+        pkt = d->demuxer->packet();
 
-        if (stream == d.demuxer->videoStream()) {
+        if (stream == d->demuxer->videoStream()) {
             if (vbuffer) {
-                if (!d.video_thread || !d.video_thread->isRunning()) {
+                if (!d->video_thread || !d->video_thread->isRunning()) {
                     vbuffer->clear();
                     continue;
                 }
-                vbuffer->blockFull(!d.audio_thread || !d.audio_thread->isRunning() || !abuffer || abuffer->isEnough());
+                vbuffer->blockFull(!d->audio_thread || !d->audio_thread->isRunning() || !abuffer || abuffer->isEnough());
                 vbuffer->enqueue(pkt);
             }
         }
-        else if (stream == d.demuxer->audioStream()) {
+        else if (stream == d->demuxer->audioStream()) {
             if (abuffer) {
-                if (!d.audio_thread || !d.audio_thread->isRunning()) {
+                if (!d->audio_thread || !d->audio_thread->isRunning()) {
                     abuffer->clear();
                     continue;
                 }
-                abuffer->blockFull(!d.video_thread || !d.video_thread->isRunning() || !vbuffer);
+                abuffer->blockFull(!d->video_thread || !d->video_thread->isRunning() || !vbuffer);
                 abuffer->enqueue(pkt);
             }
         }
-        else if (stream == d.demuxer->subtitleStream()) {
+        else if (stream == d->demuxer->subtitleStream()) {
 
         }
     }

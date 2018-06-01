@@ -16,7 +16,8 @@ static void AudioDecoder_RegisterAll()
     RegisterAudioDecoderFFmpeg_Man();
 }
 
-AudioDecoder::AudioDecoder()
+AudioDecoder::AudioDecoder(AudioDecoderPrivate *d):
+    AVDecoder(d)
 {
 
 }

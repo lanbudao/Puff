@@ -12,7 +12,6 @@ class PU_AV_EXPORT AVDecoder: public CObject
 {
     DPTR_DECLARE_PRIVATE(AVDecoder)
 public:
-    AVDecoder();
     virtual ~AVDecoder();
 
     AVCodecContext * codecCtx();
@@ -34,6 +33,7 @@ public:
     void setCodecCtx(void *ctx);
 
 protected:
+    AVDecoder(AVDecoderPrivate *d);
     DPTR_DECLARE(AVDecoder)
 };
 

@@ -13,7 +13,6 @@ class PU_AV_EXPORT AVThread: public CThread
 {
     DPTR_DECLARE_PRIVATE(AVThread)
 public:
-    AVThread();
     virtual ~AVThread();
 
     PacketQueue *packets();
@@ -23,6 +22,7 @@ public:
     void setOutputSet(OutputSet *output);
 
 protected:
+    AVThread(AVThreadPrivate *d);
     DPTR_DECLARE(AVThread)
 };
 

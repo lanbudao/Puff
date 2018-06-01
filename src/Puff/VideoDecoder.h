@@ -55,8 +55,7 @@ protected:
     static bool Register(VideoDecoderId id, VideoDecoderCreator, const char *name);
 
 protected:
-    VideoDecoder();
-
+    VideoDecoder(VideoDecoderPrivate *d);
 };
 
 

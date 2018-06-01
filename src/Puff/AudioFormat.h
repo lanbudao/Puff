@@ -22,7 +22,9 @@ class PU_AV_EXPORT AudioFormat
 public:
     AudioFormat();
     ~AudioFormat();
-/*!
+    AudioFormat(const AudioFormat &other);
+    AudioFormat &operator=(const AudioFormat &other);
+    /*!
      * \brief The SampleFormat enum
      * s8, u16, u24, s24, u32 are not listed in ffmpeg sample format and have not planar format.
      * pcm_s24le will be decoded as s32-24bit in ffmpeg, it's encoded as 32 bits, but raw sample has 24 bits
@@ -97,7 +99,7 @@ public:
     void setChannelLayout(ChannelLayout layout);
     ChannelLayout channelLayout() const;
 
-private:
+protected:
     DPTR_DECLARE(AudioFormat)
 };
 

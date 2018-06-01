@@ -7,7 +7,8 @@
 
 namespace Puff {
 
-class AVThreadPrivate : public DptrPrivate<AVThread> {
+class AVThreadPrivate
+{
 public:
     AVThreadPrivate() :
         decoder(NULL),

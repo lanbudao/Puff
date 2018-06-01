@@ -1,14 +1,15 @@
 #ifndef PUFF_CTHREAD_H
 #define PUFF_CTHREAD_H
 
-#include "CObject.h"
+#include "AVGlobal.h"
+#include "DPTR.h"
 
 struct SDL_Thread;
 
 namespace Puff {
 
 class CThreadPrivate;
-class PU_AV_EXPORT CThread: public CObject
+class PU_AV_EXPORT CThread
 {
     DPTR_DECLARE_PRIVATE(CThread)
 public:
@@ -30,6 +31,7 @@ public:
 
 protected:
     SDL_Thread *t;
+
 private:
     DPTR_DECLARE(CThread)
 };

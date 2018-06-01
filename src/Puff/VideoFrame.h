@@ -13,8 +13,10 @@ class PU_AV_EXPORT VideoFrame: public Frame
     DPTR_DECLARE_PRIVATE(VideoFrame)
 public:
     VideoFrame();
+    VideoFrame(const VideoFrame &other);
     VideoFrame(int width, int height, const VideoFormat &format, const ByteArray &data = ByteArray());
     virtual ~VideoFrame();
+    VideoFrame &operator=(const VideoFrame &other);
 
     int channelCount() const;
 
@@ -41,7 +43,6 @@ public:
     void setDisplayAspectRatio(float aspect);
 
 private:
-
 };
 
 

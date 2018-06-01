@@ -22,7 +22,8 @@ static void VideoDecoder_RegisterAll()
     RegisterVideoDecoderFFmpeg_Man();
 }
 
-VideoDecoder::VideoDecoder()
+VideoDecoder::VideoDecoder(VideoDecoderPrivate *d):
+    AVDecoder(d)
 {
 
 }

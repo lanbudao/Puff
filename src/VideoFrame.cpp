@@ -33,19 +33,26 @@ public:
 };
 
 VideoFrame::VideoFrame():
-    Frame()
+    Frame(new VideoFramePrivate)
+{
+
+}
+
+VideoFrame::VideoFrame(const VideoFrame &other):
+    Frame(other)
 {
 
 }
 
 VideoFrame::VideoFrame(int width, int height, const VideoFormat &format, const ByteArray &data):
-    Frame()
+    Frame(new VideoFramePrivate)
 {
     DPTR_D(VideoFrame);
-    d.width = width;
-    d.height = height;
-    d.data = data;
-    d.setFormat(format);
+    d->width = width;
+    d->height = height;
+    d->data = data;
+//    d->format = format;
+    d->setFormat(format);
 }
 
 VideoFrame::~VideoFrame()
@@ -53,81 +60,87 @@ VideoFrame::~VideoFrame()
 
 }
 
+VideoFrame &VideoFrame::operator=(const VideoFrame &other)
+{
+    d_ptr = other.d_ptr;
+    return *this;
+}
+
 int VideoFrame::channelCount() const {
     DPTR_D(const VideoFrame);
-    if (!d.format.isValid())
+    if (!d->format.isValid())
         return 0;
-    return d.format.channels();
+    return d->format.channels();
 }
 
 bool VideoFrame::isValid() const {
     DPTR_D(const VideoFrame);
-    return d.width > 0 && d.height > 0 && d.format.isValid();
+    return d->width > 0 && d->height > 0 && d->format.isValid();
 }
 
 Size VideoFrame::size() {
     DPTR_D(const VideoFrame);
-    return Size(d.width, d.height);
+    return Size(d->width, d->height);
 }
 
 VideoFormat VideoFrame::format() const {
     DPTR_D(const VideoFrame);
-    return d.format;
+    return d->format;
 }
 
 VideoFormat::EPixelFormat VideoFrame::pixelFormat() const {
     DPTR_D(const VideoFrame);
-    return d.format.pixelFormat();
+    return d->format.pixelFormat();
 }
 
 int VideoFrame::pixelFormatFFmpeg() const {
     DPTR_D(const VideoFrame);
-    return d.format.pixelFormatFFmpeg();
+    return d->format.pixelFormatFFmpeg();
 }
 
 int VideoFrame::width() const {
     DPTR_D(const VideoFrame);
-    return d.width;
+    return d->width;
 }
 
 int VideoFrame::height() const {
     DPTR_D(const VideoFrame);
-    return d.height;
+    return d->height;
 }
 
 ColorSpace VideoFrame::colorSpace() const {
     DPTR_D(const VideoFrame);
-    return d.color_space;
+    return d->color_space;
 }
 
 void VideoFrame::setColorSpace(ColorSpace space) {
     DPTR_D(VideoFrame);
-    d.color_space = space;
+    d->color_space = space;
 }
 
 ColorRange VideoFrame::colorRange() const {
     DPTR_D(const VideoFrame);
-    return d.color_range;
+    return d->color_range;
 }
 
 void VideoFrame::setColorRange(ColorRange range) {
     DPTR_D(VideoFrame);
-    d.color_range = range;
+    d->color_range = range;
 }
 
 int VideoFrame::planeWidth(int plane) const {
     DPTR_D(const VideoFrame);
-    return d.format.width(d.width, plane);
+    return d->format.width(d->width, plane);
 }
 
 int VideoFrame::planeHeight(int plane) const {
     DPTR_D(const VideoFrame);
-    return d.format.height(d.height, plane);
+    return d->format.height(d->height, plane);
 }
 
 void VideoFrame::setDisplayAspectRatio(float aspect) {
     DPTR_D(VideoFrame);
-    d.displayAspectRatio = aspect;
+    d->displayAspectRatio = aspect;
 }
 
 }

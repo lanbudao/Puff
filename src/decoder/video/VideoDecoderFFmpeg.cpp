@@ -56,23 +56,8 @@ public:
     };
 
     DPTR_DECLARE_PRIVATE(VideoDecoderFFmpeg)
-    VideoDecoderFFmpeg()
-        :VideoDecoderFFmpegBase()
-    {
-        setProperty("detail_skip_loop_filter", ("Skipping the loop filter (aka deblocking) usually has determinal effect on quality. However it provides a big speedup for hi definition streams"));
-        // like skip_frame
-        setProperty("detail_skip_idct", ("Force skipping of idct to speed up decoding for frame types (-1=None, "
-                                           "0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames)"));
-        setProperty("detail_skip_frame", ("Force skipping frames for speed up decoding."));
-        setProperty("detail_threads", format("%s\n%s\n%s\n",
-                "Number of decoding threads. Set before open. Maybe no effect for some decoders",
-                "0: auto",
-                "1: single thread decoding"));
-    }
-    ~VideoDecoderFFmpeg()
-    {
-
-    }
+    VideoDecoderFFmpeg();
+    ~VideoDecoderFFmpeg();
 
     static VideoDecoder* createMMAL() {
         VideoDecoderFFmpeg *vd = new VideoDecoderFFmpeg();
@@ -178,14 +163,33 @@ public:
     std::string hwa;
 };
 
+VideoDecoderFFmpeg::VideoDecoderFFmpeg()
+    :VideoDecoderFFmpegBase(new VideoDecoderFFmpegPrivate())
+{
+    setProperty("detail_skip_loop_filter", ("Skipping the loop filter (aka deblocking) usually has determinal effect on quality. However it provides a big speedup for hi definition streams"));
+    // like skip_frame
+    setProperty("detail_skip_idct", ("Force skipping of idct to speed up decoding for frame types (-1=None, "
+                                       "0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames)"));
+    setProperty("detail_skip_frame", ("Force skipping frames for speed up decoding."));
+    setProperty("detail_threads", format("%s\n%s\n%s\n",
+            "Number of decoding threads. Set before open. Maybe no effect for some decoders",
+            "0: auto",
+                                         "1: single thread decoding"));
+}
+
+VideoDecoderFFmpeg::~VideoDecoderFFmpeg()
+{
+
+}
+
 VideoDecoderId VideoDecoderFFmpeg::id() const
 {
     DPTR_D(const VideoDecoderFFmpeg);
-    if (d.hwaccel == "mmal")
+    if (d->hwaccel == "mmal")
         return VideoDecoderId_MMAL;
-    else if (d.hwaccel == "qsv")
+    else if (d->hwaccel == "qsv")
         return VideoDecoderId_QSV;
-    else if (d.hwaccel == "crystalhd")
+    else if (d->hwaccel == "crystalhd")
         return VideoDecoderId_CrystalHD;
     return VideoDecoderId_FFmpeg;
 }
@@ -193,7 +197,7 @@ VideoDecoderId VideoDecoderFFmpeg::id() const
 std::string VideoDecoderFFmpeg::description() const
 {
     const int patch = PUFF_VERSION_PATCH((int)avcodec_version());
-    return format("%s avcodec %d.%d.%d",
+    return format("%s avcodec %d->%d->%d",
             (patch >= 100 ? "FFmpeg" : "Libav"),
             (PUFF_VERSION_MAJOR((int)avcodec_version())),
             (PUFF_VERSION_MINOR((int)avcodec_version())),
@@ -202,108 +206,108 @@ std::string VideoDecoderFFmpeg::description() const
 
 void VideoDecoderFFmpeg::setSkipLoopFilter(VideoDecoderFFmpeg::DiscardType value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.skip_loop_filter = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "skip_loop_filter", (int64_t)value, 0);
+    d->skip_loop_filter = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "skip_loop_filter", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::DiscardType VideoDecoderFFmpeg::skipLoopFilter() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (DiscardType)d.skip_loop_filter;
+    return (DiscardType)d->skip_loop_filter;
 }
 
 void VideoDecoderFFmpeg::setSkipIDCT(VideoDecoderFFmpeg::DiscardType value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.skip_idct = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "skip_idct", (int64_t)value, 0);
+    d->skip_idct = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "skip_idct", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::DiscardType VideoDecoderFFmpeg::skipIDCT() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (DiscardType)d.skip_idct;
+    return (DiscardType)d->skip_idct;
 }
 
 void VideoDecoderFFmpeg::setStrict(VideoDecoderFFmpeg::StrictType value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.strict = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "strict", (int64_t)value, 0);
+    d->strict = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "strict", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::StrictType VideoDecoderFFmpeg::strict() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (StrictType)d.strict;
+    return (StrictType)d->strict;
 }
 
 void VideoDecoderFFmpeg::setSkipFrame(VideoDecoderFFmpeg::DiscardType value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.skip_frame = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "skip_frame", (int64_t)value, 0);
+    d->skip_frame = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "skip_frame", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::DiscardType VideoDecoderFFmpeg::skipFrame() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (DiscardType)d.skip_frame;
+    return (DiscardType)d->skip_frame;
 }
 
 void VideoDecoderFFmpeg::setThreads(int value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.threads = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "threads", (int64_t)value, 0);
+    d->threads = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "threads", (int64_t)value, 0);
 }
 
 int VideoDecoderFFmpeg::threads() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return d.threads;
+    return d->threads;
 }
 
 void VideoDecoderFFmpeg::setThreadFlags(VideoDecoderFFmpeg::ThreadFlag value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.thread_type = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "thread_type", (int64_t)value, 0);
+    d->thread_type = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "thread_type", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::ThreadFlag VideoDecoderFFmpeg::threadFlags() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (ThreadFlag)d.thread_type;
+    return (ThreadFlag)d->thread_type;
 }
 
 void VideoDecoderFFmpeg::setMotionVectorVisFlags(VideoDecoderFFmpeg::MotionVectorVisFlag value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.vismv = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "vismv", (int64_t)value, 0);
+    d->vismv = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "vismv", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::MotionVectorVisFlag VideoDecoderFFmpeg::motionVectorVisFlags() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (MotionVectorVisFlag)d.vismv;
+    return (MotionVectorVisFlag)d->vismv;
 }
 
 void VideoDecoderFFmpeg::setBugFlags(VideoDecoderFFmpeg::BugFlag value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.bug = value;
-    if (d.codec_ctx)
-        av_opt_set_int(d.codec_ctx, "bug", (int64_t)value, 0);
+    d->bug = value;
+    if (d->codec_ctx)
+        av_opt_set_int(d->codec_ctx, "bug", (int64_t)value, 0);
 }
 
 VideoDecoderFFmpeg::BugFlag VideoDecoderFFmpeg::bugFlags() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return (BugFlag)d.bug;
+    return (BugFlag)d->bug;
 }
 
 void VideoDecoderFFmpeg::setHwaccel(const std::string &value) {
     DPTR_D(VideoDecoderFFmpeg);
-    d.hwaccel = value;
+    d->hwaccel = value;
 }
 
 std::string VideoDecoderFFmpeg::hwaccel() const {
     DPTR_D(const VideoDecoderFFmpeg);
-    return d.hwaccel;
+    return d->hwaccel;
 }
 
 }

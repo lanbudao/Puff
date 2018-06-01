@@ -8,7 +8,7 @@
 
 namespace Puff {
 
-class FramePrivate : public DptrPrivate<Frame>
+class FramePrivate
 {
 public:
     FramePrivate()

@@ -4,6 +4,7 @@
 #include "commpeg.h"
 #include "AVLog.h"
 #include "CMutex.h"
+#include <vector>
 
 namespace Puff {
 
@@ -66,7 +67,7 @@ private:
     AVDemuxer *mDemuxer;
 };
 
-class AVDemuxerPrivate: public DptrPrivate<AVDemuxer>
+class AVDemuxerPrivate
 {
 public:
     AVDemuxerPrivate():
@@ -79,7 +80,7 @@ public:
     {
         av_register_all();
     }
-    ~AVDemuxerPrivate() PU_NO_COPY
+    ~AVDemuxerPrivate()
     {
         delete interruptHandler;
         if (format_opts) {
@@ -185,10 +186,11 @@ public:
     CMutex mutex;
 };
 
-AVDemuxer::AVDemuxer()
+AVDemuxer::AVDemuxer():
+    d_ptr(new AVDemuxerPrivate)
 {
     DPTR_D(AVDemuxer);
-    d.interruptHandler = new InterruptHandler(this);
+    d->interruptHandler = new InterruptHandler(this);
 }
 
 AVDemuxer::~AVDemuxer()
@@ -199,7 +201,7 @@ AVDemuxer::~AVDemuxer()
 void AVDemuxer::setMedia(const std::string &fileName)
 {
     DPTR_D(AVDemuxer);
-    d.fileName = fileName;
+    d->fileName = fileName;
 }
 
 bool AVDemuxer::load()
@@ -207,29 +209,29 @@ bool AVDemuxer::load()
     DPTR_D(AVDemuxer);
     unload();
 
-    ReadLock lock(&d.mutex);
+    ReadLock lock(&d->mutex);
     PU_UNUSED(lock);
     int ret = 0;
 
-    if (d.fileName.empty()) {
+    if (d->fileName.empty()) {
         return false;
     }
-    if (!d.format_ctx) {
-        d.format_ctx = avformat_alloc_context();
-        d.format_ctx->interrupt_callback = *(d.interruptHandler->handler());
+    if (!d->format_ctx) {
+        d->format_ctx = avformat_alloc_context();
+        d->format_ctx->interrupt_callback = *(d->interruptHandler->handler());
     }
 
     /*Open Stream*/
-    d.interruptHandler->begin(InterruptHandler::OpenStream);
-    ret = avformat_open_input(&d.format_ctx, d.fileName.data(), d.input_format, &d.format_opts);
-    d.interruptHandler->end();
+    d->interruptHandler->begin(InterruptHandler::OpenStream);
+    ret = avformat_open_input(&d->format_ctx, d->fileName.data(), d->input_format, &d->format_opts);
+    d->interruptHandler->end();
 
     if (ret < 0) {
         AVError::ErrorCode code = AVError::OpenError;
         return false;
     }
 
-    if (!d.findStreams()) {
+    if (!d->findStreams()) {
         return false;
     }
     return true;
@@ -239,12 +241,12 @@ void AVDemuxer::unload()
 {
     DPTR_D(AVDemuxer);
 
-    ReadLock lock(&d.mutex);
+    ReadLock lock(&d->mutex);
     PU_UNUSED(lock);
-    d.resetStreams();
-    if (d.format_ctx) {
-        avformat_close_input(&d.format_ctx);
-        d.format_ctx = NULL;
+    d->resetStreams();
+    if (d->format_ctx) {
+        avformat_close_input(&d->format_ctx);
+        d->format_ctx = NULL;
     }
 }
 
@@ -252,63 +254,63 @@ bool AVDemuxer::atEnd()
 {
     DPTR_D(AVDemuxer);
 
-    if (!d.format_ctx)
+    if (!d->format_ctx)
         return true;
-    return d.isEOF;
+    return d->isEOF;
 }
 
 bool AVDemuxer::isLoaded() const
 {
     DPTR_D(const AVDemuxer);
-    return d.format_ctx && (d.video_stream_info.codec_ctx || d.audio_stream_info.codec_ctx || d.subtitle_stream_info.codec_ctx);
+    return d->format_ctx && (d->video_stream_info.codec_ctx || d->audio_stream_info.codec_ctx || d->subtitle_stream_info.codec_ctx);
 }
 
 int AVDemuxer::stream()
 {
     DPTR_D(const AVDemuxer);
-    return d.stream;
+    return d->stream;
 }
 
 const Packet& AVDemuxer::packet() const
 {
     DPTR_D(const AVDemuxer);
-    return d.curPkt;
+    return d->curPkt;
 }
 
 int AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);
 
-    ReadLock lock(&d.mutex);
+    ReadLock lock(&d->mutex);
     PU_UNUSED(lock);
 
     int ret = -1;
     AVPacket avpkt;
 
-    d.curPkt = Packet();
+    d->curPkt = Packet();
     av_init_packet(&avpkt);
 
-    d.interruptHandler->begin(InterruptHandler::ReadStream);
-    ret = av_read_frame(d.format_ctx, &avpkt);
-    d.interruptHandler->end();
+    d->interruptHandler->begin(InterruptHandler::ReadStream);
+    ret = av_read_frame(d->format_ctx, &avpkt);
+    d->interruptHandler->end();
 
     if (ret < 0) {
         if (ret == AVERROR_EOF) {
-            if (!d.isEOF) {
+            if (!d->isEOF) {
 
-                d.isEOF = true;
+                d->isEOF = true;
             }
         }
         return ret;
     }
-    d.stream = avpkt.stream_index;
-    if (d.stream != videoStream() && d.stream != audioStream() && d.stream != subtitleStream()) {
+    d->stream = avpkt.stream_index;
+    if (d->stream != videoStream() && d->stream != audioStream() && d->stream != subtitleStream()) {
         av_packet_unref(&avpkt);
         return -1;
     }
 
     /*test*/
-//    if (d.stream == 0) {
+//    if (d->stream == 0) {
 //        AVFrame *frame = av_frame_alloc();
 //        int got_frame = false;
 //        ret = avcodec_decode_video2(videoCodecCtx(), frame, &got_frame, &avpkt);
@@ -316,32 +318,32 @@ int AVDemuxer::readFrame()
 //        int b = 0;
 //        a = b;
 //        av_frame_free(&frame);
-//    } else if (d.stream == 1) {
+//    } else if (d->stream == 1) {
 //        int a = 0;
 //        int b = 0;
 //        a = b;
 //    }
 
-    d.curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d.format_ctx->streams[d.stream]->time_base));
+    d->curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d->format_ctx->streams[d->stream]->time_base));
     av_packet_unref(&avpkt);
-    d.isEOF = false;
+    d->isEOF = false;
 
     return ret;
 }
 
 int AVDemuxer::videoStream() {
     DPTR_D(const AVDemuxer);
-    return d.video_stream_info.stream;
+    return d->video_stream_info.stream;
 }
 
 int AVDemuxer::audioStream() {
     DPTR_D(const AVDemuxer);
-    return d.audio_stream_info.stream;
+    return d->audio_stream_info.stream;
 }
 
 int AVDemuxer::subtitleStream() {
     DPTR_D(const AVDemuxer);
-    return d.subtitle_stream_info.stream;
+    return d->subtitle_stream_info.stream;
 }
 
 bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
@@ -351,14 +353,14 @@ bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
     AVDemuxerPrivate::StreamInfo *info = NULL;
 
     if (type == Stream_Video) {
-        streams = d.video_stream_info.streams;
-        info = &d.video_stream_info;
+        streams = d->video_stream_info.streams;
+        info = &d->video_stream_info;
     } else if (type == Stream_Audio) {
-        streams = d.audio_stream_info.streams;
-        info = &d.audio_stream_info;
+        streams = d->audio_stream_info.streams;
+        info = &d->audio_stream_info;
     } else if (type == Stream_Subtitle) {
-        streams = d.subtitle_stream_info.streams;
-        info = &d.subtitle_stream_info;
+        streams = d->subtitle_stream_info.streams;
+        info = &d->subtitle_stream_info;
     }
     if (!info)
         return false;
@@ -373,7 +375,7 @@ bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
         info->wanted_index = -1;
         return true;
     }
-    if (!d.setMediaStream(type, streams.at(index)))
+    if (!d->setMediaStream(type, streams.at(index)))
         return false;
     info->wanted_index = index;
     return true;
@@ -383,10 +385,10 @@ AVCodecContext *AVDemuxer::audioCodecCtx(int stream) const
 {
     DPTR_D(const AVDemuxer);
     if (stream < 0)
-        return d.audio_stream_info.codec_ctx;
-    if (stream >= d.format_ctx->nb_streams)
+        return d->audio_stream_info.codec_ctx;
+    if (stream >= d->format_ctx->nb_streams)
         return NULL;
-    AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
+    AVCodecContext *ctx = d->format_ctx->streams[stream]->codec;
     if (ctx->codec_type == AVMEDIA_TYPE_AUDIO)
         return ctx;
     return NULL;
@@ -396,10 +398,10 @@ AVCodecContext *AVDemuxer::videoCodecCtx(int stream) const
 {
     DPTR_D(const AVDemuxer);
     if (stream < 0)
-        return d.video_stream_info.codec_ctx;
-    if (stream >= d.format_ctx->nb_streams)
+        return d->video_stream_info.codec_ctx;
+    if (stream >= d->format_ctx->nb_streams)
         return NULL;
-    AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
+    AVCodecContext *ctx = d->format_ctx->streams[stream]->codec;
     if (ctx->codec_type == AVMEDIA_TYPE_VIDEO)
         return ctx;
     return NULL;
@@ -409,10 +411,10 @@ AVCodecContext *AVDemuxer::subtitleCodecCtx(int stream) const
 {
     DPTR_D(const AVDemuxer);
     if (stream < 0)
-        return d.subtitle_stream_info.codec_ctx;
-    if (stream >= d.format_ctx->nb_streams)
+        return d->subtitle_stream_info.codec_ctx;
+    if (stream >= d->format_ctx->nb_streams)
         return NULL;
-    AVCodecContext *ctx = d.format_ctx->streams[stream]->codec;
+    AVCodecContext *ctx = d->format_ctx->streams[stream]->codec;
     if (ctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
         return ctx;
     return NULL;

@@ -13,7 +13,6 @@ class PU_AV_EXPORT AudioDecoder: public AVDecoder
 {
     DPTR_DECLARE_PRIVATE(AudioDecoder)
 public:
-    AudioDecoder();
     ~AudioDecoder();
 
     static StringList supportedCodecs();
@@ -49,7 +48,7 @@ private:
 
 protected:
     static bool Register(AudioDecoderId id, AudioDecoderCreator, const char *name);
-
+    AudioDecoder(AudioDecoderPrivate *d);
 };
 
 extern AudioDecoderId AudioDecoderId_FFmpeg;

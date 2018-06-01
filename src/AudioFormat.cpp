@@ -34,7 +34,7 @@ static const sample_fmt_entry samplefmts[] = {
     { AV_SAMPLE_FMT_NONE, AudioFormat::SampleFormat_Unknown, "unknown" }
 };
 
-class AudioFormatPrivate: public DptrPrivate<AudioFormat>
+class AudioFormatPrivate
 {
 public:
     AudioFormatPrivate():
@@ -81,6 +81,19 @@ AudioFormat::~AudioFormat() {
 
 }
 
+AudioFormat::AudioFormat(const AudioFormat &other)
+{
+    DPTR_D(AudioFormat);
+    d_ptr = other.d_ptr;
+}
+
+AudioFormat &AudioFormat::operator=(const AudioFormat &other)
+{
+    DPTR_D(AudioFormat);
+    d_ptr = other.d_ptr;
+    return *this;
+}
+
 AudioFormat::SampleFormat AudioFormat::sampleFormatFromFFmpeg(int fffmt)
 {
     for (int i = 0; samplefmts[i].fmt != AudioFormat::SampleFormat_Unknown; ++i) {
@@ -117,39 +130,39 @@ int64_t AudioFormat::channelLayoutToFFmpeg(AudioFormat::ChannelLayout cl) {
 
 bool AudioFormat::isValid() const {
     DPTR_D(const AudioFormat);
-    return d.sample_fmt > 0 &&
-            (d.channels > 0 || d.channel_layout > 0) &&
-            d.sample_fmt != AudioFormat::SampleFormat_Unknown;
+    return d->sample_fmt > 0 &&
+            (d->channels > 0 || d->channel_layout > 0) &&
+            d->sample_fmt != AudioFormat::SampleFormat_Unknown;
 }
 
 bool AudioFormat::isFloat() const {
     DPTR_D(const AudioFormat);
-    return !!(d.sample_fmt & kFloat);
+    return !!(d->sample_fmt & kFloat);
 }
 
 bool AudioFormat::isPlanar() const {
     DPTR_D(const AudioFormat);
-    return !!(d.sample_fmt & kPlanar);
+    return !!(d->sample_fmt & kPlanar);
 }
 
 bool AudioFormat::isUnsigned() const {
     DPTR_D(const AudioFormat);
-    return !!(d.sample_fmt & kUnsigned);
+    return !!(d->sample_fmt & kUnsigned);
 }
 
 int AudioFormat::channels() const {
     DPTR_D(const AudioFormat);
-    return d.channels;
+    return d->channels;
 }
 
 void AudioFormat::setChannels(int cls) {
     DPTR_D(AudioFormat);
-    d.setChannels(cls);
+    d->setChannels(cls);
 }
 
 int AudioFormat::bytesPerSample() const {
     DPTR_D(const AudioFormat);
-    return d.sample_fmt & (((1 << (kSize + 1)) - 1));
+    return d->sample_fmt & (((1 << (kSize + 1)) - 1));
 }
 
 int AudioFormat::bytesPerFrame() const {
@@ -168,63 +181,63 @@ int64_t AudioFormat::durationForBytes(int64_t bytes) {
 void AudioFormat::setSampleFormat(AudioFormat::SampleFormat sampleFormat)
 {
     DPTR_D(AudioFormat);
-    d.sample_fmt = sampleFormat;
-    d.av_sample_fmt = (AVSampleFormat)AudioFormat::sampleFormatToFFmpeg(sampleFormat);
+    d->sample_fmt = sampleFormat;
+    d->av_sample_fmt = (AVSampleFormat)AudioFormat::sampleFormatToFFmpeg(sampleFormat);
 }
 
 AudioFormat::SampleFormat AudioFormat::sampleFormat() const
 {
     DPTR_D(const AudioFormat);
-    return d.sample_fmt;
+    return d->sample_fmt;
 }
 
 void AudioFormat::setSampleFormatFFmpeg(int ffSampleFormat)
 {
     DPTR_D(AudioFormat);
-    d.av_sample_fmt = (AVSampleFormat)ffSampleFormat;
-    d.sample_fmt = AudioFormat::sampleFormatFromFFmpeg(ffSampleFormat);
+    d->av_sample_fmt = (AVSampleFormat)ffSampleFormat;
+    d->sample_fmt = AudioFormat::sampleFormatFromFFmpeg(ffSampleFormat);
 }
 
 int AudioFormat::sampleFormatFFmpeg() const
 {
     DPTR_D(const AudioFormat);
-    return d.av_sample_fmt;
+    return d->av_sample_fmt;
 }
 
 void AudioFormat::setChannelLayoutFFmpeg(int64_t layout)
 {
     DPTR_D(AudioFormat);
-    d.channel_layout_ff = layout;
-    d.channel_layout = AudioFormat::channelLayoutFromFFmpeg(layout);
+    d->channel_layout_ff = layout;
+    d->channel_layout = AudioFormat::channelLayoutFromFFmpeg(layout);
 }
 
 int64_t AudioFormat::channelLayoutFFmpeg() const
 {
     DPTR_D(const AudioFormat);
-    return d.channel_layout_ff;
+    return d->channel_layout_ff;
 }
 
 void AudioFormat::setChannelLayout(AudioFormat::ChannelLayout layout)
 {
     DPTR_D(AudioFormat);
-    d.channel_layout = layout;
-    d.channel_layout_ff = AudioFormat::channelLayoutToFFmpeg(layout);
+    d->channel_layout = layout;
+    d->channel_layout_ff = AudioFormat::channelLayoutToFFmpeg(layout);
 }
 
 AudioFormat::ChannelLayout AudioFormat::channelLayout() const
 {
     DPTR_D(const AudioFormat);
-    return d.channel_layout;
+    return d->channel_layout;
 }
 
 int AudioFormat::sampleRate() const {
     DPTR_D(const AudioFormat);
-    return d.sample_rate;
+    return d->sample_rate;
 }
 
 void AudioFormat::setSampleRate(int rate) {
     DPTR_D(AudioFormat);
-    d.sample_rate = rate;
+    d->sample_rate = rate;
 }
 
 int AudioFormat::planeCount() const {

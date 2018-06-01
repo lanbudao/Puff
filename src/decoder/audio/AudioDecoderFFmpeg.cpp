@@ -30,6 +30,7 @@ public:
 
 class AudioDecoderFFmpeg: public AudioDecoder
 {
+    DPTR_DECLARE_PRIVATE(AudioDecoderFFmpeg)
 public:
     AudioDecoderFFmpeg();
     ~AudioDecoderFFmpeg();
@@ -45,7 +46,8 @@ public:
 AudioDecoderId AudioDecoderId_FFmpeg = mkid::id32base36_6<'F', 'F', 'm', 'p', 'e', 'g'>::value;
 FACTORY_REGISTER(AudioDecoder, FFmpeg, "FFmpeg")
 
-AudioDecoderFFmpeg::AudioDecoderFFmpeg()
+AudioDecoderFFmpeg::AudioDecoderFFmpeg():
+    AudioDecoder(new AudioDecoderFFmpegPrivate)
 {
 
 }
@@ -75,17 +77,17 @@ AudioFrame AudioDecoderFFmpeg::frame()
     DPTR_D(AudioDecoderFFmpeg);
 
     AudioFormat format;
-    format.setSampleFormatFFmpeg(d.frame->format);
-    format.setChannelLayoutFFmpeg(d.frame->channel_layout);
-    format.setSampleRate(d.frame->sample_rate);
+    format.setSampleFormatFFmpeg(d->frame->format);
+    format.setChannelLayoutFFmpeg(d->frame->channel_layout);
+    format.setSampleRate(d->frame->sample_rate);
     if (!format.isValid())
         return AudioFrame();
     AudioFrame f(format);
-    f.setBits(d.frame->extended_data);
-    f.setBytesPerLine(d.frame->linesize[0], 0);
-    f.setSamplePerChannel(d.frame->nb_samples);
-    f.setTimestamp((double)d.frame->pkt_pts / 1000.0);
-//    f.setAudioResampler(d.resampler);
+    f.setBits(d->frame->extended_data);
+    f.setBytesPerLine(d->frame->linesize[0], 0);
+    f.setSamplePerChannel(d->frame->nb_samples);
+    f.setTimestamp((double)d->frame->pkt_pts / 1000.0);
+//    f.setAudioResampler(d->resampler);
     return f;
 }
 
@@ -101,11 +103,11 @@ bool AudioDecoderFFmpeg::decode(const Packet &pkt)
         av_init_packet(&eofpkt);
         eofpkt.data = NULL;
         eofpkt.size = 0;
-        ret = avcodec_decode_audio4(d.codec_ctx, d.frame, &got_frame, &eofpkt);
+        ret = avcodec_decode_audio4(d->codec_ctx, d->frame, &got_frame, &eofpkt);
     } else {
-        ret = avcodec_decode_audio4(d.codec_ctx, d.frame, &got_frame, pkt.asAVPacket());
+        ret = avcodec_decode_audio4(d->codec_ctx, d->frame, &got_frame, pkt.asAVPacket());
     }
-    d.undecoded_size = puMin(pkt.data.size() - ret, pkt.data.size());
+    d->undecoded_size = puMin(pkt.data.size() - ret, pkt.data.size());
     if (ret == AVERROR(EAGAIN))
         return false;
     if (ret < 0) {
@@ -113,7 +115,7 @@ bool AudioDecoderFFmpeg::decode(const Packet &pkt)
         return false;
     }
     if (!got_frame) {
-        avdebug("no frame could be decompressed: %s %d/%d", averror2str(ret), d.undecoded_size, pkt.data.size());
+        avdebug("no frame could be decompressed: %s %d/%d", averror2str(ret), d->undecoded_size, pkt.data.size());
         return !pkt.isEOF();
     }
     return true;

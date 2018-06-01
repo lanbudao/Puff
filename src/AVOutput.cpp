@@ -3,7 +3,8 @@
 
 namespace Puff {
 
-AVOutput::AVOutput()
+AVOutput::AVOutput(AVOutputPrivate *d):
+    d_ptr(d)
 {
 
 }
@@ -16,19 +17,19 @@ AVOutput::~AVOutput()
 bool AVOutput::isAvaliable() const
 {
     DPTR_D(const AVOutput);
-    return d.avaliable;
+    return d->avaliable;
 }
 
 void AVOutput::pause(bool p)
 {
     DPTR_D(AVOutput);
-    d.pause = p;
+    d->pause = p;
 }
 
 bool AVOutput::isPaused() const
 {
     DPTR_D(const AVOutput);
-    return d.pause;
+    return d->pause;
 }
 
 }

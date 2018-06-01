@@ -2,7 +2,6 @@
 #define PUFF_AVDEMUXER_H
 
 #include "AVGlobal.h"
-#include "CObject.h"
 #include "Packet.h"
 
 struct AVCodecContext;
@@ -10,10 +9,9 @@ struct AVCodecContext;
 namespace Puff {
 
 class AVDemuxerPrivate;
-class PU_AV_EXPORT AVDemuxer: public CObject
+class PU_AV_EXPORT AVDemuxer
 {
     DPTR_DECLARE_PRIVATE(AVDemuxer)
-
 public:
     AVDemuxer();
     ~AVDemuxer();

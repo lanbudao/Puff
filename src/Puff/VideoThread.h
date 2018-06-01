@@ -17,6 +17,8 @@ public:
 protected:
     void run() PU_DECL_OVERRIDE;
     bool sendVideoFrame(VideoFrame &frame);
+
+protected:
 };
 }
 #endif //PUFF_VIDEOTHREAD_H

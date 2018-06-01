@@ -210,7 +210,7 @@ static const struct {
     { VideoFormat::Format_Invalid, AV_PIX_FMT_NONE },
 };
 
-class VideoFormatPrivate: public DptrPrivate<VideoFormat>
+class VideoFormatPrivate/*: public DptrPrivate<VideoFormat>*/
 {
 public:
     VideoFormatPrivate():
@@ -315,28 +315,30 @@ private:
     }
 };
 
-VideoFormat::VideoFormat(EPixelFormat fmt)
+VideoFormat::VideoFormat(EPixelFormat fmt):
+    d(new VideoFormatPrivate)
 {
-    DPTR_D(VideoFormat);
-    d.setFormat(fmt);
+//    //DPTR_D(VideoFormat);
+    d->setFormat(fmt);
 }
 
-VideoFormat::VideoFormat(int pix_fmt)
+VideoFormat::VideoFormat(int pix_fmt):
+    d(new VideoFormatPrivate)
 {
-    DPTR_D(VideoFormat);
-    d.setFormat((AVPixelFormat)pix_fmt);
+//    //DPTR_D(VideoFormat);
+    d->setFormat((AVPixelFormat)pix_fmt);
 }
 
 VideoFormat::VideoFormat(const VideoFormat &other)
 {
-    DPTR_D(VideoFormat);
-    dptr_d = other.dptr_d;
+//    dptr_d = other.dptr_d;
+    d = other.d;
 }
 
 VideoFormat &VideoFormat::operator=(const VideoFormat &other)
 {
-    DPTR_D(VideoFormat);
-    dptr_d = other.dptr_d;
+//    dptr_d = other.dptr_d;
+    d = other.d;
     return *this;
 }
 
@@ -372,73 +374,73 @@ std::vector<int> VideoFormat::pixelFormatsFFmpeg() {
 }
 
 int VideoFormat::bytesPerLine(int width, int plane) const {
-    DPTR_D(const VideoFormat);
-    return d.bytesPerLine(width, plane);
+    //DPTR_D(const VideoFormat);
+    return d->bytesPerLine(width, plane);
 }
 
 int VideoFormat::chromaWidth(int lumaWidth) const {
-    DPTR_D(const VideoFormat);
-    return -((-lumaWidth) >> d.descriptor->log2_chroma_w);
+    //DPTR_D(const VideoFormat);
+    return -((-lumaWidth) >> d->descriptor->log2_chroma_w);
 }
 
 int VideoFormat::chromaHeight(int lumaHeight) const {
-    DPTR_D(const VideoFormat);
-    return -((-lumaHeight) >> d.descriptor->log2_chroma_h);
+    //DPTR_D(const VideoFormat);
+    return -((-lumaHeight) >> d->descriptor->log2_chroma_h);
 }
 
 int VideoFormat::width(int lumaWidth, int plane) const {
-    DPTR_D(const VideoFormat);
+    //DPTR_D(const VideoFormat);
     if (plane <= 0)
         return lumaWidth;
     return chromaWidth(lumaWidth);
 }
 
 int VideoFormat::height(int lumaHeight, int plane) const {
-    DPTR_D(const VideoFormat);
+    //DPTR_D(const VideoFormat);
     if (plane <= 0)
         return lumaHeight;
     return chromaHeight(lumaHeight);
 }
 
 std::string VideoFormat::name() const {
-    DPTR_D(const VideoFormat);
-    return d.name();
+    //DPTR_D(const VideoFormat);
+    return d->name();
 }
 
 bool VideoFormat::isBigEndian() const {
-    DPTR_D(const VideoFormat);
-    return (d.flags() & AV_PIX_FMT_FLAG_BE) == AV_PIX_FMT_FLAG_BE;
+    //DPTR_D(const VideoFormat);
+    return (d->flags() & AV_PIX_FMT_FLAG_BE) == AV_PIX_FMT_FLAG_BE;
 }
 
 bool VideoFormat::isBitStream() const {
-    DPTR_D(const VideoFormat);
-    return (d.flags() & AV_PIX_FMT_FLAG_BITSTREAM) == AV_PIX_FMT_FLAG_BITSTREAM;
+    //DPTR_D(const VideoFormat);
+    return (d->flags() & AV_PIX_FMT_FLAG_BITSTREAM) == AV_PIX_FMT_FLAG_BITSTREAM;
 }
 
 bool VideoFormat::isHwaccel() const {
-    DPTR_D(const VideoFormat);
-    return (d.flags() & AV_PIX_FMT_FLAG_HWACCEL) == AV_PIX_FMT_FLAG_HWACCEL;
+    //DPTR_D(const VideoFormat);
+    return (d->flags() & AV_PIX_FMT_FLAG_HWACCEL) == AV_PIX_FMT_FLAG_HWACCEL;
 }
 
 bool VideoFormat::isPlanar() const {
-    DPTR_D(const VideoFormat);
-    return (d.flags() & AV_PIX_FMT_FLAG_PLANAR) == AV_PIX_FMT_FLAG_PLANAR;
+    //DPTR_D(const VideoFormat);
+    return (d->flags() & AV_PIX_FMT_FLAG_PLANAR) == AV_PIX_FMT_FLAG_PLANAR;
 }
 
 bool VideoFormat::isRGB() const {
-    DPTR_D(const VideoFormat);
-    return (d.flags() & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB &&
-            d.pixfmt != Format_VYU;
+    //DPTR_D(const VideoFormat);
+    return (d->flags() & AV_PIX_FMT_FLAG_RGB) == AV_PIX_FMT_FLAG_RGB &&
+            d->pixfmt != Format_VYU;
 }
 
 bool VideoFormat::isXYZ() const {
-    DPTR_D(const VideoFormat);
-    return d.pixfmt == Format_XYZ12 || d.pixfmt == Format_XYZ12BE || d.pixfmt == Format_XYZ12LE;
+    //DPTR_D(const VideoFormat);
+    return d->pixfmt == Format_XYZ12 || d->pixfmt == Format_XYZ12BE || d->pixfmt == Format_XYZ12LE;
 }
 
 bool VideoFormat::hasAlpha() const {
-    DPTR_D(const VideoFormat);
-    return (d.flags() & AV_PIX_FMT_FLAG_ALPHA) == AV_PIX_FMT_FLAG_ALPHA;
+    //DPTR_D(const VideoFormat);
+    return (d->flags() & AV_PIX_FMT_FLAG_ALPHA) == AV_PIX_FMT_FLAG_ALPHA;
 }
 
 bool VideoFormat::isPlanar(EPixelFormat pixfmt) {
@@ -465,71 +467,71 @@ bool VideoFormat::hasAlpha(EPixelFormat pixfmt) {
 }
 
 int VideoFormat::channels() const {
-    DPTR_D(const VideoFormat);
-    if (!d.descriptor)
+    //DPTR_D(const VideoFormat);
+    if (!d->descriptor)
         return 0;
-    return d.descriptor->nb_components;
+    return d->descriptor->nb_components;
 }
 
 int VideoFormat::channels(int plane) const {
-    DPTR_D(const VideoFormat);
-    if (plane >= d.channels.size() || plane < 0)
+    //DPTR_D(const VideoFormat);
+    if (plane >= d->channels.size() || plane < 0)
         return 0;
-    return d.channels.at(plane);
+    return d->channels.at(plane);
 }
 
 int VideoFormat::planeCount() const {
-    DPTR_D(const VideoFormat);
-    return d.planes;
+    //DPTR_D(const VideoFormat);
+    return d->planes;
 }
 
 int VideoFormat::bitsPerPixel() const {
-    DPTR_D(const VideoFormat);
-    return d.bitsPerPixel;
+    //DPTR_D(const VideoFormat);
+    return d->bitsPerPixel;
 }
 
 int VideoFormat::bitsPerPixelPadded() const {
-    DPTR_D(const VideoFormat);
-    return d.bitsPerPixel_pad;
+    //DPTR_D(const VideoFormat);
+    return d->bitsPerPixel_pad;
 }
 
 int VideoFormat::bitsPerPixel(int plane) const {
-    DPTR_D(const VideoFormat);
-    if (plane >= d.bitsPerPixels.size() || plane < 0)
+    //DPTR_D(const VideoFormat);
+    if (plane >= d->bitsPerPixels.size() || plane < 0)
         return 0;
-    return d.bitsPerPixels.at(plane);
+    return d->bitsPerPixels.at(plane);
 }
 
 int VideoFormat::bitsPerComponent() const {
-    DPTR_D(const VideoFormat);
-    return d.bitsPerComponent;
+    //DPTR_D(const VideoFormat);
+    return d->bitsPerComponent;
 }
 
 int VideoFormat::bytesPerPixel() const {
-    DPTR_D(const VideoFormat);
-    return (d.bitsPerPixel + 7) >> 3;
+    //DPTR_D(const VideoFormat);
+    return (d->bitsPerPixel + 7) >> 3;
 }
 
 int VideoFormat::bytesPerPixel(int plane) const {
-    DPTR_D(const VideoFormat);
-    if (plane >= d.bitsPerPixels.size() || plane < 0)
+    //DPTR_D(const VideoFormat);
+    if (plane >= d->bitsPerPixels.size() || plane < 0)
         return 0;
-    return d.bitsPerPixels.at(plane);
+    return d->bitsPerPixels.at(plane);
 }
 
 bool VideoFormat::isValid() const {
-    DPTR_D(const VideoFormat);
-    return d.pixfmt != Format_Invalid && d.pixfmt_ff != AV_PIX_FMT_NONE;
+    //DPTR_D(const VideoFormat);
+    return d->pixfmt != Format_Invalid && d->pixfmt_ff != AV_PIX_FMT_NONE;
 }
 
 VideoFormat::EPixelFormat VideoFormat::pixelFormat() const {
-    DPTR_D(const VideoFormat);
-    return d.pixfmt;
+    //DPTR_D(const VideoFormat);
+    return d->pixfmt;
 }
 
 int VideoFormat::pixelFormatFFmpeg() const {
-    DPTR_D(const VideoFormat);
-    return d.pixfmt_ff;
+    //DPTR_D(const VideoFormat);
+    return d->pixfmt_ff;
 }
 
 }

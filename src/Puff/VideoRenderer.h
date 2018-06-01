@@ -11,7 +11,6 @@ class PU_AV_EXPORT VideoRenderer: public AVOutput
 {
     DPTR_DECLARE_PRIVATE(VideoRenderer)
 public:
-    VideoRenderer();
     virtual ~VideoRenderer();
 
     void receiveFrame(const VideoFrame &frame);
@@ -21,6 +20,7 @@ public:
 
 protected:
     virtual void onResizeRenderer(int width, int height);
+    VideoRenderer(VideoRendererPrivate *d);
 };
 
 }

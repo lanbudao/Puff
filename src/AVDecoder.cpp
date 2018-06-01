@@ -21,7 +21,9 @@ static AVCodec *findCodec(const std::string &name, const std::string &hwaccel, A
     return NULL;
 }
 
-AVDecoder::AVDecoder()
+AVDecoder::AVDecoder(AVDecoderPrivate *d):
+    CObject(),
+    d_ptr(d)
 {
     avcodec_register_all();
 }
@@ -34,68 +36,68 @@ AVDecoder::~AVDecoder()
 AVCodecContext * AVDecoder::codecCtx()
 {
     DPTR_D(AVDecoder);
-    return d.codec_ctx;
+    return d->codec_ctx;
 }
 
 bool AVDecoder::open()
 {
     DPTR_D(AVDecoder);
 
-    d.opened = false;
-    if (!d.codec_ctx) {
+    d->opened = false;
+    if (!d->codec_ctx) {
         return false;
     }
-    AVCodec *codec = findCodec(d.codec_name, d.hwaccel, d.codec_ctx->codec_id);
+    AVCodec *codec = findCodec(d->codec_name, d->hwaccel, d->codec_ctx->codec_id);
     if (!codec) {
         //TODO error signal
         return false;
     }
-    if (!d.open()) {
-        d.close();
+    if (!d->open()) {
+        d->close();
         return false;
     }
-    d.opened = true;
-    AV_RUN_CHECK(avcodec_open2(d.codec_ctx, codec, &d.dict), false);
+    d->opened = true;
+    AV_RUN_CHECK(avcodec_open2(d->codec_ctx, codec, &d->dict), false);
     return true;
 }
 
 bool AVDecoder::close()
 {
     DPTR_D(AVDecoder);
-    if (!d.opened)
+    if (!d->opened)
         return true;
     flush();
-    d.close();
-    if (d.codec_ctx)
-        AV_RUN_CHECK(avcodec_close(d.codec_ctx), false);
+    d->close();
+    if (d->codec_ctx)
+        AV_RUN_CHECK(avcodec_close(d->codec_ctx), false);
     return true;
 }
 
 bool AVDecoder::isOpen()
 {
     DPTR_D(const AVDecoder);
-    return d.opened;
+    return d->opened;
 }
 
 void AVDecoder::flush()
 {
     DPTR_D(AVDecoder);
-    d.flush();
+    d->flush();
 }
 
 void AVDecoder::setCodecName(const std::string &name)
 {
     DPTR_D(AVDecoder);
 
-    if (d.codec_name == name)
+    if (d->codec_name == name)
         return;
-    d.codec_name = name;
+    d->codec_name = name;
 }
 
 std::string AVDecoder::codecName() const
 {
     DPTR_D(const AVDecoder);
-    return d.codec_name;
+    return d->codec_name;
 }
 
 void AVDecoderPrivate::flush()
@@ -113,27 +115,27 @@ void AVDecoderPrivate::applyOptionsForDict()
 
 bool AVDecoder::isAvailable() const {
     DPTR_D(const AVDecoder);
-    return d.codec_ctx != NULL;
+    return d->codec_ctx != NULL;
 }
 
 void AVDecoder::setCodecCtx(void *ctx)
 {
     DPTR_D(AVDecoder);
     AVCodecContext *codec_ctx = (AVCodecContext *)ctx;
-    if (codec_ctx == d.codec_ctx)
+    if (codec_ctx == d->codec_ctx)
         return;
     if (isOpen())
         close();
     if (!codec_ctx) {
-        avcodec_free_context(&d.codec_ctx);
-        d.codec_ctx = NULL;
+        avcodec_free_context(&d->codec_ctx);
+        d->codec_ctx = NULL;
         return;
     }
-    if (!d.codec_ctx)
-        d.codec_ctx = avcodec_alloc_context3(codec_ctx->codec);
-    if (!d.codec_ctx)
+    if (!d->codec_ctx)
+        d->codec_ctx = avcodec_alloc_context3(codec_ctx->codec);
+    if (!d->codec_ctx)
         return;
-    AV_ENSURE_OK(avcodec_copy_context(d.codec_ctx, codec_ctx));
+    AV_ENSURE_OK(avcodec_copy_context(d->codec_ctx, codec_ctx));
 }
 
 }

@@ -17,7 +17,6 @@ protected:
     void run() PU_DECL_OVERRIDE;
 
 private:
-    DPTR_DECLARE(AudioThread)
 };
 
 }

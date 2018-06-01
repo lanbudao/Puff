@@ -15,7 +15,7 @@ public:
 };
 
 VideoThread::VideoThread():
-    AVThread()
+    AVThread(new VideoThreadPrivate)
 {
 
 }
@@ -30,15 +30,15 @@ void VideoThread::run()
     DPTR_D(VideoThread);
 
     avdebug("video thread id:%d.\n", id());
-    auto *dec = dynamic_cast<VideoDecoder *>(d.decoder);
+    auto *dec = dynamic_cast<VideoDecoder *>(d->decoder);
 
     Packet pkt;
-    VideoFrame frame;
+    VideoFrame current_frame;
 
-    while (!d.stopped) {
+    while (!d->stopped) {
 
         if (!pkt.isValid()) {
-            pkt = d.packets.dequeue();
+            pkt = d->packets.dequeue();
         }
 
         if (pkt.isEOF()) {
@@ -53,13 +53,13 @@ void VideoThread::run()
             pkt = Packet();
             continue;
         }
-        frame = dec->frame();
+        VideoFrame frame = dec->frame();
         if (!frame.isValid()) {
             continue;
         }
         if (!sendVideoFrame(frame))
             continue;
-        d.current_frame = frame;
+        current_frame = frame;
     }
 
     AVThread::run();
@@ -67,7 +67,7 @@ void VideoThread::run()
 
 bool VideoThread::sendVideoFrame(VideoFrame &frame)
 {
-    DPTR_D(VideoFrame);
+    DPTR_D(VideoThread);
 
     return true;
 }

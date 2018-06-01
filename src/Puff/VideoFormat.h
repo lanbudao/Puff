@@ -12,7 +12,7 @@ namespace Puff {
 class VideoFormatPrivate;
 class PU_AV_EXPORT VideoFormat
 {
-    DPTR_DECLARE_PRIVATE(VideoFormat)
+//    DPTR_DECLARE_PRIVATE(VideoFormat)
 public:
     /**
      * @brief The PixelFormat enum
@@ -167,7 +167,8 @@ public:
     int pixelFormatFFmpeg() const;
 
 private:
-    DPTR_DECLARE(VideoFormat)
+//    DPTR_DECLARE(VideoFormat)
+    std::shared_ptr<VideoFormatPrivate> d;
 };
 
 }

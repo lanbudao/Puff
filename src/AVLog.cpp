@@ -6,7 +6,8 @@
 
 namespace Puff {
 
-class AVLogPrivate: public DptrPrivate<AVLog> {
+class AVLogPrivate
+{
 public:
     AVLogPrivate():
         level(LogAll),
@@ -41,7 +42,8 @@ public:
     FILE *stream;
 };
 
-AVLog::AVLog()
+AVLog::AVLog():
+    d_ptr(new AVLogPrivate)
 {
 
 }
@@ -54,7 +56,7 @@ void AVLog::log(LogLevel level, const char *fmt, ...)
 {
     DPTR_D(AVLog);
 
-    if (level > d.level)
+    if (level > d->level)
         return;
     std::string output;
     va_list marker = NULL;
@@ -67,30 +69,30 @@ void AVLog::log(LogLevel level, const char *fmt, ...)
     va_end(marker);
     printf(output.c_str());
     fflush(stdout);
-    d.writeOutput(output);
+    d->writeOutput(output);
 }
 
 void AVLog::setLevel(LogLevel level)
 {
     DPTR_D(AVLog);
 
-    d.level = level;
+    d->level = level;
 }
 
 LogLevel AVLog::level() const
 {
     DPTR_D(const AVLog);
 
-    return d.level;
+    return d->level;
 }
 
 void AVLog::setLogFile(const std::string &file)
 {
     DPTR_D(AVLog);
-    if (d.log_file == file) {
+    if (d->log_file == file) {
         return;
     }
-    d.log_file = file;
+    d->log_file = file;
 
 }
 

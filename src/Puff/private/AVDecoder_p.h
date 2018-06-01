@@ -8,7 +8,7 @@
 
 namespace Puff {
 
-class AVDecoderPrivate: public DptrPrivate<AVDecoder>
+class AVDecoderPrivate
 {
 public:
     AVDecoderPrivate():

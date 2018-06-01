@@ -2,7 +2,7 @@
 
 namespace Puff {
 
-class AVClockPrivate: public DptrPrivate<AVClock>
+class AVClockPrivate
 {
 public:
     AVClockPrivate()

@@ -72,17 +72,18 @@ public:
     int winId;
 };
 
-SDLRenderer::SDLRenderer()
+SDLRenderer::SDLRenderer():
+    VideoRenderer(new SDLRendererPrivate)
 {
 }
 
 void SDLRenderer::init(int w, int h) {
-    d_func().init();
+    d_func()->init();
     resizeRenderer(w, h);
 }
 
 void SDLRenderer::init(int winId) {
-    d_func().init(winId);
+    d_func()->init(winId);
 }
 
 SDLRenderer::~SDLRenderer()
@@ -92,11 +93,11 @@ SDLRenderer::~SDLRenderer()
 
 void SDLRenderer::onResizeRenderer(int width, int height)
 {
-    d_func().resizeWindow(width, height);
+    d_func()->resizeWindow(width, height);
 }
 
 void SDLRenderer::show() {
-    if (d_func().winId)
+    if (d_func()->winId)
         return;
     SDL_Event event;
     while (1) {

@@ -6,7 +6,7 @@
 
 namespace Puff {
 
-class AVOutputPrivate: public DptrPrivate<AVOutput>
+class AVOutputPrivate
 {
 public:
     AVOutputPrivate():

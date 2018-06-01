@@ -5,6 +5,7 @@
 #include "ByteArray.h"
 #include <vector>
 #include "DPTR.h"
+#include <memory>
 
 namespace Puff {
 
@@ -13,9 +14,8 @@ class PU_AV_EXPORT Frame
 {
     DPTR_DECLARE_PRIVATE(Frame)
 public:
-    Frame();
     virtual ~Frame();
-
+    Frame(const Frame &other);
     Frame &operator = (const Frame &other);
 
     /**
@@ -61,6 +61,7 @@ public:
     void setTimestamp(double t);
 
 protected:
+    Frame(FramePrivate *d);
     DPTR_DECLARE(Frame)
 };
 

@@ -14,7 +14,7 @@ static int running(void *context)
     return 0;
 }
 
-class CThreadPrivate: public DptrPrivate<CThread>
+class CThreadPrivate
 {
 public:
     CThreadPrivate():
@@ -30,6 +30,7 @@ public:
 };
 
 CThread::CThread():
+    d_ptr(new CThreadPrivate),
     t(NULL)
 {
 }
@@ -41,7 +42,7 @@ CThread::~CThread()
 void CThread::start()
 {
     DPTR_D(CThread);
-    d.running = true;
+    d->running = true;
     t = SDL_CreateThread(running, guid().c_str(), this);
 }
 
@@ -51,7 +52,7 @@ void CThread::stop() {
     int status;
     SDL_WaitThread(t, &status);
     avdebug("thread stoped!\n");
-    d.running = false;
+    d->running = false;
 }
 
 int CThread::wait()
@@ -65,7 +66,7 @@ void CThread::run()
 {
     DPTR_D(CThread);
     avdebug("thread finished!\n");
-    d.running = false;
+    d->running = false;
 }
 
 void CThread::stoped()
@@ -90,7 +91,7 @@ unsigned long CThread::id() const
 
 bool CThread::isRunning() const {
     DPTR_D(const CThread);
-    return d.running;
+    return d->running;
 }
 
 }
