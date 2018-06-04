@@ -14,6 +14,11 @@ VideoRenderer::~VideoRenderer()
 
 }
 
+void VideoRenderer::setBackgroundColor(int r, int g, int b)
+{
+
+}
+
 void VideoRenderer::receive(const VideoFrame &frame)
 {
     receiveFrame(frame);

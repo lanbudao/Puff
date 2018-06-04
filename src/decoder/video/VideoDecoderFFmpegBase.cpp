@@ -31,11 +31,11 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
     }
     d->undecoded_size = puMin(pkt.data.size() - ret, pkt.data.size());
     if (ret < 0) {
-        avwarnning("video decode error: %s", averror2str(ret));
+        avwarnning("video decode error: %s\n", averror2str(ret));
         return false;
     }
     if (!got_picture) {
-        avdebug("no frame could be decompressed: %s %d/%d", averror2str(ret), d->undecoded_size, pkt.data.size());
+        avdebug("no frame could be decompressed: %s %d/%d\n", averror2str(ret), d->undecoded_size, pkt.data.size());
         return !pkt.isEOF();
     }
     if (!d->codec_ctx->width || !d->codec_ctx->height)

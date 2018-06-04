@@ -4,6 +4,8 @@
 #include "AVLog.h"
 #include "commpeg.h"
 
+#define SDL_REFRESH_EVENT (SDL_USEREVENT + 1)
+
 namespace Puff {
 
 class SDLRendererPrivate: public VideoRendererPrivate
@@ -65,8 +67,6 @@ public:
             return;
         }
         renderer = SDL_CreateRenderer(window, -1, 0);
-        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,
-                                    renderer_width, renderer_height);
     }
 
     void resizeWindow(int w, int h)
@@ -74,6 +74,47 @@ public:
         if (window) {
             SDL_SetWindowSize(window, w, h);
         }
+        if (texture) {
+            SDL_DestroyTexture(texture);
+            texture = NULL;
+        }
+    }
+
+    void renderYUV(const VideoFrame &frame)
+    {
+        int height = 224;
+        if (!texture) {
+            texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,
+                                        renderer_width, height);
+        }
+        if (!frame_yuv) {
+            frame_yuv = av_frame_alloc();
+            int size = av_image_get_buffer_size(AV_PIX_FMT_YUV420P, renderer_width, height, 1);
+            unsigned char *buffer = (unsigned char *)av_malloc(size);
+            av_image_fill_arrays(frame_yuv->data, frame_yuv->linesize, buffer, AV_PIX_FMT_YUV420P, renderer_width, height, 1);
+        }
+        if (!img_convert_ctx) {
+            img_convert_ctx = sws_getContext(frame.width(), frame.height(), AVPixelFormat(frame.pixelFormatFFmpeg()),
+                                             renderer_width, height, AV_PIX_FMT_YUV420P,
+                                             SWS_BICUBIC, NULL, NULL, NULL);
+        }
+        const unsigned char *const* data = frame.datas();
+        sws_scale(img_convert_ctx,
+                  data, frame.lineSize(),
+                  0, frame.height(),
+                  frame_yuv->data, frame_yuv->linesize);
+        rect.x = 0; rect.y = 0; rect.w = renderer_width; rect.h = height;
+        SDL_Rect update_rect;
+        update_rect.x = 0; update_rect.y = (renderer_height - height) / 2;
+        update_rect.w = renderer_width;
+        update_rect.h = height;
+        SDL_UpdateYUVTexture(texture, &rect,
+                             frame_yuv->data[0], frame_yuv->linesize[0],
+                             frame_yuv->data[1], frame_yuv->linesize[1],
+                             frame_yuv->data[2], frame_yuv->linesize[2]);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, NULL, &update_rect);
+        SDL_RenderPresent(renderer);
     }
 
     SDL_Window *window;
@@ -83,6 +124,7 @@ public:
     SwsContext *img_convert_ctx;
     AVFrame *frame_yuv;
     int winId;
+    VideoFrame current_frame;
 };
 
 SDLRenderer::SDLRenderer():
@@ -93,10 +135,12 @@ SDLRenderer::SDLRenderer():
 void SDLRenderer::init(int w, int h) {
     d_func()->init();
     resizeRenderer(w, h);
+    setBackgroundColor(0, 0, 0);
 }
 
 void SDLRenderer::init(int winId) {
     d_func()->init(winId);
+    setBackgroundColor(0, 0, 0);
 }
 
 SDLRenderer::~SDLRenderer()
@@ -110,46 +154,35 @@ void SDLRenderer::onResizeRenderer(int width, int height)
 }
 
 void SDLRenderer::show() {
-    if (d_func()->winId)
+    DPTR_D(SDLRenderer);
+    if (d->winId)
         return;
     SDL_Event event;
     while (1) {
         SDL_WaitEvent(&event);
-        if (event.type == SDL_QUIT) {
+        if (event.type == SDL_REFRESH_EVENT) {
+            d->renderYUV(d->current_frame);
+        }
+        else if (event.type == SDL_QUIT) {
             break;
         }
+        SDL_Delay(10);
     }
+}
+
+void SDLRenderer::setBackgroundColor(int r, int g, int b)
+{
+    DPTR_D(SDLRenderer);
+    SDL_SetRenderDrawColor(d->renderer, r, g, b, 255);
 }
 
 bool SDLRenderer::receiveFrame(const VideoFrame &frame)
 {
     DPTR_D(SDLRenderer);
-    if (!d->frame_yuv) {
-        d->frame_yuv = av_frame_alloc();
-        int size = av_image_get_buffer_size(AV_PIX_FMT_YUV420P, frame.width(), frame.height(), 1);
-        unsigned char *buffer = (unsigned char *)av_malloc(size);
-        av_image_fill_arrays(d->frame_yuv->data, d->frame_yuv->linesize, buffer, AV_PIX_FMT_YUV420P, frame.width(), frame.height(), 1);
-    }
-    if (!d->img_convert_ctx) {
-        d->img_convert_ctx = sws_getContext(frame.width(), frame.height(), AVPixelFormat(frame.pixelFormatFFmpeg()),
-                                         d->renderer_width, d->renderer_height, AV_PIX_FMT_YUV420P,
-                                         SWS_BICUBIC, NULL, NULL, NULL);
-    }
-    d->rect.x = 0;
-    d->rect.y = 0;
-    d->rect.w = d->renderer_width;
-    d->rect.h = d->renderer_height;
-    sws_scale(d->img_convert_ctx,
-              (const unsigned char *const*)frame.data().constData(), frame.lineSize(),
-              0, frame.height(),
-              d->frame_yuv->data, d->frame_yuv->linesize);
-    SDL_UpdateYUVTexture(d->texture, &d->rect,
-                         d->frame_yuv->data[0], d->frame_yuv->linesize[0],
-                         d->frame_yuv->data[1], d->frame_yuv->linesize[1],
-                         d->frame_yuv->data[2], d->frame_yuv->linesize[2]);
-    SDL_RenderClear(d->renderer);
-    SDL_RenderCopy(d->renderer, d->texture, NULL, &d->rect);
-    SDL_RenderPresent(d->renderer);
+    d->current_frame = frame;
+    SDL_Event event;
+    event.type = SDL_REFRESH_EVENT;
+    SDL_PushEvent(&event);
     return true;
 }
 

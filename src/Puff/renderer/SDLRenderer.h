@@ -17,6 +17,7 @@ public:
     void init(int w, int h);
     void init(int winId);
     void show();
+    void setBackgroundColor(int r, int g, int b);
 
 protected:
     bool receiveFrame(const VideoFrame& frame);

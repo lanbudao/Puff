@@ -46,6 +46,8 @@ public:
 
     ByteArray frameData();
 
+    uchar * const *datas() const;
+
     ByteArray data(int plane = 0) const;
 
     uchar* bits(int plane);

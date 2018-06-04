@@ -1,24 +1,25 @@
-
 #include "Packet.h"
+#include "commpeg.h"
 
 namespace Puff {
 
-//class PacketPrivate: public DptrPrivate<Packet>
-//{
-//public:
-//    PacketPrivate()
-//    {
-//        av_init_packet(&avpkt);
-//    }
-//    ~PacketPrivate()
-//    {
-//        av_free_packet(&avpkt);
-//    }
+class PacketPrivate
+{
+public:
+    PacketPrivate()
+    {
+        av_init_packet(&avpkt);
+    }
+    ~PacketPrivate()
+    {
+        av_free_packet(&avpkt);
+    }
 
-//    mutable AVPacket avpkt;
-//};
+    mutable AVPacket avpkt;
+};
 
 Packet::Packet():
+    d_ptr(new PacketPrivate),
     containKeyFrame(false),
     isCorrupted(false),
     pts(0),
@@ -36,8 +37,7 @@ Packet::~Packet()
 
 Packet::Packet(const Packet &other)
 {
-    avpkt = other.avpkt;
-//    dptr_d = other.dptr_d;
+    d_ptr = other.d_ptr;
     containKeyFrame = other.containKeyFrame;
     isCorrupted = other.isCorrupted;
     pts = other.pts;
@@ -51,8 +51,7 @@ Packet &Packet::operator =(const Packet &other)
 {
     if (this == &other)
         return *this;
-    avpkt = other.avpkt;
-//    dptr_d = other.dptr_d;
+    d_ptr = other.d_ptr;
     containKeyFrame = other.containKeyFrame;
     isCorrupted = other.isCorrupted;
     pts = other.pts;
@@ -97,7 +96,7 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
     if (pkt.duration < 0)
         pkt.duration = 0;
 
-    AVPacket *p = &pkt.avpkt;//pkt.avpacket();
+    AVPacket *p = pkt.avpacket();
     av_packet_ref(p, packet);  //properties are copied internally
     p->pts = int64_t(pkt.pts * 1000.0);
     p->dts = int64_t(pkt.dts * 1000.0);
@@ -115,15 +114,14 @@ bool Packet::isEOF() const
 
 AVPacket *Packet::avpacket()
 {
-//    DPTR_D(Packet);
-//    return &d.avpkt;
-    return &avpkt;
+    DPTR_D(Packet);
+    return &d->avpkt;
 }
 
 const AVPacket *Packet::asAVPacket() const
 {
-//    DPTR_D(const Packet);
-    AVPacket *p = &avpkt;/*&d.avpkt;*/
+    DPTR_D(const Packet);
+    AVPacket *p = &d->avpkt;
     p->pts = int64_t(pts * 1000.0);
     p->dts = int64_t(dts * 1000.0);
     p->duration = int(duration * 1000.0);

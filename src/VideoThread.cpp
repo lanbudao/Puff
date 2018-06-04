@@ -37,9 +37,9 @@ void VideoThread::run()
 
     while (!d->stopped) {
 
-        if (!pkt.isValid()) {
+//        if (!pkt.isValid()) {
             pkt = d->packets.dequeue();
-        }
+//        }
 
         if (pkt.isEOF()) {
 
@@ -60,6 +60,7 @@ void VideoThread::run()
         if (!sendVideoFrame(frame))
             continue;
         d->current_frame = frame;
+        msleep(50);
     }
 
     AVThread::run();

@@ -130,6 +130,7 @@ void AVDemuxThread::run()
         else if (stream == d->demuxer->subtitleStream()) {
 
         }
+        msleep(10);
     }
 
     //TODO: wait for video and audio thread stopped

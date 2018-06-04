@@ -24,8 +24,10 @@ public:
     }
     ~ByteArray()
     {
-        if (mData)
+        if (mData) {
             free(mData);
+            mData = NULL;
+        }
     }
 
     char *data()  {return mData;}

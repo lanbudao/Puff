@@ -309,21 +309,6 @@ int AVDemuxer::readFrame()
         return -1;
     }
 
-    /*test*/
-//    if (d->stream == 0) {
-//        AVFrame *frame = av_frame_alloc();
-//        int got_frame = false;
-//        ret = avcodec_decode_video2(videoCodecCtx(), frame, &got_frame, &avpkt);
-//        int a = 0;
-//        int b = 0;
-//        a = b;
-//        av_frame_free(&frame);
-//    } else if (d->stream == 1) {
-//        int a = 0;
-//        int b = 0;
-//        a = b;
-//    }
-
     d->curPkt = Packet::fromAVPacket(&avpkt, av_q2d(d->format_ctx->streams[d->stream]->time_base));
     av_packet_unref(&avpkt);
     d->isEOF = false;

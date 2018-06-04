@@ -13,6 +13,8 @@ class PU_AV_EXPORT VideoRenderer: public AVOutput
 public:
     virtual ~VideoRenderer();
 
+    virtual void setBackgroundColor(int r, int g, int b);
+
     void receive(const VideoFrame &frame);
 
     void resizeRenderer(const Size &size);

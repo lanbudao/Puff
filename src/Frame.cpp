@@ -55,6 +55,12 @@ ByteArray Frame::frameData() {
     return d->data;
 }
 
+uchar * const *Frame::datas() const
+{
+    DPTR_D(const Frame);
+    return d->planes.data();
+}
+
 ByteArray Frame::data(int plane) const {
     DPTR_D(const Frame);
     if (plane < 0 || plane >= planeCount())
