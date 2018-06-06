@@ -23,7 +23,7 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
     if (pkt.isEOF()) {
         AVPacket eofpkt;
         av_init_packet(&eofpkt);
-        eofpkt.data = NULL;
+        eofpkt.data = nullptr;
         eofpkt.size = 0;
         ret = avcodec_decode_video2(d->codec_ctx, d->frame, &got_picture, &eofpkt);
     } else {
@@ -53,7 +53,7 @@ VideoFrame VideoDecoderFFmpegBase::frame()
     frame.setDisplayAspectRatio(d->getDisplayAspectRatio(d->frame));
     frame.setBits(d->frame->data);
     frame.setBytesPerLine(d->frame->linesize);
-    frame.setTimestamp((double)d->frame->pts / 1000.0);
+    frame.setTimestamp(static_cast<double>(d->frame->pts) / 1000.0);
     d->setColorDetails(frame);
     return frame;
 }

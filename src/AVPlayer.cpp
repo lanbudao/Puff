@@ -17,15 +17,15 @@ class AVPlayerPrivate
 public:
     AVPlayerPrivate():
         loaded(false),
-        demuxer(NULL),
-        demux_thread(NULL),
-        video_thread(NULL),
-        audio_thread(NULL),
+        demuxer(nullptr),
+        demux_thread(nullptr),
+        video_thread(nullptr),
+        audio_thread(nullptr),
         video_track(0),
         audio_track(0),
         sub_track(-1),   /*default do not use subtitle*/
-        video_dec(NULL),
-        audio_dec(NULL)
+        video_dec(nullptr),
+        audio_dec(nullptr)
     {
         demuxer = new AVDemuxer();
         demux_thread = new AVDemuxThread();
@@ -40,7 +40,40 @@ public:
 
     bool setupAudioThread(AVPlayer *player)
     {
-        return false;
+        demuxer->setStreamIndex(AVDemuxer::Stream_Audio, audio_track);
+        if (audio_thread) {
+            audio_thread->packets()->clear();
+            audio_thread->setDecoder(nullptr);
+        }
+        AVCodecContext *ctx = demuxer->audioCodecCtx();
+        if (!ctx)
+            return false;
+        if (audio_dec) {
+            delete audio_dec;
+            audio_dec = nullptr;
+        }
+
+        AudioDecoder *dec = AudioDecoder::create();
+        if (!dec)
+            return false;
+        dec->setCodecCtx(ctx);
+        if (!dec->open()) {
+            return false;
+        }
+        audio_dec = dec;
+        if (!audio_dec) {
+            avdebug("Can not found audio decoder.\n");
+            return false;
+        }
+        if (!audio_thread) {
+            audio_thread = new AudioThread();
+            audio_thread->setOutputSet(&audio_output_set);
+            demux_thread->setAudioThread(audio_thread);
+        }
+        audio_thread->setDecoder(audio_dec);
+
+        //TODO: Open audio output device
+        return true;
     }
 
     bool setupVideoThread(AVPlayer *player)
@@ -48,14 +81,14 @@ public:
         demuxer->setStreamIndex(AVDemuxer::Stream_Video, video_track);
         if (video_thread) {
             video_thread->packets()->clear();
-            video_thread->setDecoder(NULL);
+            video_thread->setDecoder(nullptr);
         }
         AVCodecContext *ctx = demuxer->videoCodecCtx();
         if (!ctx)
             return false;
         if (video_dec) {
             delete video_dec;
-            video_dec = NULL;
+            video_dec = nullptr;
         }
 
         for (size_t i = 0; i < video_dec_ids.size(); ++i) {
@@ -174,11 +207,18 @@ void AVPlayer::playInternal()
 
     if (!d->demuxer->isLoaded())
         return;
+    if (!d->setupAudioThread(this)) {
+        d->demux_thread->setAudioThread(nullptr);
+        if (d->audio_thread) {
+            delete d->audio_thread;
+            d->audio_thread = nullptr;
+        }
+    }
     if (!d->setupVideoThread(this)) {
-        d->demux_thread->setVideoThread(NULL);
+        d->demux_thread->setVideoThread(nullptr);
         if (d->video_thread) {
             delete d->video_thread;
-            d->video_thread = NULL;
+            d->video_thread = nullptr;
         }
     }
 

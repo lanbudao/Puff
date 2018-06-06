@@ -69,7 +69,9 @@ void VideoThread::run()
 bool VideoThread::sendVideoFrame(VideoFrame &frame)
 {
     DPTR_D(VideoThread);
+    d->output->lock();
     d->output->sendVideoFrame(frame);
+    d->output->unlock();
     return true;
 }
 

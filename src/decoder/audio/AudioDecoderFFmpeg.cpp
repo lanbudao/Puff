@@ -13,15 +13,15 @@ class AudioDecoderFFmpegPrivate: public AudioDecoderPrivate
 {
 public:
     AudioDecoderFFmpegPrivate():
-        frame(NULL)
+        frame(nullptr)
     {
         frame = av_frame_alloc();
     }
-    ~AudioDecoderFFmpegPrivate()
+    virtual ~AudioDecoderFFmpegPrivate()
     {
         if (frame) {
             av_frame_free(&frame);
-            frame = NULL;
+            frame = nullptr;
         }
     }
 

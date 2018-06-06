@@ -9,12 +9,12 @@ namespace Puff {
 class PU_AV_EXPORT ByteArray
 {
 public:
-    ByteArray(): mData(NULL), mSize(0)
+    ByteArray(): mData(nullptr), mSize(0)
     {
 
     }
     ByteArray(const char* data, size_t size):
-        mData(NULL),
+        mData(nullptr),
         mSize(size)
     {
         if (size > 0) {
@@ -26,7 +26,7 @@ public:
     {
         if (mData) {
             free(mData);
-            mData = NULL;
+            mData = nullptr;
         }
     }
 

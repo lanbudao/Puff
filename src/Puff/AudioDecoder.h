@@ -13,12 +13,12 @@ class PU_AV_EXPORT AudioDecoder: public AVDecoder
 {
     DPTR_DECLARE_PRIVATE(AudioDecoder)
 public:
-    ~AudioDecoder();
+    ~AudioDecoder() PU_DECL_OVERRIDE;
 
     static StringList supportedCodecs();
 
-    virtual std::string name() const;
-    virtual std::string description() const;
+    virtual std::string name() const PU_DECL_OVERRIDE;
+    virtual std::string description() const PU_DECL_OVERRIDE;
 
     static AudioDecoder * create(const char *name = "FFmpeg");
     static AudioDecoder* create(AudioDecoderId id);

@@ -11,7 +11,7 @@ class PU_AV_EXPORT AudioThread: public AVThread
     DPTR_DECLARE_PRIVATE(AudioThread)
 public:
     AudioThread();
-    ~AudioThread();
+    virtual ~AudioThread() PU_DECL_OVERRIDE;
 
 protected:
     void run() PU_DECL_OVERRIDE;

@@ -19,8 +19,8 @@ AudioFrame::AudioFrame(const AudioFormat &format, const ByteArray &data):
     Frame(new AudioFramePrivate)
 {
     DPTR_D(AudioFrame);
-//    if (data.isEmpty())
-//        return;
+    if (data.isEmpty())
+        return;
     d->format = format;
     d->data = data;
     if (!d->format.isValid())

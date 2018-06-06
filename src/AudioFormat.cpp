@@ -73,7 +73,9 @@ public:
     int64_t channel_layout_ff;
 };
 
-AudioFormat::AudioFormat() {
+AudioFormat::AudioFormat():
+    d_ptr(new AudioFormatPrivate)
+{
 
 }
 

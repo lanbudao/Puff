@@ -71,14 +71,14 @@ ByteArray Frame::data(int plane) const {
 uchar *Frame::bits(int plane) {
     DPTR_D(Frame);
     if (plane < 0 || plane >= planeCount())
-        return NULL;
+        return nullptr;
     return d->planes[plane];
 }
 
 const uchar* Frame::constBits(int plane) const {
     DPTR_D(const Frame);
     if (plane < 0 || plane >= planeCount())
-        return NULL;
+        return nullptr;
     return d->planes[plane];
 }
 
@@ -100,7 +100,6 @@ void Frame::setBits(const vector<uchar *> &bits) {
 }
 
 void Frame::setBits(uchar *slice[]) {
-    DPTR_D(Frame);
     for (int i = 0; i < planeCount(); ++i) {
         setBits(slice[i], i);
     }
@@ -114,7 +113,6 @@ void Frame::setBytesPerLine(int lineSize, int plane) {
 }
 
 void Frame::setBytesPerLine(int stride[]) {
-    DPTR_D(Frame);
     for (int i = 0; i < planeCount(); ++i) {
         setBytesPerLine(stride[i], i);
     }

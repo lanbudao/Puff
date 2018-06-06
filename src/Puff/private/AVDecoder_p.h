@@ -22,7 +22,7 @@ public:
         codec_ctx = avcodec_alloc_context3(NULL);
         frame = av_frame_alloc();
     }
-    ~AVDecoderPrivate()
+    virtual ~AVDecoderPrivate()
     {
         if (frame) {
             av_frame_free(&frame);
@@ -54,7 +54,7 @@ class VideoDecoderPrivate: public AVDecoderPrivate
 {
 public:
     VideoDecoderPrivate() {}
-    ~VideoDecoderPrivate() {}
+    virtual ~VideoDecoderPrivate() {}
 };
 
 extern ColorSpace colorSpaceFromFFmpeg(AVColorSpace space);
@@ -66,7 +66,7 @@ public:
     VideoDecoderFFmpegBasePrivate()
     {
     }
-    ~VideoDecoderFFmpegBasePrivate()
+    virtual ~VideoDecoderFFmpegBasePrivate()
     {
     }
 
@@ -135,7 +135,7 @@ public:
         // lavf 54.5.100 av_guess_sample_aspect_ratio: stream.sar > frame.sar
         float dar = 0;
         if (f->height > 0)
-            dar = (float)f->width / (float)f->height;
+            dar = static_cast<float>(f->width) / static_cast<float>(f->height);
         // prefer sar from AVFrame if sar != 1/1
         if (f->sample_aspect_ratio.num > 1)
             dar *= av_q2d(f->sample_aspect_ratio);
@@ -152,7 +152,7 @@ public:
     AudioDecoderPrivate()
     {
     }
-    ~AudioDecoderPrivate()
+    virtual ~AudioDecoderPrivate()
     {
     }
 };
