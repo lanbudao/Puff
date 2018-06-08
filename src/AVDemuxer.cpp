@@ -13,8 +13,8 @@ class InterruptHandler
 public:
     InterruptHandler(AVDemuxer *demuxer):
         mCurAction(None),
-        mDemuxer(demuxer),
-        interruptCB(new AVIOInterruptCB())
+        interruptCB(new AVIOInterruptCB()),
+        mDemuxer(demuxer)
     {
         interruptCB->callback = handleInterrupt;
         interruptCB->opaque = this;

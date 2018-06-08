@@ -117,6 +117,14 @@ if (EXISTS ${SDL_DIR})
     list(APPEND EXTRA_LIBS "SDL2" "SDL2main")
 endif()
 
+# Check PortAudio modules
+CHECK_ENV(PORTAUDIO_DIR)
+if (EXISTS ${PORTAUDIO_DIR})
+    list(APPEND EXTRA_INCLUDE ${PORTAUDIO_DIR}/include)
+    link_directories(${PORTAUDIO_DIR}/lib)
+    list(APPEND EXTRA_LIBS "portaudio")
+endif()
+
 list(APPEND EXTRA_DEFS -DBUILD_PUFF_LIB -D__STDC_CONSTANT_MACROS)
 
 file(GLOB SDK_HEADERS *.h)
