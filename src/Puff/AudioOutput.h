@@ -3,6 +3,7 @@
 
 #include "AVOutput.h"
 #include "AudioFormat.h"
+#include <vector>
 
 namespace Puff {
 
@@ -18,6 +19,8 @@ public:
     bool close();
 
     AudioFormat setAudioFormat(const AudioFormat& format);
+
+    void setBackend(const std::vector<std::string> &names);
 
 private:
 

@@ -10,7 +10,7 @@ static AVCodec *findCodec(const std::string &name, const std::string &hwaccel, A
     if (fullName.empty()) {
         if (hwaccel.empty())
             return avcodec_find_decoder(id);
-        fullName = format("%s_%s", avcodec_get_name(id), hwaccel);
+        fullName = sformat("%s_%s", avcodec_get_name(id), hwaccel);
     }
     AVCodec *codec = avcodec_find_decoder_by_name(fullName.c_str());
     if (!codec)

@@ -5,7 +5,7 @@
 
 namespace Puff {
 
-std::string format(char *fmt, ...);
+std::string sformat(char *fmt, ...);
 
 std::string guid();
 

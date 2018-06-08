@@ -29,10 +29,11 @@ function(CHECK_ENV arg)
 endfunction ()
 CHECK_ENV(FFMPEG_DIR)
 CHECK_ENV(SDL_DIR)
+CHECK_ENV(PORTAUDIO_DIR)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
-link_directories(${FFMPEG_DIR}/lib ${SDL_DIR}/lib)
+link_directories(${FFMPEG_DIR}/lib ${SDL_DIR}/lib ${PORTAUDIO_DIR}/lib)
 include_directories(${FFMPEG_DIR}/include ${CMAKE_SOURCE_DIR}/src/Puff)
 
 aux_source_directory(. DIR_SRCS)

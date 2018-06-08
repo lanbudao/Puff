@@ -3,8 +3,11 @@
 
 #include "CObject.h"
 
+typedef int AudioOutputBackendId;
+
 namespace Puff {
 
+class AudioFormat;
 class AudioOutputBackendPrivate;
 class AudioOutputBackend: public CObject
 {
@@ -15,7 +18,27 @@ public:
 
     virtual bool open() = 0;
     virtual bool close() = 0;
-    virtual bool clear() = 0;
+    virtual bool clear() {return false;}
+    virtual bool write(const char *data, int size) = 0;
+
+    bool avaliable() const;
+    void setAvaliable(bool b);
+
+public:
+    template<class C> static bool Register(AudioOutputBackendId id, const char* name) { return Register(id, create<C>, name);}
+    static AudioOutputBackend* create(AudioOutputBackendId id);
+    static AudioOutputBackend* create(const char* name);
+    static AudioOutputBackendId* next(AudioOutputBackendId* id = 0);
+    static const char* name(AudioOutputBackendId id);
+    static AudioOutputBackendId id(const char* name);
+
+private:
+    template<class C> static AudioOutputBackend* create() { return new C();}
+    typedef AudioOutputBackend* (*AudioOutputBackendCreator)();
+    static bool Register(AudioOutputBackendId id, AudioOutputBackendCreator, const char *name);
+
+protected:
+    const AudioFormat *format();
 
 protected:
     DPTR_DECLARE(AudioOutputBackend)

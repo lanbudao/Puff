@@ -1,14 +1,15 @@
 #ifndef PUFF_AUDIO_OUTPUT_BACKEND_P_H
 #define PUFF_AUDIO_OUTPUT_BACKEND_P_H
 
-#include "CObject.h"
+#include "AudioFormat.h"
 
 namespace Puff {
 
 class AudioOutputBackendPrivate
 {
 public:
-    AudioOutputBackendPrivate()
+    AudioOutputBackendPrivate():
+        avaliable(false)
     {
 
     }
@@ -17,6 +18,8 @@ public:
 
     }
 
+    AudioFormat format;
+    bool avaliable;
 };
 
 }

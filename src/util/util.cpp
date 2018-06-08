@@ -6,7 +6,7 @@
 
 namespace Puff {
 
-std::string format(char *fmt, ...)
+std::string sformat(char *fmt, ...)
 {
     std::string output;
     va_list marker = NULL;
