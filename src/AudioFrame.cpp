@@ -11,6 +11,15 @@ public:
 
     }
 
+    void setFormat(const AudioFormat &fmt)
+    {
+        format = fmt;
+        planes.reserve(fmt.planeCount());
+        planes.resize(fmt.planeCount());
+        line_sizes.reserve(fmt.planeCount());
+        line_sizes.resize(fmt.planeCount());
+    }
+
     AudioFormat format;
     int samples_per_channel;
 };
@@ -19,12 +28,12 @@ AudioFrame::AudioFrame(const AudioFormat &format, const ByteArray &data):
     Frame(new AudioFramePrivate)
 {
     DPTR_D(AudioFrame);
+    if (!format.isValid())
+        return;
+    d->setFormat(format);
     if (data.isEmpty())
         return;
-    d->format = format;
     d->data = data;
-    if (!d->format.isValid())
-        return;
     d->samples_per_channel = data.size() / d->format.channels() / d->format.bytesPerSample();
     const int nb_planes = d->format.planeCount();
     const int bpl = d->data.size() / nb_planes;
@@ -74,6 +83,8 @@ void AudioFrame::setSamplePerChannel(int channel) {
     int nb_planes = d->format.planeCount();
     int bytesPerLine = 0;
 
+    if (d->line_sizes.size() <= 0)
+        return;
     if (d->line_sizes[0] > 0) {
         bytesPerLine = d->line_sizes[0];
     } else {

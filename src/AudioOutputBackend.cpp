@@ -27,6 +27,15 @@ AudioOutputBackend::~AudioOutputBackend()
 
 }
 
+std::vector<std::string> AudioOutputBackend::defaultPriority()
+{
+    static std::vector<std::string> backends;
+
+    backends.push_back("PortAudio");
+
+    return backends;
+}
+
 bool AudioOutputBackend::avaliable() const
 {
     DPTR_D(const AudioOutputBackend);
@@ -37,6 +46,12 @@ void AudioOutputBackend::setAvaliable(bool b)
 {
     DPTR_D(AudioOutputBackend);
     d->avaliable = b;
+}
+
+void AudioOutputBackend::setFormat(const AudioFormat &fmt)
+{
+    DPTR_D(AudioOutputBackend);
+    d->format = fmt;
 }
 
 const AudioFormat *AudioOutputBackend::format()

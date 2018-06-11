@@ -15,12 +15,21 @@ public:
     AudioOutput();
     ~AudioOutput();
 
+    static std::vector<std::string> backendsAvailable();
+
     bool open();
+    bool isOpen() const;
     bool close();
+    bool write(const char *data, int size, double pts);
 
     AudioFormat setAudioFormat(const AudioFormat& format);
 
     void setBackend(const std::vector<std::string> &names);
+
+    int bufferSize() const;
+
+    int bufferSamples() const;
+    void setBufferSamples(int value);
 
 private:
 

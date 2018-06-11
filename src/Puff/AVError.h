@@ -12,6 +12,7 @@ public:
         NoError,
 
         OpenError,
+        FindStreamError,
     };
 };
 

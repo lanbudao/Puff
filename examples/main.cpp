@@ -61,25 +61,15 @@ int main(int argc, char *argv[])
 {
     logger.setLogFile("F:/log.txt");
 
-//    AudioFormat format;
-//    AudioFrame frame(format);
-
-//    VideoFormat format;
-//    VideoFrame frame(100, 100, format);
-//    A a;
-//    B b;
-//    a.start();
-//    b.start();
-//    a.wait();
-//    b.wait();
     AVPlayer *player = new AVPlayer();
     SDLRenderer *renderer = new SDLRenderer();
     renderer->init(400, 300);
 
     player->addVideoRenderer(renderer);
-    player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
+//    player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
+    player->play("F:/work_file/video/3D First Person Mario.mp4");
 
     renderer->show();
-    avdebug("player uninitialize");
+    avdebug("player uninitialize\n");
     return 0;
 }

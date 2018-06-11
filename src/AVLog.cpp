@@ -32,7 +32,7 @@ public:
             if (!stream)
                 return;
         }
-        fprintf(stream, "%s", output.c_str());
+        fprintf(stream, "%s\n", output.c_str());
         fflush(stream);
     }
 

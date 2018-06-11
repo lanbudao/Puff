@@ -16,6 +16,7 @@ public:
     AudioOutputBackend();
     virtual ~AudioOutputBackend();
 
+    static std::vector<std::string> defaultPriority();
     virtual bool open() = 0;
     virtual bool close() = 0;
     virtual bool clear() {return false;}
@@ -23,6 +24,7 @@ public:
 
     bool avaliable() const;
     void setAvaliable(bool b);
+    void setFormat(const AudioFormat &fmt);
 
 public:
     template<class C> static bool Register(AudioOutputBackendId id, const char* name) { return Register(id, create<C>, name);}

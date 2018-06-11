@@ -6,6 +6,7 @@
 #include "PacketQueue.h"
 #include "VideoDecoder.h"
 #include "AudioDecoder.h"
+#include "AudioOutput.h"
 #include "OutputSet.h"
 #include "commpeg.h"
 #include "AVLog.h"
@@ -25,7 +26,8 @@ public:
         audio_track(0),
         sub_track(-1),   /*default do not use subtitle*/
         video_dec(nullptr),
-        audio_dec(nullptr)
+        audio_dec(nullptr),
+        ao(new AudioOutput)
     {
         demuxer = new AVDemuxer();
         demux_thread = new AVDemuxThread();
@@ -36,6 +38,21 @@ public:
     ~AVPlayerPrivate()
     {
         delete demuxer;
+        if (video_thread) {
+            video_thread->wait();
+            delete video_thread;
+        }
+        if (audio_thread) {
+            audio_thread->wait();
+            delete audio_thread;
+        }
+        if (demux_thread) {
+            demux_thread->wait();
+            delete demux_thread;
+        }
+        delete video_dec;
+        delete audio_dec;
+        delete ao;
     }
 
     bool setupAudioThread(AVPlayer *player)
@@ -65,14 +82,31 @@ public:
             avdebug("Can not found audio decoder.\n");
             return false;
         }
+
+        AudioFormat af;
+        af.setSampleRate(ctx->sample_rate);
+        af.setChannelLayoutFFmpeg(ctx->channel_layout);
+        af.setSampleFormatFFmpeg(ctx->sample_fmt);
+        af.setChannels(ctx->channels);
+        if (!af.isValid()) {
+            avwarnning("Invalid audio format, disable audio!");
+            return false;
+        }
+
+        ao->setAudioFormat(af);
+        ao->close();
+        if (!ao->open()) {
+            return false;
+        }
+
         if (!audio_thread) {
             audio_thread = new AudioThread();
+            audio_output_set.addOutput(ao);
             audio_thread->setOutputSet(&audio_output_set);
             demux_thread->setAudioThread(audio_thread);
         }
         audio_thread->setDecoder(audio_dec);
 
-        //TODO: Open audio output device
         return true;
     }
 
@@ -137,6 +171,7 @@ public:
     /*OutputSet*/
     OutputSet video_output_set;
     OutputSet audio_output_set;
+    AudioOutput *ao;
 };
 
 AVPlayer::AVPlayer():

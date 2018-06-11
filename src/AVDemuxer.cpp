@@ -105,13 +105,10 @@ public:
             AVMediaType type = format_ctx->streams[i]->codec->codec_type;
             if (type == AVMEDIA_TYPE_VIDEO) {
                 video_stream_info.streams.push_back(i);
-                video_stream_info.codec_ctx = format_ctx->streams[i]->codec;
             } else if (type == AVMEDIA_TYPE_AUDIO) {
                 audio_stream_info.streams.push_back(i);
-                audio_stream_info.codec_ctx = format_ctx->streams[i]->codec;
             } else if (type == AVMEDIA_TYPE_SUBTITLE) {
                 subtitle_stream_info.streams.push_back(i);
-                subtitle_stream_info.codec_ctx = format_ctx->streams[i]->codec;
             }
         }
         if (video_stream_info.streams.empty() &&
@@ -221,6 +218,7 @@ bool AVDemuxer::load()
         d->format_ctx->interrupt_callback = *(d->interruptHandler->handler());
     }
 
+    d->format_ctx->flags |= AVFMT_FLAG_GENPTS;
     /*Open Stream*/
     d->interruptHandler->begin(InterruptHandler::OpenStream);
     ret = avformat_open_input(&d->format_ctx, d->fileName.data(), d->input_format, &d->format_opts);
@@ -228,6 +226,16 @@ bool AVDemuxer::load()
 
     if (ret < 0) {
         AVError::ErrorCode code = AVError::OpenError;
+        return false;
+    }
+
+    /*Find Stream*/
+    d->interruptHandler->begin(InterruptHandler::FindStream);
+    ret = avformat_find_stream_info(d->format_ctx, NULL);
+    d->interruptHandler->end();
+
+    if (ret < 0) {
+        AVError::ErrorCode code = AVError::FindStreamError;
         return false;
     }
 

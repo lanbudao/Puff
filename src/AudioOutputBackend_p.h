@@ -9,7 +9,7 @@ class AudioOutputBackendPrivate
 {
 public:
     AudioOutputBackendPrivate():
-        avaliable(false)
+        avaliable(true)
     {
 
     }

@@ -20,6 +20,7 @@ extern "C" {
 #include <libavutil/pixdesc.h>
 #include <libavutil/avstring.h>
 #include <libavfilter/version.h>
+#include <libswresample/swresample.h>
 #ifdef __cplusplus
 }
 #endif

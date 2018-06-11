@@ -11,7 +11,7 @@
     do { \
         PaError err = f; \
         if (err != paNoError) { \
-            avwarnning("PortAudio error: %s on line %d\n", Pa_GetErrorText(err), __LINE__);\
+            avwarnning("PortAudio error: %s, on line %d\n", Pa_GetErrorText(err), __LINE__);\
             __VA_ARGS__ \
         } \
     } while (0)
@@ -46,7 +46,8 @@ FACTORY_REGISTER(AudioOutputBackend, PortAudio, "PortAudio")
 AudioOutputPortAudio::AudioOutputPortAudio():
     stream_paras(NULL),
     isInitialized(false),
-    outputLatency(0.0)
+    outputLatency(0.0),
+    stream(NULL)
 {
     avdebug("PortAudio' version %d, %s", Pa_GetVersion(), Pa_GetVersionText());
 
@@ -132,8 +133,10 @@ PaSampleFormat AudioOutputPortAudio::toPaSampleFormat(const AudioFormat::SampleF
 
 bool AudioOutputPortAudio::open()
 {
-    if (!isInitialized && initialize()) {
-        return false;
+    if (!isInitialized) {
+        if (!initialize()) {
+            return false;
+        }
     }
     stream_paras->sampleFormat = toPaSampleFormat(format()->sampleFormat());
     stream_paras->channelCount = format()->channels();

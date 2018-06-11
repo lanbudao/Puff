@@ -96,6 +96,15 @@ AudioFormat &AudioFormat::operator=(const AudioFormat &other)
     return *this;
 }
 
+bool AudioFormat::operator==(const AudioFormat &other) const
+{
+    DPTR_D(const AudioFormat);
+    return d->sample_fmt == other.d_ptr->sample_fmt &&
+            d->channels == other.d_ptr->channels &&
+            d->channel_layout == other.d_ptr->channel_layout &&
+            d->sample_rate == other.d_ptr->sample_rate;
+}
+
 AudioFormat::SampleFormat AudioFormat::sampleFormatFromFFmpeg(int fffmt)
 {
     for (int i = 0; samplefmts[i].fmt != AudioFormat::SampleFormat_Unknown; ++i) {
@@ -171,6 +180,12 @@ int AudioFormat::bytesPerFrame() const {
     if (!isValid())
         return 0;
     return bytesPerSample() * channels();
+}
+
+int AudioFormat::bytesPerSecond() const
+{
+    DPTR_D(const AudioFormat);
+    return d->channels * d->sample_rate * bytesPerSample();
 }
 
 int64_t AudioFormat::durationForBytes(int64_t bytes) {

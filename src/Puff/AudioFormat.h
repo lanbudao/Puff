@@ -24,6 +24,7 @@ public:
     ~AudioFormat();
     AudioFormat(const AudioFormat &other);
     AudioFormat &operator=(const AudioFormat &other);
+    bool operator==(const AudioFormat &other) const;
     /*!
      * \brief The SampleFormat enum
      * s8, u16, u24, s24, u32 are not listed in ffmpeg sample format and have not planar format.
@@ -86,6 +87,7 @@ public:
 
     int bytesPerSample() const;
     int bytesPerFrame() const;
+    int bytesPerSecond() const;
 
     int64_t durationForBytes(int64_t bytes);
 

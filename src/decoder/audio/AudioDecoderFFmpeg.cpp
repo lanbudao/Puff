@@ -80,6 +80,7 @@ AudioFrame AudioDecoderFFmpeg::frame()
     format.setSampleFormatFFmpeg(d->frame->format);
     format.setChannelLayoutFFmpeg(d->frame->channel_layout);
     format.setSampleRate(d->frame->sample_rate);
+    format.setChannels(d->frame->channels);
     if (!format.isValid())
         return AudioFrame();
     AudioFrame f(format);
