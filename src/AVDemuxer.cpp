@@ -76,7 +76,8 @@ public:
         format_opts(NULL),
         interruptHandler(NULL),
         isEOF(false),
-        stream(-1)
+        stream(-1),
+        has_attached_pic(false)
     {
         av_register_all();
     }
@@ -153,6 +154,7 @@ public:
         info->stream = s;
         info->wanted_stream = value;
         info->codec_ctx = format_ctx->streams[s]->codec;
+        has_attached_pic = !!(format_ctx->streams[s]->disposition & AV_DISPOSITION_ATTACHED_PIC);
         return true;
     }
 
@@ -181,6 +183,8 @@ public:
     Packet curPkt;
     bool isEOF;
     CMutex mutex;
+
+    bool has_attached_pic;
 };
 
 AVDemuxer::AVDemuxer():
@@ -372,6 +376,12 @@ bool AVDemuxer::setStreamIndex(AVDemuxer::StreamType type, int index)
         return false;
     info->wanted_index = index;
     return true;
+}
+
+bool AVDemuxer::hasAttachedPic() const
+{
+    DPTR_D(const AVDemuxer);
+    return d->has_attached_pic;
 }
 
 AVCodecContext *AVDemuxer::audioCodecCtx(int stream) const

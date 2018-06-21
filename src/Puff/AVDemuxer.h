@@ -37,6 +37,7 @@ public:
     int  subtitleStream();
 
     bool setStreamIndex(StreamType type, int index);
+    bool hasAttachedPic() const;
 
     AVCodecContext* audioCodecCtx(int stream = -1) const;
     AVCodecContext* videoCodecCtx(int stream = -1) const;

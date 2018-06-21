@@ -12,7 +12,7 @@ public:
     }
     ~PacketPrivate()
     {
-        av_free_packet(&avpkt);
+        av_packet_unref(&avpkt);
     }
 
     mutable AVPacket avpkt;

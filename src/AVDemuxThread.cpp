@@ -92,6 +92,7 @@ void AVDemuxThread::run()
         abuffer->clear();
         abuffer->setBlock(true);
     }
+    bool audio_has_pic = false;
 
     while (!d->isEnd) {
 
@@ -100,6 +101,7 @@ void AVDemuxThread::run()
             msleep(100);
             continue;
         }
+        audio_has_pic = d->demuxer->hasAttachedPic();
 
         ret = d->demuxer->readFrame();
         if (ret < 0)
@@ -123,7 +125,7 @@ void AVDemuxThread::run()
                     abuffer->clear();
                     continue;
                 }
-                abuffer->blockFull(!d->video_thread || !d->video_thread->isRunning() || !vbuffer);
+                abuffer->blockFull(!d->video_thread || !d->video_thread->isRunning() || !vbuffer || audio_has_pic);
                 abuffer->enqueue(pkt);
             }
         }

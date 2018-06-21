@@ -63,7 +63,7 @@ void AudioThread::run()
         double delay = 0;
         const double byte_rate = frame.format().bytesPerSecond();
         double pts = frame.timestamp();
-        avdebug("frame samples: %d timestemp: %.3f duration: %lld\n", frame.samplePerChannel()*frame.channelCount(), frame.timestamp(), frame.duration()/1000LL);
+//        avdebug("frame samples: %d timestemp: %.3f duration: %lld\n", frame.samplePerChannel()*frame.channelCount(), frame.timestamp(), frame.duration()/1000LL);
         while (decodedSize > 0) {
             if (d->stopped) {
                 avdebug("audio thread stop after decode()");
