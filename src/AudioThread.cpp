@@ -5,6 +5,7 @@
 #include "AudioOutput.h"
 #include "OutputSet.h"
 #include "AVLog.h"
+#include "AVClock.h"
 
 namespace Puff {
 
@@ -30,8 +31,9 @@ void AudioThread::run()
     DPTR_D(AudioThread);
     auto *dec = dynamic_cast<AudioDecoder *>(d->decoder);
     AudioOutput *ao = static_cast<AudioOutput*>(d->output->outputs().front());
-
+    AVClock *clock = d->clock;
     Packet pkt;
+
     while (!d->stopped) {
         pkt = d->packets.dequeue();
 
@@ -63,6 +65,7 @@ void AudioThread::run()
         double delay = 0;
         const double byte_rate = frame.format().bytesPerSecond();
         double pts = frame.timestamp();
+        clock->updateValue(pts);
 //        avdebug("frame samples: %d timestemp: %.3f duration: %lld\n", frame.samplePerChannel()*frame.channelCount(), frame.timestamp(), frame.duration()/1000LL);
         while (decodedSize > 0) {
             if (d->stopped) {

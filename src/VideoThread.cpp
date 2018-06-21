@@ -32,6 +32,7 @@ void VideoThread::run()
 
     avdebug("video thread id:%d.\n", id());
     auto *dec = dynamic_cast<VideoDecoder *>(d->decoder);
+    AVClock *clock = d->clock;
 
     Packet pkt;
 
@@ -60,7 +61,14 @@ void VideoThread::run()
         if (!sendVideoFrame(frame))
             continue;
         d->current_frame = frame;
-        msleep(34);
+        if (frame.timestamp() > 0) {
+            double delay = frame.timestamp() - clock->value();
+            if (delay > 0) {
+                msleep((unsigned int)(delay * 1000));
+            }
+        } else {
+            msleep(1);
+        }
     }
 
     AVThread::run();

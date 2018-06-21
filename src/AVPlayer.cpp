@@ -10,6 +10,7 @@
 #include "OutputSet.h"
 #include "commpeg.h"
 #include "AVLog.h"
+#include "AVClock.h"
 
 namespace Puff {
 
@@ -103,6 +104,7 @@ public:
             audio_thread = new AudioThread();
             audio_output_set.addOutput(ao);
             audio_thread->setOutputSet(&audio_output_set);
+            audio_thread->setClock(&clock);
             demux_thread->setAudioThread(audio_thread);
         }
         audio_thread->setDecoder(audio_dec);
@@ -143,6 +145,7 @@ public:
         if (!video_thread) {
             video_thread = new VideoThread();
             video_thread->setOutputSet(&video_output_set);
+            video_thread->setClock(&clock);
             demux_thread->setVideoThread(video_thread);
         }
         video_thread->setDecoder(video_dec);
@@ -172,6 +175,8 @@ public:
     OutputSet video_output_set;
     OutputSet audio_output_set;
     AudioOutput *ao;
+
+    AVClock clock;
 };
 
 AVPlayer::AVPlayer():

@@ -32,4 +32,16 @@ void AVThread::setOutputSet(OutputSet *output)
     d->output = output;
 }
 
+void AVThread::setClock(AVClock *clock)
+{
+    DPTR_D(AVThread);
+    d->clock = clock;
+}
+
+AVClock *AVThread::clock()
+{
+    DPTR_D(AVThread);
+    return d->clock;
+}
+
 }

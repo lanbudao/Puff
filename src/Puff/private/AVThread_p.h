@@ -4,6 +4,7 @@
 #include "DPTR.h"
 #include "PacketQueue.h"
 #include "AVDecoder.h"
+#include "AVClock.h"
 
 namespace Puff {
 
@@ -14,7 +15,8 @@ public:
     AVThreadPrivate() :
         decoder(NULL),
         stopped(false),
-        output(NULL)
+        output(NULL),
+        clock(NULL)
     {
         packets.clear();
     }
@@ -28,6 +30,8 @@ public:
 
     /*Must be volatile*/
     volatile bool stopped;
+
+    AVClock *clock;
 };
 
 }

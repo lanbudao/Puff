@@ -13,6 +13,10 @@ class AVClock
 public:
     AVClock();
     ~AVClock();
+
+    double value() const;
+    void updateValue(double pts);
+
 private:
     DPTR_DECLARE(AVClock)
 };

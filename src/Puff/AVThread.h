@@ -5,6 +5,7 @@
 
 namespace Puff {
 
+class AVClock;
 class OutputSet;
 class PacketQueue;
 class AVDecoder;
@@ -20,6 +21,9 @@ public:
     void setDecoder(AVDecoder *decoder);
 
     void setOutputSet(OutputSet *output);
+
+    void setClock(AVClock *clock);
+    AVClock *clock();
 
 protected:
     AVThread(AVThreadPrivate *d);
