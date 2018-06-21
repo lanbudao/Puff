@@ -1,4 +1,5 @@
 #include "ByteArray.h"
+#include "commpeg.h"
 
 namespace Puff {
 
@@ -30,6 +31,15 @@ ByteArray ByteArray::fromRawData(const char *p, size_t size)
 {
     ByteArray data(p, size);
     return data;
+}
+
+void ByteArray::resize(size_t size)
+{
+    if (mData)
+        free(mData);
+    mData = (char *)malloc(size);
+    memset(mData, 0, size);
+    mSize = size;
 }
 
 ByteArray &ByteArray::operator =(const ByteArray &other)

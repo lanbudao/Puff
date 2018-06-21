@@ -19,6 +19,8 @@ public:
     inline const char *constData() const {return mData;}
     inline size_t size() const {return mSize;}
 
+    void resize(size_t size);
+
     inline bool isEmpty() const {return mSize <= 0;}
 
     void setData(const char* data, size_t size);

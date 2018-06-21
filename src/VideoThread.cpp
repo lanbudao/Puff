@@ -60,7 +60,7 @@ void VideoThread::run()
         if (!sendVideoFrame(frame))
             continue;
         d->current_frame = frame;
-        msleep(50);
+        msleep(30);
     }
 
     AVThread::run();

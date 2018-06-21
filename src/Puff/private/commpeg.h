@@ -19,6 +19,7 @@ extern "C" {
 #include <libavutil/parseutils.h>
 #include <libavutil/pixdesc.h>
 #include <libavutil/avstring.h>
+#include <libavutil/fifo.h>
 #include <libavfilter/version.h>
 #include <libswresample/swresample.h>
 #ifdef __cplusplus

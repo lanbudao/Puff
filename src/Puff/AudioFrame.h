@@ -6,6 +6,7 @@
 
 namespace Puff {
 
+class AudioResample;
 class AudioFramePrivate;
 class PU_AV_EXPORT AudioFrame: public Frame
 {
@@ -24,6 +25,9 @@ public:
 
     int samplePerChannel() const;
     void setSamplePerChannel(int channel);
+
+    void setAudioResampler(AudioResample *resample);
+    AudioFrame to(const AudioFormat &fmt) const;
 };
 
 }

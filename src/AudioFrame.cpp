@@ -1,12 +1,15 @@
 #include "AudioFrame.h"
 #include "Frame_p.h"
+#include "AudioResample.h"
+#include "AVLog.h"
 
 namespace Puff {
 
 class AudioFramePrivate : public FramePrivate {
 public:
     AudioFramePrivate():
-        samples_per_channel(0)
+        samples_per_channel(0),
+        resample(NULL)
     {
 
     }
@@ -22,6 +25,7 @@ public:
 
     AudioFormat format;
     int samples_per_channel;
+    AudioResample *resample;
 };
 
 AudioFrame::AudioFrame(const AudioFormat &format, const ByteArray &data):
@@ -104,6 +108,35 @@ void AudioFrame::setSamplePerChannel(int channel) {
             setBits((uchar *)constBits(i - 1) + bytesPerLine, i);
         }
     }
+}
+
+void AudioFrame::setAudioResampler(AudioResample *resample)
+{
+    DPTR_D(AudioFrame);
+    d->resample = resample;
+}
+
+AudioFrame AudioFrame::to(const AudioFormat &fmt) const
+{
+    if (!isValid() || !constBits(0))
+        return AudioFrame();
+    DPTR_D(const AudioFrame);
+    AudioResample *resample = d->resample;
+    if (!resample) {
+        avwarnning("No audio resampler found!\n");
+        return AudioFrame();
+    }
+    resample->setInFormat(d->format);
+    resample->setOutFormat(fmt);
+    resample->setInSamplesPerChannel(samplePerChannel());
+    if (!(resample->convert((const uchar **)d->planes.data()))) {
+        averror("No audio resampler found!\n");
+        return AudioFrame();
+    }
+    AudioFrame frame(fmt, resample->outData());
+    frame.setSamplePerChannel(resample->outSamplesPerChannel());
+    frame.setTimestamp(d->timestamp);
+    return frame;
 }
 
 }

@@ -261,4 +261,16 @@ int AudioFormat::planeCount() const {
     return isPlanar() ? channels() : 1;
 }
 
+AudioFormat::SampleFormat AudioFormat::make(int bytesPerSample, bool isFloat, bool isUnsigned, bool isPlanar)
+{
+    int f = bytesPerSample;
+    if (isFloat)
+        f |= kFloat;
+    if (isUnsigned)
+        f |= kUnsigned;
+    if (isPlanar)
+        f |= kPlanar;
+    return SampleFormat(f);
+}
+
 }

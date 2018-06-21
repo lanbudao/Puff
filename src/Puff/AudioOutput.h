@@ -23,6 +23,7 @@ public:
     bool write(const char *data, int size, double pts);
 
     AudioFormat setAudioFormat(const AudioFormat& format);
+    AudioFormat audioFormat() const;
 
     void setBackend(const std::vector<std::string> &names);
 

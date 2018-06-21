@@ -5,6 +5,7 @@
 #include "DPTR.h"
 #include "VideoFrame.h"
 #include "commpeg.h"
+#include "AudioResample.h"
 
 namespace Puff {
 
@@ -149,12 +150,23 @@ public:
 class AudioDecoderPrivate: public AVDecoderPrivate
 {
 public:
-    AudioDecoderPrivate()
+    AudioDecoderPrivate():
+        resample(NULL)
     {
+        resample = AudioResample::create(AudioResampleId_FFmpeg);
+        if (resample) {
+            resample->setOutSampleFormat(AV_SAMPLE_FMT_FLT);
+        }
     }
     virtual ~AudioDecoderPrivate()
     {
+        if (resample) {
+            delete resample;
+            resample = NULL;
+        }
     }
+
+    AudioResample *resample;
 };
 
 }

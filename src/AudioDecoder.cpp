@@ -50,4 +50,16 @@ std::string AudioDecoder::description() const {
     return std::string();
 }
 
+void AudioDecoder::setAudioResample(AudioResample *resample)
+{
+    DPTR_D(AudioDecoder);
+    d->resample = resample;
+}
+
+AudioResample *AudioDecoder::audioResample() const
+{
+    DPTR_D(const AudioDecoder);
+    return d->resample;
+}
+
 }

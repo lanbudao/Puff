@@ -20,6 +20,9 @@ public:
     virtual std::string name() const PU_DECL_OVERRIDE;
     virtual std::string description() const PU_DECL_OVERRIDE;
 
+    void setAudioResample(AudioResample *resample);
+    AudioResample *audioResample() const;
+
     static AudioDecoder * create(const char *name = "FFmpeg");
     static AudioDecoder* create(AudioDecoderId id);
 

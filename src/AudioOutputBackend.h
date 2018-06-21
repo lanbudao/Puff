@@ -2,12 +2,12 @@
 #define PUFF_AUDIO_OUTPUT_BACKEND_H
 
 #include "CObject.h"
+#include "AudioFormat.h"
 
 typedef int AudioOutputBackendId;
 
 namespace Puff {
 
-class AudioFormat;
 class AudioOutputBackendPrivate;
 class AudioOutputBackend: public CObject
 {
@@ -25,6 +25,12 @@ public:
     bool avaliable() const;
     void setAvaliable(bool b);
     void setFormat(const AudioFormat &fmt);
+
+    virtual bool isSupported(const AudioFormat& format) const { return isSupported(format.sampleFormat()) && isSupported(format.channelLayout());}
+    // FIXME: workaround. planar convertion crash now!
+    virtual bool isSupported(AudioFormat::SampleFormat f) const { return !IsPlanar(f);}
+    // 5, 6, 7 channels may not play
+    virtual bool isSupported(AudioFormat::ChannelLayout cl) const { return int(cl) < int(AudioFormat::ChannelLayout_Unsupported);}
 
 public:
     template<class C> static bool Register(AudioOutputBackendId id, const char* name) { return Register(id, create<C>, name);}
