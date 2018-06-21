@@ -73,7 +73,7 @@ void AudioThread::run()
             const double chunk_delay = (double)chunk / byte_rate;
             if (has_ao && ao->isOpen()) {
                 char *decodedChunk = (char *)malloc(chunk);
-                memcpy(decodedChunk, decoded.constData(), chunk);
+                memcpy(decodedChunk, decoded.constData() + decodedPos, chunk);
 //                ByteArray decodedChunk = ByteArray::fromRawData(decoded.constData() + decodedPos, chunk);
                 //qDebug("ao.timestamp: %.3f, pts: %.3f, pktpts: %.3f", ao->timestamp(), pts, pkt.pts);
                 ao->write(decodedChunk, chunk, pts);
@@ -98,7 +98,7 @@ void AudioThread::run()
             pkt.dts += chunk_delay;
         }
 
-        msleep(1);
+        msleep(10);
     }
 }
 

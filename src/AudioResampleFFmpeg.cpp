@@ -107,7 +107,8 @@ bool AudioResampleFFmpeg::convert(const uchar **data)
                                                 (int64_t)d->out_format.sampleRate(),
                                                 (int64_t)d->in_format.sampleRate(),
                                                 AV_ROUND_UP);
-    int64_t outSize = d->out_format.channels() * d->out_samples_per_channel * d->out_format.bytesPerSample();
+    int sampleSize = d->out_format.channels() * d->out_format.bytesPerSample();
+    int64_t outSize = d->out_samples_per_channel * sampleSize;
     if (outSize > d->data.size()) {
         d->data.resize(outSize);
     }

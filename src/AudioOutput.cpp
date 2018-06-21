@@ -180,7 +180,7 @@ void AudioOutput::setBackend(const std::vector<std::string> &names)
 int AudioOutput::bufferSize() const
 {
     DPTR_D(const AudioOutput);
-    return bufferSamples() * d->format.bytesPerSample();
+    return d->buffer_samples * d->format.bytesPerSample();
 }
 
 int AudioOutput::bufferSamples() const

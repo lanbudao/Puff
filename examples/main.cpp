@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
     renderer->init(400, 300);
 
     player->addVideoRenderer(renderer);
-//    player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
-    player->play("F:/work_file/video/3D First Person Mario.mp4");
+    player->play("F:/work_file/video/M.I.A.OfficialVideo.mp4");
+//    player->play("F:/work_file/video/3D First Person Mario.mp4");
 
     renderer->show();
     avdebug("player uninitialize\n");
