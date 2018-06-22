@@ -8,6 +8,7 @@ struct AVCodecContext;
 
 namespace Puff {
 
+class Statistics;
 class AVDemuxerPrivate;
 class PU_AV_EXPORT AVDemuxer
 {
@@ -42,6 +43,15 @@ public:
     AVCodecContext* audioCodecCtx(int stream = -1) const;
     AVCodecContext* videoCodecCtx(int stream = -1) const;
     AVCodecContext* subtitleCodecCtx(int stream = -1) const;
+
+    void setStatistics(Statistics *s);
+
+    void initBaseStatistics();
+    void initAudioStatistics();
+    void initVideoStatistics();
+
+    uint64_t startTime();
+    uint64_t duration();
 
 private:
     DPTR_DECLARE(AVDemuxer)

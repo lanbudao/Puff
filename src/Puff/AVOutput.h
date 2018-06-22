@@ -6,6 +6,7 @@
 
 namespace Puff {
 
+class Statistics;
 class AVOutputPrivate;
 class PU_AV_EXPORT AVOutput
 {
@@ -18,9 +19,14 @@ public:
     void pause(bool p);
     bool isPaused() const;
 
+private:
+    virtual void setStatistics(Statistics *s);
+    friend class AVPlayer;
+
 protected:
     AVOutput(AVOutputPrivate *d);
     DPTR_DECLARE(AVOutput)
+
 };
 
 }

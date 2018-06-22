@@ -11,6 +11,8 @@
 #include "commpeg.h"
 #include "AVLog.h"
 #include "AVClock.h"
+#include "Statistics.h"
+#include "VideoRenderer.h"
 
 namespace Puff {
 
@@ -31,6 +33,7 @@ public:
         ao(new AudioOutput)
     {
         demuxer = new AVDemuxer();
+        demuxer->setStatistics(&statistics);
         demux_thread = new AVDemuxThread();
         demux_thread->setDemuxer(demuxer);
 
@@ -56,7 +59,7 @@ public:
         delete ao;
     }
 
-    bool setupAudioThread(AVPlayer *player)
+    bool setupAudioThread()
     {
         demuxer->setStreamIndex(AVDemuxer::Stream_Audio, audio_track);
         if (audio_thread) {
@@ -108,11 +111,12 @@ public:
             demux_thread->setAudioThread(audio_thread);
         }
         audio_thread->setDecoder(audio_dec);
+        demuxer->initAudioStatistics();
 
         return true;
     }
 
-    bool setupVideoThread(AVPlayer *player)
+    bool setupVideoThread()
     {
         demuxer->setStreamIndex(AVDemuxer::Stream_Video, video_track);
         if (video_thread) {
@@ -149,6 +153,7 @@ public:
             demux_thread->setVideoThread(video_thread);
         }
         video_thread->setDecoder(video_dec);
+        demuxer->initVideoStatistics();
         return true;
     }
 
@@ -177,6 +182,8 @@ public:
     AudioOutput *ao;
 
     AVClock clock;
+
+    Statistics statistics;
 };
 
 AVPlayer::AVPlayer():
@@ -229,6 +236,7 @@ bool AVPlayer::isLoaded() const
 void AVPlayer::addVideoRenderer(VideoRenderer *renderer)
 {
     DPTR_D(AVPlayer);
+    renderer->setStatistics(&d->statistics);
     d->video_output_set.addOutput((AVOutput*)renderer);
 }
 
@@ -247,14 +255,15 @@ void AVPlayer::playInternal()
 
     if (!d->demuxer->isLoaded())
         return;
-    if (!d->setupAudioThread(this)) {
+    d->demuxer->initBaseStatistics();
+    if (!d->setupAudioThread()) {
         d->demux_thread->setAudioThread(nullptr);
         if (d->audio_thread) {
             delete d->audio_thread;
             d->audio_thread = nullptr;
         }
     }
-    if (!d->setupVideoThread(this)) {
+    if (!d->setupVideoThread()) {
         d->demux_thread->setVideoThread(nullptr);
         if (d->video_thread) {
             delete d->video_thread;

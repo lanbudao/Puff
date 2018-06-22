@@ -38,4 +38,10 @@ bool AVOutput::isPaused() const
     return d->pause;
 }
 
+void AVOutput::setStatistics(Statistics *s)
+{
+    DPTR_D(AVOutput);
+    d->statistics = s;
+}
+
 }

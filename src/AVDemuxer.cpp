@@ -4,7 +4,9 @@
 #include "commpeg.h"
 #include "AVLog.h"
 #include "CMutex.h"
+#include "Statistics.h"
 #include <vector>
+#include <math.h>
 
 namespace Puff {
 
@@ -77,7 +79,8 @@ public:
         interruptHandler(NULL),
         isEOF(false),
         stream(-1),
-        has_attached_pic(false)
+        has_attached_pic(false),
+        statistics(NULL)
     {
         av_register_all();
     }
@@ -158,6 +161,40 @@ public:
         return true;
     }
 
+    void initCommonStatistics(Statistics::Common *common, int stream_index, AVCodecContext *codec_ctx)
+    {
+        if (stream_index < 0 || stream_index >= format_ctx->nb_streams) {
+            avwarnning("No such index of stream: %d\n", stream_index);
+            return;
+        }
+        AVStream *stream = format_ctx->streams[stream_index];
+        common->codec = avcodec_get_name(codec_ctx->codec_id);
+        common->codec_long = get_codec_long_name(codec_ctx->codec_id);
+        common->start_time = stream->start_time == AV_NOPTS_VALUE ? 0 : uint64_t(stream->start_time * av_q2d(stream->time_base) * 1000);
+        common->duration = stream->duration == AV_NOPTS_VALUE ? 0 : uint64_t(stream->duration * av_q2d(stream->time_base) * 1000);
+        common->bit_rate = codec_ctx->bit_rate;
+        common->frames = stream->nb_frames;
+        if (stream->avg_frame_rate.den && stream->avg_frame_rate.num) {
+            common->frame_rate = av_q2d(stream->avg_frame_rate);
+        } else if (stream->r_frame_rate.den && stream->r_frame_rate.num) {
+            common->frame_rate = av_q2d(stream->r_frame_rate);
+        }
+    }
+
+    uint64_t startTimeBase()
+    {
+        if (!format_ctx || format_ctx->start_time == AV_NOPTS_VALUE)
+            return 0;
+        return format_ctx->start_time;
+    }
+
+    uint64_t durationBase()
+    {
+        if (!format_ctx || format_ctx->duration == AV_NOPTS_VALUE)
+            return 0;
+        return format_ctx->duration;
+    }
+
     std::string fileName;
     AVFormatContext *format_ctx;
     AVInputFormat *input_format;
@@ -185,6 +222,8 @@ public:
     CMutex mutex;
 
     bool has_attached_pic;
+
+    Statistics *statistics;
 };
 
 AVDemuxer::AVDemuxer():
@@ -421,6 +460,89 @@ AVCodecContext *AVDemuxer::subtitleCodecCtx(int stream) const
     if (ctx->codec_type == AVMEDIA_TYPE_SUBTITLE)
         return ctx;
     return NULL;
+}
+
+void AVDemuxer::setStatistics(Statistics *s)
+{
+    DPTR_D(AVDemuxer);
+    d->statistics = s;
+}
+
+void AVDemuxer::initBaseStatistics()
+{
+    DPTR_D(AVDemuxer);
+    d->statistics->url = d->fileName;
+    d->statistics->bit_rate = d->format_ctx->bit_rate;
+    d->statistics->start_time = d->startTimeBase() / AV_TIME_BASE;
+    d->statistics->duration = d->durationBase() / AV_TIME_BASE;
+}
+
+void AVDemuxer::initAudioStatistics()
+{
+    DPTR_D(AVDemuxer);
+    AVCodecContext *avctx = audioCodecCtx();
+    d->statistics->audio = Statistics::Common();
+    d->statistics->audio_only = Statistics::AudioOnly();
+    if (!avctx) {
+        avwarnning("Invalid codec context!\n");
+        return;
+    }
+    d->statistics->audio.avaliable = true;
+    d->initCommonStatistics(&(d->statistics->audio), audioStream(), avctx);
+    d->statistics->audio_only.channels = avctx->channels;
+    d->statistics->audio_only.sample_rate = avctx->sample_rate;
+    d->statistics->audio_only.frame_size = avctx->frame_size;
+    d->statistics->audio_only.sample_fmt = av_get_sample_fmt_name(avctx->sample_fmt);
+    char buf[128];
+    av_get_channel_layout_string(buf, sizeof(buf), avctx->channels, avctx->channel_layout);
+    d->statistics->audio_only.channel_layout = std::string(buf);
+}
+
+void AVDemuxer::initVideoStatistics()
+{
+    DPTR_D(AVDemuxer);
+    AVCodecContext *avctx = videoCodecCtx();
+    int vstream = videoStream();
+    d->statistics->video = Statistics::Common();
+    d->statistics->video_only = Statistics::VideoOnly();
+    if (!avctx) {
+        avwarnning("Invalid codec context!\n");
+        return;
+    }
+    d->statistics->video.avaliable = true;
+    d->initCommonStatistics(&(d->statistics->video), vstream, avctx);
+    d->statistics->video_only.coded_width = avctx->coded_width;
+    d->statistics->video_only.coded_height = avctx->coded_height;
+    d->statistics->video_only.width = avctx->width;
+    d->statistics->video_only.height = avctx->height;
+    d->statistics->video_only.rotate = 0;
+#if AV_MODULE_CHECK(LIBAVFORMAT, 55, 18, 0, 39, 100)
+    if (vstream < 0 || (unsigned int)vstream >= d->format_ctx->nb_streams)
+        return;
+    AVRational ratio = d->format_ctx->streams[vstream]->display_aspect_ratio;
+    d->statistics->video_only.aspect_ratio = 0.0;
+    if (ratio.den && ratio.num) {
+        d->statistics->video_only.aspect_ratio = ratio.den / ratio.num;
+    }
+    uint8_t *sd = av_stream_get_side_data(d->format_ctx->streams[vstream], AV_PKT_DATA_DISPLAYMATRIX, NULL);
+    if (sd) {
+        double r = av_display_rotation_get((int32_t*)sd);
+        if (!isnan(r))
+            d->statistics->video_only.rotate = ((int)r + 360) % 360;
+    }
+#endif
+}
+
+uint64_t AVDemuxer::startTime()
+{
+    DPTR_D(AVDemuxer);
+    return d->startTimeBase() / AV_TIME_BASE;
+}
+
+uint64_t AVDemuxer::duration()
+{
+    DPTR_D(AVDemuxer);
+    return d->durationBase() / AV_TIME_BASE;
 }
 
 }

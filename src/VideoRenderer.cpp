@@ -30,8 +30,8 @@ void VideoRenderer::resizeRenderer(const Size &size) {
 
 void VideoRenderer::resizeRenderer(int width, int height) {
     DPTR_D(VideoRenderer);
-    d->renderer_width = width;
-    d->renderer_height = height;
+    d->window_width = width;
+    d->window_height = height;
     onResizeRenderer(width, height);
 }
 

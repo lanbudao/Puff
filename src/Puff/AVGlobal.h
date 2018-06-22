@@ -56,6 +56,7 @@ using namespace std;
 
 #define ONLY_RUN_ONES static bool run = false; if (run) return; run = true;
 
+#define puAbs(a) (a >= 0 ? a : -a)
 #define puMin(a, b) (a > b ? b : a)
 #define puMax(a, b) (a > b ? a : b)
 
@@ -109,6 +110,16 @@ enum ColorRange {
 };
 
 PU_AV_EXPORT inline std::string GetVersion() {return std::string("");}
+
+PU_AV_EXPORT inline bool FuzzyCompare(double p1, double p2)
+{
+    return (puAbs(p1 - p2) * 1000000000000. <= puMin(puAbs(p1), puAbs(p2)));
+}
+
+PU_AV_EXPORT inline bool FuzzyCompare(float p1, float p2)
+{
+    return (puAbs(p1 - p2) * 100000.f <= puMin(puAbs(p1), puAbs(p2)));
+}
 
 }
 #endif //PUFF_GLOBAL_H

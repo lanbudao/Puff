@@ -27,7 +27,7 @@ public:
 
     bool isValid() const;
 
-    Size size();
+    Size size() const;
     int width() const;
     int height() const;
 

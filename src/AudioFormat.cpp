@@ -224,8 +224,8 @@ int AudioFormat::sampleFormatFFmpeg() const
 void AudioFormat::setChannelLayoutFFmpeg(int64_t layout)
 {
     DPTR_D(AudioFormat);
-    d->channel_layout_ff = layout;
     d->channel_layout = AudioFormat::channelLayoutFromFFmpeg(layout);
+    d->setChannelLayoutFFmpeg(layout);
 }
 
 int64_t AudioFormat::channelLayoutFFmpeg() const
@@ -238,7 +238,7 @@ void AudioFormat::setChannelLayout(AudioFormat::ChannelLayout layout)
 {
     DPTR_D(AudioFormat);
     d->channel_layout = layout;
-    d->channel_layout_ff = AudioFormat::channelLayoutToFFmpeg(layout);
+    d->setChannelLayoutFFmpeg(AudioFormat::channelLayoutToFFmpeg(layout));
 }
 
 AudioFormat::ChannelLayout AudioFormat::channelLayout() const

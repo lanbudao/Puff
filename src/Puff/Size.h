@@ -13,8 +13,9 @@ public:
     inline void setWidth(int w) {wid = w;}
     inline int height() const {return hei;}
     inline void setHeight(int h) {hei = h;}
-    inline bool isNull() {return wid == 0 && hei == 0;}
-    inline bool isValid() {return wid >= 0 && hei >= 0;}
+    inline bool isNull() const {return wid == 0 && hei == 0;}
+    inline bool isValid() const {return wid >= 0 && hei >= 0;}
+    inline bool hasNone() const {return wid == 0 || hei == 0;}
 
     friend inline bool operator == (const Size &s1, const Size &s2) {return s1.wid == s2.wid && s1.hei == s2.hei;}
     friend inline bool operator != (const Size &s1, const Size &s2) {return s1.wid != s2.wid || s1.hei != s2.hei;}

@@ -77,7 +77,7 @@ bool VideoFrame::isValid() const {
     return d->width > 0 && d->height > 0 && d->format.isValid();
 }
 
-Size VideoFrame::size() {
+Size VideoFrame::size() const{
     DPTR_D(const VideoFrame);
     return Size(d->width, d->height);
 }
