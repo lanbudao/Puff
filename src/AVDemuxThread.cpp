@@ -14,7 +14,7 @@ public:
         demuxer(NULL),
         audio_thread(NULL),
         video_thread(NULL),
-        isEnd(false)
+        stopped(false)
     {
 
     }
@@ -24,7 +24,7 @@ public:
     }
     AVDemuxer *demuxer;
     AVThread *audio_thread, *video_thread;
-    bool isEnd;
+    bool stopped;
 };
 
 AVDemuxThread::AVDemuxThread():
@@ -93,11 +93,27 @@ void AVDemuxThread::run()
         abuffer->setBlock(true);
     }
     bool audio_has_pic = false;
+    d->stopped = false;
+    bool enqueue_eof = false;
 
-    while (!d->isEnd) {
+    while (!d->stopped) {
 
         if (d->demuxer->atEnd()) {
             // wait for a/v thread finished
+            if (!enqueue_eof) {
+                if (abuffer) {
+                    abuffer->enqueue(Packet::createEOF());
+                    abuffer->blockEmpty(false);
+                }
+                if (vbuffer) {
+                    vbuffer->enqueue(Packet::createEOF());
+                    vbuffer->blockEmpty(false);
+                }
+                enqueue_eof = true;
+            }
+            if (abuffer->isEmpty() && vbuffer->isEmpty()) {
+                break;
+            }
             msleep(100);
             continue;
         }
@@ -134,9 +150,6 @@ void AVDemuxThread::run()
         }
         msleep(1);
     }
-
-    //TODO: wait for video and audio thread stopped
-    //...
 
     CThread::run();
 }

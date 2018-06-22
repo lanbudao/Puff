@@ -33,12 +33,15 @@ void AudioThread::run()
     AudioOutput *ao = static_cast<AudioOutput*>(d->output->outputs().front());
     AVClock *clock = d->clock;
     Packet pkt;
+    d->stopped = false;
 
     while (!d->stopped) {
         pkt = d->packets.dequeue();
 
+        if (d->stopped)
+            break;
         if (pkt.isEOF()) {
-
+            break;
         } else {
             if (!pkt.isValid()) {
                 continue;
@@ -77,7 +80,6 @@ void AudioThread::run()
             if (has_ao && ao->isOpen()) {
                 char *decodedChunk = (char *)malloc(chunk);
                 memcpy(decodedChunk, decoded.constData() + decodedPos, chunk);
-//                ByteArray decodedChunk = ByteArray::fromRawData(decoded.constData() + decodedPos, chunk);
                 //qDebug("ao.timestamp: %.3f, pts: %.3f, pktpts: %.3f", ao->timestamp(), pts, pkt.pts);
                 ao->write(decodedChunk, chunk, pts);
 //                if (!is_external_clock && ao->timestamp() > 0) {//TODO: clear ao buffer
@@ -103,6 +105,8 @@ void AudioThread::run()
 
         msleep(10);
     }
+    d->packets.clear();
+    CThread::run();
 }
 
 }

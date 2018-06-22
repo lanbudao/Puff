@@ -34,6 +34,9 @@ ByteArray::ByteArray(const char *data, size_t size):
     d_ptr(new ByteArrayPrivate(size))
 {
     DPTR_D(ByteArray);
+    if (!data && size == 0) {
+        size = sizeof(data);
+    }
     if (size > 0) {
         av_fifo_generic_write(d->data, (void*)data, size, NULL);
     }
@@ -59,6 +62,8 @@ char *ByteArray::data()
 const char *ByteArray::constData() const
 {
     DPTR_D(const ByteArray);
+    if (!d->data)
+        return NULL;
     return (const char *)d->data->buffer;
 }
 
@@ -86,7 +91,7 @@ void ByteArray::resize(size_t size)
 bool ByteArray::isEmpty() const
 {
     DPTR_D(const ByteArray);
-    return d->size == 0;
+    return !d->data || d->size == 0;
 }
 
 ByteArray &ByteArray::operator =(const ByteArray &other)

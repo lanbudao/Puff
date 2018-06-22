@@ -24,6 +24,7 @@ public:
     static Packet fromAVPacket(const AVPacket *packet, double time_base);
 
     bool isEOF() const;
+    static Packet createEOF();
     inline bool isValid() const;
 
     bool containKeyFrame, isCorrupted;
@@ -39,6 +40,8 @@ private:
 
 bool Packet::isValid() const
 {
+    if (data.isEmpty())
+        return false;
     return !isCorrupted && data.size() > 0 && pts >= 0 && duration >= 0;
 }
 

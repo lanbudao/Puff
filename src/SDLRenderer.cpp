@@ -69,12 +69,29 @@ public:
             return;
         }
         renderer = SDL_CreateRenderer(window, -1, 0);
+
+    }
+
+    void clearScreen()
+    {
+        SDL_Rect rect;
+        rect.x = rect.y = 0;
+        rect.w = window_width; rect.h = window_height;
+        if (texture)
+            SDL_DestroyTexture(texture);
+        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,
+                                    window_width, window_height);
+        SDL_SetTextureColorMod(texture, 0, 0, 0);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+        SDL_RenderPresent(renderer);
     }
 
     void resizeWindow(int w, int h)
     {
         if (window) {
             SDL_SetWindowSize(window, w, h);
+            clearScreen();
         }
         if (texture) {
             SDL_DestroyTexture(texture);
@@ -97,8 +114,10 @@ public:
     void renderYUV(const VideoFrame &frame)
     {
         SDL_Rect update_rect = getRendererSize(frame.size());
-        if (!update_rect.w || !update_rect.h)
+        if (!update_rect.w || !update_rect.h) {
+            clearScreen();
             return;
+        }
         if (!texture || rendererSizeChanged) {
             if (texture) {
                 SDL_DestroyTexture(texture);
@@ -190,6 +209,7 @@ void SDLRenderer::show() {
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                     SDL_GetWindowSize(d->window, &d->window_width, &d->window_height);
                     d->rendererSizeChanged = true;
+                    d->renderYUV(d->current_frame);
                 }
             }
         }

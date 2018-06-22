@@ -16,7 +16,7 @@ class PU_AV_EXPORT ByteArray
     DPTR_DECLARE_PRIVATE(ByteArray)
 public:
     ByteArray();
-    ByteArray(const char* data, size_t size);
+    ByteArray(const char* data, size_t size = 0);
     ByteArray& operator = (const ByteArray &other);
     ~ByteArray();
 

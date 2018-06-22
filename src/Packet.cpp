@@ -22,10 +22,10 @@ Packet::Packet():
     d_ptr(new PacketPrivate),
     containKeyFrame(false),
     isCorrupted(false),
-    pts(0),
-    dts(0),
-    duration(0),
-    pos(0)
+    pts(-1),
+    dts(-1),
+    duration(-1),
+    pos(-1)
 {
 
 }
@@ -110,6 +110,13 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
 bool Packet::isEOF() const
 {
     return !memcmp(data.constData(), "eof", data.size()) && pts < 0.0 && dts < 0.0;
+}
+
+Packet Packet::createEOF()
+{
+    Packet pkt;
+    pkt.data = ByteArray("eof");
+    return pkt;
 }
 
 AVPacket *Packet::avpacket()

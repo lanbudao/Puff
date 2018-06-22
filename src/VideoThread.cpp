@@ -33,17 +33,19 @@ void VideoThread::run()
     avdebug("video thread id:%d.\n", id());
     auto *dec = dynamic_cast<VideoDecoder *>(d->decoder);
     AVClock *clock = d->clock;
+    d->stopped = false;
 
     Packet pkt;
 
     while (!d->stopped) {
 
-//        if (!pkt.isValid()) {
-            pkt = d->packets.dequeue();
-//        }
+        if (d->stopped)
+            break;
+        pkt = d->packets.dequeue();
 
         if (pkt.isEOF()) {
-
+            sendVideoFrame(VideoFrame());
+            break;
         } else {
             if (!pkt.isValid()) {
                 continue;
@@ -61,16 +63,16 @@ void VideoThread::run()
         if (!sendVideoFrame(frame))
             continue;
         d->current_frame = frame;
-        if (frame.timestamp() > 0) {
+        if (frame.timestamp() > 0 && clock->value() > 0) {
             double delay = frame.timestamp() - clock->value();
             if (delay > 0) {
                 msleep((unsigned int)(delay * 1000));
             }
         } else {
-            msleep(1);
+            msleep(34);
         }
-    }
-
+    }    
+    d->packets.clear();
     AVThread::run();
 }
 
