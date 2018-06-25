@@ -109,6 +109,18 @@ enum ColorRange {
     ColorRange_Full     // PC, JPEG
 };
 
+enum SeekUnit {
+    SeekByTime, //only this is supported now
+    SeekByByte,
+    SeekByFrame
+};
+
+enum SeekType {
+    AccurateSeek, // slow
+    KeyFrameSeek, // fast
+    AnyFrameSeek
+};
+
 PU_AV_EXPORT inline std::string GetVersion() {return std::string("");}
 
 PU_AV_EXPORT inline bool FuzzyCompare(double p1, double p2)

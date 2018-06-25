@@ -29,6 +29,9 @@ public:
     bool atEnd();
 
     bool isLoaded() const;
+    bool isSeekable() const;
+    bool seek(uint64_t ms);
+    void setSeekType(SeekType type);
 
     int  stream();
     const Packet& packet() const;
@@ -52,6 +55,8 @@ public:
 
     uint64_t startTime();
     uint64_t duration();
+    uint64_t startTimeUs();
+    uint64_t durationUs();
 
 private:
     DPTR_DECLARE(AVDemuxer)

@@ -23,6 +23,8 @@ public:
     bool load();
     bool isLoaded() const;
 
+    bool seek(uint64_t ms);
+
     void addVideoRenderer(VideoRenderer *renderer);
 
 private:

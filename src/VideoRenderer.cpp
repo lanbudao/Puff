@@ -1,5 +1,4 @@
-#include "VideoRenderer.h"
-#include "AVOutput_p.h"
+#include "VideoRender_p.h"
 
 namespace Puff {
 
@@ -24,18 +23,18 @@ void VideoRenderer::receive(const VideoFrame &frame)
     receiveFrame(frame);
 }
 
-void VideoRenderer::resizeRenderer(const Size &size) {
-    resizeRenderer(size.width(), size.height());
+void VideoRenderer::resizeWindow(const Size &size) {
+    resizeWindow(size.width(), size.height());
 }
 
-void VideoRenderer::resizeRenderer(int width, int height) {
+void VideoRenderer::resizeWindow(int width, int height) {
     DPTR_D(VideoRenderer);
     d->window_width = width;
     d->window_height = height;
-    onResizeRenderer(width, height);
+    onResizeWindow(width, height);
 }
 
-void VideoRenderer::onResizeRenderer(int width, int height) {
+void VideoRenderer::onResizeWindow(int width, int height) {
     PU_UNUSED(width)
     PU_UNUSED(height)
 }

@@ -68,8 +68,8 @@ void AVLog::log(LogLevel level, const char *fmt, ...)
         output = &buffer[0];
     va_end(marker);
     printf(output.c_str());
-    fflush(stdout);
-    d->writeOutput(output);
+//    fflush(stdout);
+//    d->writeOutput(output);
 }
 
 void AVLog::setLevel(LogLevel level)

@@ -9,6 +9,7 @@
 #include "VideoFrame.h"
 #include "AudioFrame.h"
 #include "CThread.h"
+#include "SDL.h"
 
 using namespace Puff;
 
@@ -29,7 +30,24 @@ int main(int argc, char *argv[])
     player->addVideoRenderer(renderer);
     player->play(fileName);
 
-    renderer->show();
+    SDL_Event event;
+    int winID = SDL_GetWindowID(renderer->window());
+    while (1) {
+        SDL_WaitEvent(&event);
+        if (event.type == SDL_WINDOWEVENT) {
+            if (event.window.windowID == winID) {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    int width, height;
+                    SDL_GetWindowSize(renderer->window(), &width, &height);
+                    renderer->resizeWindow(width, height);
+                }
+            }
+        }
+        else if (event.type == SDL_QUIT) {
+            break;
+        }
+        SDL_Delay(10);
+    }
     avdebug("player uninitialize\n");
     return 0;
 }

@@ -11,18 +11,25 @@ class PU_AV_EXPORT VideoRenderer: public AVOutput
 {
     DPTR_DECLARE_PRIVATE(VideoRenderer)
 public:
+
+    enum OutAspectRatioMode {
+        RendererAspectRatio,
+        VideoAspectRatio,
+        CustomAspectRation
+    };
+
     virtual ~VideoRenderer();
 
     virtual void setBackgroundColor(int r, int g, int b);
 
     void receive(const VideoFrame &frame);
 
-    void resizeRenderer(const Size &size);
-    void resizeRenderer(int width, int height);
+    void resizeWindow(const Size &size);
+    void resizeWindow(int width, int height);
 
 protected:
     virtual bool receiveFrame(const VideoFrame& frame) = 0;
-    virtual void onResizeRenderer(int width, int height);
+    virtual void onResizeWindow(int width, int height);
     VideoRenderer(VideoRendererPrivate *d);
 };
 

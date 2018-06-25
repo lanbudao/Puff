@@ -233,6 +233,12 @@ bool AVPlayer::isLoaded() const
     return d->loaded;
 }
 
+bool AVPlayer::seek(uint64_t ms)
+{
+    DPTR_D(AVPlayer);
+    return d->demuxer->seek(ms);
+}
+
 void AVPlayer::addVideoRenderer(VideoRenderer *renderer)
 {
     DPTR_D(AVPlayer);

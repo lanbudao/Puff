@@ -1,230 +1,6 @@
-#include "AVDemuxer.h"
-#include "AVError.h"
-#include "Packet.h"
-#include "commpeg.h"
-#include "AVLog.h"
-#include "CMutex.h"
-#include "Statistics.h"
-#include <vector>
-#include <math.h>
+#include "AVDemuxer_p.h"
 
 namespace Puff {
-
-class InterruptHandler
-{
-public:
-    InterruptHandler(AVDemuxer *demuxer):
-        mCurAction(None),
-        interruptCB(new AVIOInterruptCB()),
-        mDemuxer(demuxer)
-    {
-        interruptCB->callback = handleInterrupt;
-        interruptCB->opaque = this;
-    }
-    enum Action
-    {
-        None = 0,
-        OpenStream,
-        FindStream,
-        ReadStream
-    };
-    ~InterruptHandler()
-    {
-        delete interruptCB;
-    }
-    AVIOInterruptCB *handler() {return interruptCB;}
-    Action action() const {return mCurAction;}
-    void begin(Action action)
-    {
-
-    }
-    void end()
-    {
-
-    }
-
-    void setInterruptTimeout(int64_t timeout) { mTimeout = timeout;}
-
-    static int handleInterrupt(void *obj)
-    {
-        InterruptHandler *handler = static_cast<InterruptHandler *>(obj);
-        if (!handler)
-            return 0;
-        switch (handler->action()) {
-            case OpenStream:
-                break;
-            case FindStream:
-                break;
-            case ReadStream:
-                break;
-            default:
-                break;
-        }
-    }
-
-private:
-    int64_t mTimeout;
-    Action mCurAction;
-    AVIOInterruptCB *interruptCB;
-    AVDemuxer *mDemuxer;
-};
-
-class AVDemuxerPrivate
-{
-public:
-    AVDemuxerPrivate():
-        format_ctx(NULL),
-        input_format(NULL),
-        format_opts(NULL),
-        interruptHandler(NULL),
-        isEOF(false),
-        stream(-1),
-        has_attached_pic(false),
-        statistics(NULL)
-    {
-        av_register_all();
-    }
-    ~AVDemuxerPrivate()
-    {
-        delete interruptHandler;
-        if (format_opts) {
-            av_dict_free(&format_opts);
-            format_opts = NULL;
-        }
-    }
-
-    void resetStreams()
-    {
-        video_stream_info.clear();
-        audio_stream_info.clear();
-        subtitle_stream_info.clear();
-    }
-
-    bool findStreams()
-    {
-        if (!format_ctx)
-            return false;
-        resetStreams();
-        for (unsigned int i = 0; i < format_ctx->nb_streams; ++i) {
-            AVMediaType type = format_ctx->streams[i]->codec->codec_type;
-            if (type == AVMEDIA_TYPE_VIDEO) {
-                video_stream_info.streams.push_back(i);
-            } else if (type == AVMEDIA_TYPE_AUDIO) {
-                audio_stream_info.streams.push_back(i);
-            } else if (type == AVMEDIA_TYPE_SUBTITLE) {
-                subtitle_stream_info.streams.push_back(i);
-            }
-        }
-        if (video_stream_info.streams.empty() &&
-                audio_stream_info.streams.empty() &&
-                subtitle_stream_info.streams.empty())
-            return false;
-
-        setMediaStream(AVDemuxer::Stream_Video, -1);
-        setMediaStream(AVDemuxer::Stream_Audio, -1);
-        setMediaStream(AVDemuxer::Stream_Subtitle, -1);
-
-        return true;
-    }
-
-    bool setMediaStream(AVDemuxer::StreamType type, int value)
-    {
-        StreamInfo *info = NULL;
-        AVMediaType media_type = AVMEDIA_TYPE_UNKNOWN;
-
-        if (type == AVDemuxer::Stream_Video) {
-            info = &video_stream_info;
-            media_type = AVMEDIA_TYPE_VIDEO;
-        } else if (type == AVDemuxer::Stream_Audio) {
-            info = &audio_stream_info;
-            media_type = AVMEDIA_TYPE_AUDIO;
-        } else if (type == AVDemuxer::Stream_Subtitle) {
-            info = &subtitle_stream_info;
-            media_type = AVMEDIA_TYPE_SUBTITLE;
-        }
-
-        if (!info)
-            return false;
-        int s = AVERROR_STREAM_NOT_FOUND;
-        if (info->wanted_index >= 0 && info->wanted_index < info->streams.size()) {
-            s = info->streams.at(info->wanted_index);
-        } else {
-            s = av_find_best_stream(format_ctx, media_type, value, -1, NULL, 0);
-        }
-        if (s == AVERROR_STREAM_NOT_FOUND) {
-            return false;
-        }
-        info->stream = s;
-        info->wanted_stream = value;
-        info->codec_ctx = format_ctx->streams[s]->codec;
-        has_attached_pic = !!(format_ctx->streams[s]->disposition & AV_DISPOSITION_ATTACHED_PIC);
-        return true;
-    }
-
-    void initCommonStatistics(Statistics::Common *common, int stream_index, AVCodecContext *codec_ctx)
-    {
-        if (stream_index < 0 || stream_index >= format_ctx->nb_streams) {
-            avwarnning("No such index of stream: %d\n", stream_index);
-            return;
-        }
-        AVStream *stream = format_ctx->streams[stream_index];
-        common->codec = avcodec_get_name(codec_ctx->codec_id);
-        common->codec_long = get_codec_long_name(codec_ctx->codec_id);
-        common->start_time = stream->start_time == AV_NOPTS_VALUE ? 0 : uint64_t(stream->start_time * av_q2d(stream->time_base) * 1000);
-        common->duration = stream->duration == AV_NOPTS_VALUE ? 0 : uint64_t(stream->duration * av_q2d(stream->time_base) * 1000);
-        common->bit_rate = codec_ctx->bit_rate;
-        common->frames = stream->nb_frames;
-        if (stream->avg_frame_rate.den && stream->avg_frame_rate.num) {
-            common->frame_rate = av_q2d(stream->avg_frame_rate);
-        } else if (stream->r_frame_rate.den && stream->r_frame_rate.num) {
-            common->frame_rate = av_q2d(stream->r_frame_rate);
-        }
-    }
-
-    uint64_t startTimeBase()
-    {
-        if (!format_ctx || format_ctx->start_time == AV_NOPTS_VALUE)
-            return 0;
-        return format_ctx->start_time;
-    }
-
-    uint64_t durationBase()
-    {
-        if (!format_ctx || format_ctx->duration == AV_NOPTS_VALUE)
-            return 0;
-        return format_ctx->duration;
-    }
-
-    std::string fileName;
-    AVFormatContext *format_ctx;
-    AVInputFormat *input_format;
-    AVDictionary *format_opts;
-    std::hash<std::string> format_dict;
-    InterruptHandler *interruptHandler;
-
-    struct StreamInfo {
-        std::vector<int> streams;
-        int stream, wanted_stream;
-        int index, wanted_index;
-        AVCodecContext *codec_ctx;
-        StreamInfo() { clear(); }
-        void clear() {
-            streams.clear();
-            index = wanted_index = -1;
-            stream = wanted_stream = -1;
-            codec_ctx = NULL;
-        }
-    } video_stream_info, audio_stream_info, subtitle_stream_info;
-
-    int stream;
-    Packet curPkt;
-    bool isEOF;
-    CMutex mutex;
-
-    bool has_attached_pic;
-
-    Statistics *statistics;
-};
 
 AVDemuxer::AVDemuxer():
     d_ptr(new AVDemuxerPrivate)
@@ -285,6 +61,8 @@ bool AVDemuxer::load()
     if (!d->findStreams()) {
         return false;
     }
+    d->seekable = d->checkSeekable();
+
     return true;
 }
 
@@ -314,6 +92,51 @@ bool AVDemuxer::isLoaded() const
 {
     DPTR_D(const AVDemuxer);
     return d->format_ctx && (d->video_stream_info.codec_ctx || d->audio_stream_info.codec_ctx || d->subtitle_stream_info.codec_ctx);
+}
+
+bool AVDemuxer::isSeekable() const
+{
+    DPTR_D(const AVDemuxer);
+    return d->seekable;
+}
+
+bool AVDemuxer::seek(uint64_t ms)
+{
+    DPTR_D(AVDemuxer);
+    if (!isSeekable())
+        return false;
+    if (!isLoaded())
+        return false;
+    uint64_t upos = ms * 1000LL;
+    if (upos > startTimeUs() + durationUs() || upos < 0LL) {
+        avwarnning("Invalid seek position %lld %.2f. valid range [%lld, %lld]", upos,
+                   double(upos) / double(durationUs()), startTimeUs(), startTimeUs() + durationUs());
+        return false;
+    }
+    bool backward = d->seek_type == AccurateSeek || upos <= (d->curPkt.pts * AV_TIME_BASE);
+    int seek_flag = backward ? AVSEEK_FLAG_BACKWARD : 0;
+    if (d->seek_type == AccurateSeek) {
+        seek_flag = AVSEEK_FLAG_BACKWARD;
+    } else if (d->seek_type == AnyFrameSeek) {
+        seek_flag == AVSEEK_FLAG_ANY;
+    }
+    int ret = av_seek_frame(d->format_ctx, -1, upos, seek_flag);
+    if (ret < 0 && (seek_flag & AVSEEK_FLAG_BACKWARD)) {
+        avwarnning("av_seek_frame error with flag AVSEEK_FLAG_BACKWARD: %s. try to seek without the flag\n", averror2str(ret));
+        seek_flag &= ~AVSEEK_FLAG_BACKWARD;
+        ret = av_seek_frame(d->format_ctx, -1, upos, seek_flag);
+    }
+    if (ret < 0) {
+        avwarnning("av_seek_frame still error without flag AVSEEK_FLAG_BACKWARD\n");
+        return false;
+    }
+    return true;
+}
+
+void AVDemuxer::setSeekType(SeekType type)
+{
+    DPTR_D(AVDemuxer);
+    d->seek_type = type;
 }
 
 int AVDemuxer::stream()
@@ -543,6 +366,16 @@ uint64_t AVDemuxer::duration()
 {
     DPTR_D(AVDemuxer);
     return d->durationBase() / AV_TIME_BASE;
+}
+
+uint64_t AVDemuxer::startTimeUs()
+{
+    return startTime() * 1000000L;
+}
+
+uint64_t AVDemuxer::durationUs()
+{
+    return duration() * 1000000L;
 }
 
 }

@@ -4,6 +4,8 @@
 #include "AVGlobal.h"
 #include "VideoRenderer.h"
 
+class SDL_Window;
+
 namespace Puff {
 
 class SDLRendererPrivate;
@@ -16,12 +18,12 @@ public:
 
     void init(int w, int h);
     void init(int winId);
-    void show();
     void setBackgroundColor(int r, int g, int b);
+    SDL_Window *window();
 
 protected:
     bool receiveFrame(const VideoFrame& frame);
-    void onResizeRenderer(int width, int height) PU_DECL_OVERRIDE;
+    void onResizeWindow(int width, int height) PU_DECL_OVERRIDE;
 };
 
 }

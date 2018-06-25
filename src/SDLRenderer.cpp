@@ -1,8 +1,9 @@
 #include "renderer/SDLRenderer.h"
-#include "private/AVOutput_p.h"
+#include "private/VideoRender_p.h"
 #include "SDL.h"
 #include "AVLog.h"
 #include "commpeg.h"
+#include "CMutex.h"
 
 #define SDL_REFRESH_EVENT (SDL_USEREVENT + 1)
 
@@ -103,6 +104,16 @@ public:
     {
         SDL_Rect rect;
         rect.x = rect.y = rect.w = rect.h = 0;
+//        int width, height;
+//        SDL_GetWindowSize(window, &width, &height);
+//        if (window_width != width || window_height != height) {
+//            if (texture) {
+//                SDL_DestroyTexture(texture);
+//                texture = NULL;
+//            }
+//            rendererSizeChanged = true;
+//        }
+//        window_width = width; window_height = height;
         calculateRendererSize(frameSize);
         rect.x = (window_width - renderer_width) / 2;
         rect.y = (window_height - renderer_height) / 2;
@@ -111,7 +122,7 @@ public:
         return rect;
     }
 
-    void renderYUV(const VideoFrame &frame)
+    void renderFrame(const VideoFrame &frame)
     {
         SDL_Rect update_rect = getRendererSize(frame.size());
         if (!update_rect.w || !update_rect.h) {
@@ -168,6 +179,7 @@ public:
     int winId;
     VideoFrame current_frame;
     bool rendererSizeChanged;
+    CMutex mutex;
 };
 
 SDLRenderer::SDLRenderer():
@@ -177,7 +189,7 @@ SDLRenderer::SDLRenderer():
 
 void SDLRenderer::init(int w, int h) {
     d_func()->init();
-    resizeRenderer(w, h);
+    resizeWindow(w, h);
     setBackgroundColor(0, 0, 0);
 }
 
@@ -191,33 +203,13 @@ SDLRenderer::~SDLRenderer()
 
 }
 
-void SDLRenderer::onResizeRenderer(int width, int height)
+void SDLRenderer::onResizeWindow(int width, int height)
 {
-    d_func()->resizeWindow(width, height);
-}
-
-void SDLRenderer::show() {
     DPTR_D(SDLRenderer);
-    SDL_Event event;
-    while (1) {
-        SDL_WaitEvent(&event);
-        if (event.type == SDL_REFRESH_EVENT) {
-            d->renderYUV(d->current_frame);
-        }
-        else if (event.type == SDL_WINDOWEVENT) {
-            if (event.window.windowID == d->winId)  {
-                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    SDL_GetWindowSize(d->window, &d->window_width, &d->window_height);
-                    d->rendererSizeChanged = true;
-                    d->renderYUV(d->current_frame);
-                }
-            }
-        }
-        else if (event.type == SDL_QUIT) {
-            break;
-        }
-        SDL_Delay(10);
-    }
+    DeclWriteLockMutex(&d->mutex);
+    d->resizeWindow(width, height);
+    d->rendererSizeChanged = true;
+    d->renderFrame(d->current_frame);
 }
 
 void SDLRenderer::setBackgroundColor(int r, int g, int b)
@@ -226,13 +218,21 @@ void SDLRenderer::setBackgroundColor(int r, int g, int b)
     SDL_SetRenderDrawColor(d->renderer, r, g, b, 255);
 }
 
+SDL_Window *SDLRenderer::window()
+{
+    DPTR_D(SDLRenderer);
+    return d->window;
+}
+
 bool SDLRenderer::receiveFrame(const VideoFrame &frame)
 {
     DPTR_D(SDLRenderer);
+    DeclWriteLockMutex(&d->mutex);
     d->current_frame = frame;
-    SDL_Event event;
-    event.type = SDL_REFRESH_EVENT;
-    SDL_PushEvent(&event);
+    d->renderFrame(frame);
+//    SDL_Event event;
+//    event.type = SDL_REFRESH_EVENT;
+//    SDL_PushEvent(&event);
     return true;
 }
 
