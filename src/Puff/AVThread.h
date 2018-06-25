@@ -16,6 +16,9 @@ class PU_AV_EXPORT AVThread: public CThread
 public:
     virtual ~AVThread();
 
+    void stop() PU_DECL_OVERRIDE;
+    void pause(bool p);
+
     PacketQueue *packets();
 
     void setDecoder(AVDecoder *decoder);

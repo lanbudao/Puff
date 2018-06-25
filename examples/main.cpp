@@ -44,6 +44,8 @@ int main(int argc, char *argv[])
             }
         }
         else if (event.type == SDL_QUIT) {
+            player->stop();
+            SDL_Delay(10);
             break;
         }
         SDL_Delay(10);

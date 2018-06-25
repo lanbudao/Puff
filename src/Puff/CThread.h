@@ -17,7 +17,7 @@ public:
     virtual ~CThread();
 
     void start();
-    void stop();
+    virtual void stop();
     int  wait();
     void sleep(int second);
     void msleep(int ms);

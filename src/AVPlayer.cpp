@@ -21,6 +21,7 @@ class AVPlayerPrivate
 public:
     AVPlayerPrivate():
         loaded(false),
+        paused(false),
         demuxer(nullptr),
         demux_thread(nullptr),
         video_thread(nullptr),
@@ -158,6 +159,7 @@ public:
     }
 
     bool loaded;
+    bool paused;
     std::string fileName;
     std::hash<std::string> format_dict;
 
@@ -231,6 +233,32 @@ bool AVPlayer::isLoaded() const
 {
     DPTR_D(const AVPlayer);
     return d->loaded;
+}
+
+void AVPlayer::pause(bool p)
+{
+    DPTR_D(AVPlayer);
+    if (d->paused == p)
+        return;
+    d->paused = p;
+    d->demux_thread->pause(p);
+    if (d->audio_thread)
+        d->audio_thread->pause(p);
+    if (d->video_thread)
+        d->video_thread->pause(p);
+}
+
+bool AVPlayer::isPaused() const
+{
+    return d_func()->paused;
+}
+
+void AVPlayer::stop()
+{
+    DPTR_D(AVPlayer);
+    d->demux_thread->stop();
+    d->demuxer->unload();
+    d->loaded = false;
 }
 
 bool AVPlayer::seek(uint64_t ms)

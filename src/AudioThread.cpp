@@ -35,11 +35,15 @@ void AudioThread::run()
     Packet pkt;
     d->stopped = false;
 
-    while (!d->stopped) {
+    while (true) {
         pkt = d->packets.dequeue();
 
         if (d->stopped)
             break;
+        if (d->paused) {
+            msleep(1);
+            continue;
+        }
         if (pkt.isEOF()) {
             break;
         } else {

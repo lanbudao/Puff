@@ -14,6 +14,23 @@ AVThread::~AVThread() {
 
 }
 
+void AVThread::stop()
+{
+    DPTR_D(AVThread);
+    if (d->stopped)
+        return;
+    d->stopped = true;
+    CThread::stop();
+}
+
+void AVThread::pause(bool p)
+{
+    DPTR_D(AVThread);
+    if (d->paused == p)
+        return;
+    d->paused = p;
+}
+
 PacketQueue * AVThread::packets()
 {
     DPTR_D(AVThread);

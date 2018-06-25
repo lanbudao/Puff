@@ -15,6 +15,8 @@ public:
     AVDemuxThread();
     ~AVDemuxThread() PU_DECL_OVERRIDE;
 
+    void stop() PU_DECL_OVERRIDE;
+    void pause(bool p);
     void setDemuxer(AVDemuxer *demuxer);
     void setAudioThread(AVThread *thread);
     AVThread *audioThread();

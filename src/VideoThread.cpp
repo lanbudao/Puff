@@ -37,10 +37,13 @@ void VideoThread::run()
 
     Packet pkt;
 
-    while (!d->stopped) {
-
+    while (true) {
         if (d->stopped)
             break;
+        if (d->paused) {
+            msleep(1);
+            continue;
+        }
         pkt = d->packets.dequeue();
 
         if (pkt.isEOF()) {

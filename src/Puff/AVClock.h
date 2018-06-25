@@ -6,6 +6,13 @@
 
 namespace Puff {
 
+enum SyncType
+{
+    SyncToAudio,
+    SyncToClock,
+    SyncToVideo
+};
+
 class AVClockPrivate;
 class AVClock
 {
@@ -16,6 +23,9 @@ public:
 
     double value() const;
     void updateValue(double pts);
+
+    SyncType syncType() const;
+    void setSyncType(SyncType type);
 
 private:
     DPTR_DECLARE(AVClock)

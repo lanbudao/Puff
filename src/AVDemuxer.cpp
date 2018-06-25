@@ -70,8 +70,7 @@ void AVDemuxer::unload()
 {
     DPTR_D(AVDemuxer);
 
-    ReadLock lock(&d->mutex);
-    PU_UNUSED(lock);
+    DeclReadLockMutex(&d->mutex);
     d->resetStreams();
     if (d->format_ctx) {
         avformat_close_input(&d->format_ctx);

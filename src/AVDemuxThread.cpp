@@ -14,7 +14,8 @@ public:
         demuxer(NULL),
         audio_thread(NULL),
         video_thread(NULL),
-        stopped(false)
+        stopped(false),
+        paused(false)
     {
 
     }
@@ -25,6 +26,7 @@ public:
     AVDemuxer *demuxer;
     AVThread *audio_thread, *video_thread;
     bool stopped;
+    bool paused;
 };
 
 AVDemuxThread::AVDemuxThread():
@@ -35,6 +37,23 @@ AVDemuxThread::AVDemuxThread():
 
 AVDemuxThread::~AVDemuxThread() {
 
+}
+
+void AVDemuxThread::stop()
+{
+    DPTR_D(AVDemuxThread);
+    if (d->audio_thread)
+        d->audio_thread->stop();
+    if (d->video_thread)
+        d->video_thread->stop();
+}
+
+void AVDemuxThread::pause(bool p)
+{
+    DPTR_D(AVDemuxThread);
+    if (d->paused == p)
+        return;
+    d->paused = p;
 }
 
 void AVDemuxThread::setDemuxer(AVDemuxer *demuxer)
@@ -96,8 +115,13 @@ void AVDemuxThread::run()
     d->stopped = false;
     bool enqueue_eof = false;
 
-    while (!d->stopped) {
-
+    while (true) {
+        if (d->stopped)
+            break;
+        if (d->paused) {
+            msleep(1);
+            continue;
+        }
         if (d->demuxer->atEnd()) {
             // wait for a/v thread finished
             if (!enqueue_eof) {

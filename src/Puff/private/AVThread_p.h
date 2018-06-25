@@ -15,6 +15,7 @@ public:
     AVThreadPrivate() :
         decoder(NULL),
         stopped(false),
+        paused(false),
         output(NULL),
         clock(NULL)
     {
@@ -30,6 +31,7 @@ public:
 
     /*Must be volatile*/
     volatile bool stopped;
+    volatile bool paused;
 
     AVClock *clock;
 };

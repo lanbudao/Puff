@@ -22,6 +22,9 @@ public:
     void play(const std::string& fileName);
     bool load();
     bool isLoaded() const;
+    void pause(bool p = true);
+    bool isPaused() const;
+    void stop();
 
     bool seek(uint64_t ms);
 
