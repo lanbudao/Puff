@@ -17,6 +17,7 @@ public:
 
     void stop() PU_DECL_OVERRIDE;
     void pause(bool p);
+    void seek(uint64_t ms, SeekType type);
     void setDemuxer(AVDemuxer *demuxer);
     void setAudioThread(AVThread *thread);
     AVThread *audioThread();

@@ -102,6 +102,8 @@ bool AVDemuxer::isSeekable() const
 bool AVDemuxer::seek(uint64_t ms)
 {
     DPTR_D(AVDemuxer);
+
+    DeclReadLockMutex(&d->mutex);
     if (!isSeekable())
         return false;
     if (!isLoaded())
@@ -117,13 +119,13 @@ bool AVDemuxer::seek(uint64_t ms)
     if (d->seek_type == AccurateSeek) {
         seek_flag = AVSEEK_FLAG_BACKWARD;
     } else if (d->seek_type == AnyFrameSeek) {
-        seek_flag == AVSEEK_FLAG_ANY;
+        seek_flag = AVSEEK_FLAG_ANY;
     }
-    int ret = av_seek_frame(d->format_ctx, -1, upos, seek_flag);
+    int ret = avformat_seek_file(d->format_ctx, -1, upos - 2, upos, upos + 2, seek_flag);
     if (ret < 0 && (seek_flag & AVSEEK_FLAG_BACKWARD)) {
         avwarnning("av_seek_frame error with flag AVSEEK_FLAG_BACKWARD: %s. try to seek without the flag\n", averror2str(ret));
         seek_flag &= ~AVSEEK_FLAG_BACKWARD;
-        ret = av_seek_frame(d->format_ctx, -1, upos, seek_flag);
+        ret = avformat_seek_file(d->format_ctx, -1, upos - 2, upos, upos + 2, seek_flag);
     }
     if (ret < 0) {
         avwarnning("av_seek_frame still error without flag AVSEEK_FLAG_BACKWARD\n");
@@ -154,9 +156,7 @@ int AVDemuxer::readFrame()
 {
     DPTR_D(AVDemuxer);
 
-    ReadLock lock(&d->mutex);
-    PU_UNUSED(lock);
-
+    DeclReadLockMutex(&d->mutex);
     int ret = -1;
     AVPacket avpkt;
 

@@ -26,7 +26,8 @@ public:
     bool isPaused() const;
     void stop();
 
-    bool seek(uint64_t ms);
+    bool isPlaying();
+    void seek(uint64_t ms);
 
     void addVideoRenderer(VideoRenderer *renderer);
 

@@ -15,7 +15,8 @@ public:
         audio_thread(NULL),
         video_thread(NULL),
         stopped(false),
-        paused(false)
+        paused(false),
+        seek_req(false)
     {
 
     }
@@ -27,6 +28,8 @@ public:
     AVThread *audio_thread, *video_thread;
     bool stopped;
     bool paused;
+
+    bool seek_req; uint64_t seek_pos; SeekType seek_type;
 };
 
 AVDemuxThread::AVDemuxThread():
@@ -42,6 +45,8 @@ AVDemuxThread::~AVDemuxThread() {
 void AVDemuxThread::stop()
 {
     DPTR_D(AVDemuxThread);
+    d->stopped = true;
+    CThread::stop();
     if (d->audio_thread)
         d->audio_thread->stop();
     if (d->video_thread)
@@ -54,6 +59,14 @@ void AVDemuxThread::pause(bool p)
     if (d->paused == p)
         return;
     d->paused = p;
+}
+
+void AVDemuxThread::seek(uint64_t ms, SeekType type)
+{
+    DPTR_D(AVDemuxThread);
+    d->seek_req = true;
+    d->seek_pos = ms;
+    d->seek_type = type;
 }
 
 void AVDemuxThread::setDemuxer(AVDemuxer *demuxer)
@@ -116,6 +129,17 @@ void AVDemuxThread::run()
     bool enqueue_eof = false;
 
     while (true) {
+        if (d->seek_req) {
+            if (d->audio_thread) {
+                d->audio_thread->packets()->clear();
+            }
+            if (d->video_thread) {
+                d->video_thread->packets()->clear();
+            }
+            d->demuxer->setSeekType(d->seek_type);
+            d->demuxer->seek(d->seek_pos);
+            d->seek_req = false;
+        }
         if (d->stopped)
             break;
         if (d->paused) {

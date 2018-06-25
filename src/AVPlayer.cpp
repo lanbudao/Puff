@@ -22,6 +22,8 @@ public:
     AVPlayerPrivate():
         loaded(false),
         paused(false),
+        seeking(false),
+        seek_type(AccurateSeek),
         demuxer(nullptr),
         demux_thread(nullptr),
         video_thread(nullptr),
@@ -160,6 +162,8 @@ public:
 
     bool loaded;
     bool paused;
+    bool seeking;
+    SeekType seek_type;
     std::string fileName;
     std::hash<std::string> format_dict;
 
@@ -261,10 +265,23 @@ void AVPlayer::stop()
     d->loaded = false;
 }
 
-bool AVPlayer::seek(uint64_t ms)
+bool AVPlayer::isPlaying()
 {
     DPTR_D(AVPlayer);
-    return d->demuxer->seek(ms);
+    return (d->demux_thread && d->demux_thread->isRunning()) ||
+            (d->audio_thread && d->audio_thread->isRunning()) ||
+            (d->video_thread && d->video_thread->isRunning());
+}
+
+void AVPlayer::seek(uint64_t ms)
+{
+    DPTR_D(AVPlayer);
+    if (!isPlaying())
+        return;
+    if (d->seeking)
+        return;
+    d->seeking = true;
+    d->demux_thread->seek(ms, d->seek_type);
 }
 
 void AVPlayer::addVideoRenderer(VideoRenderer *renderer)

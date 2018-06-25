@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 2) {
         avdebug("Use Puff.exe fileName\n");
+        getchar();
         return 0;
     }
     logger.setLogFile("F:/log.txt");
@@ -41,6 +42,13 @@ int main(int argc, char *argv[])
                     SDL_GetWindowSize(renderer->window(), &width, &height);
                     renderer->resizeWindow(width, height);
                 }
+            }
+        }
+        else if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_SPACE) {
+                player->pause(!player->isPaused());
+            } else if (event.key.keysym.sym == SDLK_RIGHT) {
+                player->seek(100 * 1000);
             }
         }
         else if (event.type == SDL_QUIT) {

@@ -36,14 +36,13 @@ void AudioThread::run()
     d->stopped = false;
 
     while (true) {
-        pkt = d->packets.dequeue();
-
         if (d->stopped)
             break;
         if (d->paused) {
             msleep(1);
             continue;
         }
+        pkt = d->packets.dequeue();
         if (pkt.isEOF()) {
             break;
         } else {
@@ -73,10 +72,10 @@ void AudioThread::run()
         const double byte_rate = frame.format().bytesPerSecond();
         double pts = frame.timestamp();
         clock->updateValue(pts);
-//        avdebug("frame samples: %d timestemp: %.3f duration: %lld\n", frame.samplePerChannel()*frame.channelCount(), frame.timestamp(), frame.duration()/1000LL);
+        avdebug("frame samples: %d timestemp: %.3f duration: %lld\n", frame.samplePerChannel()*frame.channelCount(), frame.timestamp(), frame.duration()/1000LL);
         while (decodedSize > 0) {
             if (d->stopped) {
-                avdebug("audio thread stop after decode()");
+                avdebug("Audio thread stopped after decode\n");
                 break;
             }
             const int chunk = puMin(decodedSize, ao->bufferSize());
@@ -107,7 +106,7 @@ void AudioThread::run()
             pkt.dts += chunk_delay;
         }
 
-        msleep(10);
+        msleep(1);
     }
     d->packets.clear();
     CThread::run();
