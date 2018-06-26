@@ -16,6 +16,11 @@
 
 namespace Puff {
 
+static void onSeekFinished(void *ctx)
+{
+
+}
+
 class AVPlayerPrivate
 {
 public:
@@ -39,6 +44,7 @@ public:
         demuxer->setStatistics(&statistics);
         demux_thread = new AVDemuxThread();
         demux_thread->setDemuxer(demuxer);
+        puconnect(demux_thread, seekFinished, this, &AVPlayerPrivate::onSeekFinished);
 
         video_dec_ids = VideoDecoder::registered();
     }
@@ -160,6 +166,8 @@ public:
         return true;
     }
 
+    void onSeekFinished(void*) { seeking = false; }
+
     bool loaded;
     bool paused;
     bool seeking;
@@ -195,7 +203,8 @@ public:
 AVPlayer::AVPlayer():
     d_ptr(new AVPlayerPrivate)
 {
-    avdebug("AVPlayer Initialize...\n");
+    DPTR_D(AVPlayer);
+//    d->demux_thread->seekFinishCallBack.install(this, &AVPlayer::onSeekFinished);
 }
 
 AVPlayer::~AVPlayer()
@@ -282,6 +291,35 @@ void AVPlayer::seek(uint64_t ms)
         return;
     d->seeking = true;
     d->demux_thread->seek(ms, d->seek_type);
+    d->clock.updateValue((double)ms / 1000);
+}
+
+void AVPlayer::seekForward()
+{
+    uint64_t pos = position() + 10 * 1000;
+    if (pos > duration() * 1000)
+        pos = duration() * 1000;
+    seek(pos);
+}
+
+void AVPlayer::seekBackward()
+{
+    uint64_t pos = position() - 10 * 1000;
+    if (pos < 0)
+        pos = 0;
+    seek(pos);
+}
+
+uint64_t AVPlayer::position()
+{
+    DPTR_D(AVPlayer);
+    return uint64_t(d->clock.value() * 1000);
+}
+
+uint64_t AVPlayer::duration()
+{
+    DPTR_D(AVPlayer);
+    return d->demuxer->duration();
 }
 
 void AVPlayer::addVideoRenderer(VideoRenderer *renderer)

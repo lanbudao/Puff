@@ -2,6 +2,7 @@
 #define PUFF_AVDEMUXTHREAD_H
 
 #include "CThread.h"
+#include "SignalSlot.h"
 
 namespace Puff {
 
@@ -23,6 +24,9 @@ public:
     AVThread *audioThread();
     void setVideoThread(AVThread *thread);
     AVThread *videoThread();
+
+PU_SIGNALS:
+    Signal<void*> seekFinished;
 
 protected:
     void run() PU_DECL_OVERRIDE;

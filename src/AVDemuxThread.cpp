@@ -138,6 +138,7 @@ void AVDemuxThread::run()
             }
             d->demuxer->setSeekType(d->seek_type);
             d->demuxer->seek(d->seek_pos);
+            seekFinished(NULL);
             d->seek_req = false;
         }
         if (d->stopped)

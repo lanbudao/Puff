@@ -48,7 +48,9 @@ int main(int argc, char *argv[])
             if (event.key.keysym.sym == SDLK_SPACE) {
                 player->pause(!player->isPaused());
             } else if (event.key.keysym.sym == SDLK_RIGHT) {
-                player->seek(100 * 1000);
+                player->seekForward();
+            } else if (event.key.keysym.sym == SDLK_LEFT) {
+                player->seekBackward();
             }
         }
         else if (event.type == SDL_QUIT) {

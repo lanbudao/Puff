@@ -28,6 +28,10 @@ public:
 
     bool isPlaying();
     void seek(uint64_t ms);
+    void seekForward();
+    void seekBackward();
+    uint64_t position();
+    uint64_t duration();
 
     void addVideoRenderer(VideoRenderer *renderer);
 
