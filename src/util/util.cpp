@@ -24,7 +24,12 @@ std::string guid()
 {
     char range[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     int length = strlen(range);
-    srand((unsigned)time(NULL));
+    static bool s = false;
+    if (!s) {
+        unsigned int seed = (unsigned)time(NULL);
+        srand(seed);
+        s = true;
+    }
     char uid[17];
     memset(uid, 0, 17);
     for (int i=0; i < 16; i++) {

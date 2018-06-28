@@ -17,12 +17,17 @@ public:
         stopped(false),
         paused(false),
         output(NULL),
-        clock(NULL)
+        clock(NULL),
+        seek_requested(false)
     {
         packets.clear();
     }
 
     virtual ~AVThreadPrivate() {}
+
+    void addTask(Runnable *task) {
+        tasks.push_back(task);
+    }
 
     AVDecoder *decoder;
     PacketQueue packets;
@@ -34,6 +39,9 @@ public:
     volatile bool paused;
 
     AVClock *clock;
+    bool seek_requested;
+
+    std::list<Runnable*> tasks;
 };
 
 }

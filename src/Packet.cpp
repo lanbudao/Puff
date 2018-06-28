@@ -109,6 +109,8 @@ Packet Packet::fromAVPacket(const AVPacket *packet, double time_base)
 
 bool Packet::isEOF() const
 {
+    if (data.isEmpty())
+        return false;
     return !memcmp(data.constData(), "eof", data.size()) && pts < 0.0 && dts < 0.0;
 }
 

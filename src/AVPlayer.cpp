@@ -13,13 +13,9 @@
 #include "AVClock.h"
 #include "Statistics.h"
 #include "VideoRenderer.h"
+#include "util.h"
 
 namespace Puff {
-
-static void onSeekFinished(void *ctx)
-{
-
-}
 
 class AVPlayerPrivate
 {
@@ -29,21 +25,22 @@ public:
         paused(false),
         seeking(false),
         seek_type(AccurateSeek),
-        demuxer(nullptr),
-        demux_thread(nullptr),
-        video_thread(nullptr),
-        audio_thread(nullptr),
+        demuxer(NULL),
+        demux_thread(NULL),
+        video_thread(NULL),
+        audio_thread(NULL),
         video_track(0),
         audio_track(0),
         sub_track(-1),   /*default do not use subtitle*/
-        video_dec(nullptr),
-        audio_dec(nullptr),
+        video_dec(NULL),
+        audio_dec(NULL),
         ao(new AudioOutput)
     {
         demuxer = new AVDemuxer();
         demuxer->setStatistics(&statistics);
         demux_thread = new AVDemuxThread();
         demux_thread->setDemuxer(demuxer);
+        demux_thread->setClock(&clock);
         puconnect(demux_thread, seekFinished, this, &AVPlayerPrivate::onSeekFinished);
 
         video_dec_ids = VideoDecoder::registered();
@@ -73,14 +70,14 @@ public:
         demuxer->setStreamIndex(AVDemuxer::Stream_Audio, audio_track);
         if (audio_thread) {
             audio_thread->packets()->clear();
-            audio_thread->setDecoder(nullptr);
+            audio_thread->setDecoder(NULL);
         }
         AVCodecContext *ctx = demuxer->audioCodecCtx();
         if (!ctx)
             return false;
         if (audio_dec) {
             delete audio_dec;
-            audio_dec = nullptr;
+            audio_dec = NULL;
         }
 
         AudioDecoder *dec = AudioDecoder::create();
@@ -130,14 +127,14 @@ public:
         demuxer->setStreamIndex(AVDemuxer::Stream_Video, video_track);
         if (video_thread) {
             video_thread->packets()->clear();
-            video_thread->setDecoder(nullptr);
+            video_thread->setDecoder(NULL);
         }
         AVCodecContext *ctx = demuxer->videoCodecCtx();
         if (!ctx)
             return false;
         if (video_dec) {
             delete video_dec;
-            video_dec = nullptr;
+            video_dec = NULL;
         }
 
         for (size_t i = 0; i < video_dec_ids.size(); ++i) {
@@ -203,8 +200,6 @@ public:
 AVPlayer::AVPlayer():
     d_ptr(new AVPlayerPrivate)
 {
-    DPTR_D(AVPlayer);
-//    d->demux_thread->seekFinishCallBack.install(this, &AVPlayer::onSeekFinished);
 }
 
 AVPlayer::~AVPlayer()
@@ -290,8 +285,8 @@ void AVPlayer::seek(uint64_t ms)
     if (d->seeking)
         return;
     d->seeking = true;
-    d->demux_thread->seek(ms, d->seek_type);
     d->clock.updateValue((double)ms / 1000);
+    d->demux_thread->seek(ms, d->seek_type);
 }
 
 void AVPlayer::seekForward()
@@ -346,17 +341,17 @@ void AVPlayer::playInternal()
         return;
     d->demuxer->initBaseStatistics();
     if (!d->setupAudioThread()) {
-        d->demux_thread->setAudioThread(nullptr);
+        d->demux_thread->setAudioThread(NULL);
         if (d->audio_thread) {
             delete d->audio_thread;
-            d->audio_thread = nullptr;
+            d->audio_thread = NULL;
         }
     }
     if (!d->setupVideoThread()) {
-        d->demux_thread->setVideoThread(nullptr);
+        d->demux_thread->setVideoThread(NULL);
         if (d->video_thread) {
             delete d->video_thread;
-            d->video_thread = nullptr;
+            d->video_thread = NULL;
         }
     }
 

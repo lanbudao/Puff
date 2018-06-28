@@ -56,9 +56,9 @@ using namespace std;
 
 #define ONLY_RUN_ONES static bool run = false; if (run) return; run = true;
 
-#define puAbs(a) (a >= 0 ? a : -a)
-#define puMin(a, b) (a > b ? b : a)
-#define puMax(a, b) (a > b ? a : b)
+#define puAbs(a) ((a) >= 0 ? (a) : -(a))
+#define puMin(a, b) ((a) > (b) ? (b) : (a))
+#define puMax(a, b) ((a) > (b) ? (a) : (b))
 
 #define PU_UNUSED(X) (void)(X);
 
@@ -132,6 +132,14 @@ PU_AV_EXPORT inline bool FuzzyCompare(float p1, float p2)
 {
     return (puAbs(p1 - p2) * 100000.f <= puMin(puAbs(p1), puAbs(p2)));
 }
+
+class PU_AV_EXPORT Runnable {
+public:
+    Runnable(void *ctx): context(ctx) {}
+    virtual void run() = 0;
+protected:
+    void *context;
+};
 
 }
 #endif //PUFF_GLOBAL_H

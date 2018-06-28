@@ -28,6 +28,10 @@ public:
     void setClock(AVClock *clock);
     AVClock *clock();
 
+    void requestSeek();
+
+    void executeNextTask();
+
 protected:
     AVThread(AVThreadPrivate *d);
     DPTR_DECLARE(AVThread)

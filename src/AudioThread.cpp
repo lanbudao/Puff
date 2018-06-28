@@ -42,11 +42,21 @@ void AudioThread::run()
             msleep(1);
             continue;
         }
+
+        if (d->seek_requested) {
+            d->seek_requested = false;
+            avdebug("request seek audio thread\n");
+            pkt = Packet();
+            msleep(1);
+        }
+
         pkt = d->packets.dequeue();
         if (pkt.isEOF()) {
             break;
         } else {
             if (!pkt.isValid()) {
+                dec->flush();
+                avdebug("audio pkt is not valid, pts is %.3f\n", pkt.pts);
                 continue;
             }
         }

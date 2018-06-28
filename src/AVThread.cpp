@@ -61,4 +61,30 @@ AVClock *AVThread::clock()
     return d->clock;
 }
 
+void AVThread::requestSeek()
+{
+    DPTR_D(AVThread);
+    class SeekPTS: public Runnable {
+    public:
+        SeekPTS(void *p): Runnable(p) {}
+        void run() {
+            AVThread *p = (AVThread*)context;
+            p->d_func()->seek_requested = true;
+        }
+    };
+    d->addTask(new SeekPTS(this));
+}
+
+void AVThread::executeNextTask()
+{
+    DPTR_D(AVThread);
+    if (!d->tasks.empty()) {
+        Runnable *task = d->tasks.front();
+        d->tasks.pop_front();
+        if (task)
+            task->run();
+        delete task;
+    }
+}
+
 }

@@ -61,13 +61,6 @@ class Factory : public Singleton<Class>
     typedef Type* (*Creator)();
 public:
     Type* create(const ID& id);
-    template<class C>
-    bool register_(const ID& id)
-    {
-        std::pair<typename CreatorMap::iterator, bool> result = creators.insert(std::make_pair(id, create<C>));
-        return result.second;
-    }
-
     bool registerCreator(const ID& id, const Creator& callback);
     bool registerIdName(const ID& id, const char* name);
     bool unregisterCreator(const ID& id);
@@ -77,7 +70,6 @@ public:
     size_t count() const;
     const std::vector<ID> &registeredIds() const;
     std::vector<const char*> registeredNames() const;
-    Type* getRandom(); //remove
 
 protected:
     Factory() {}
@@ -182,17 +174,5 @@ size_t Factory<Id, T, Class>::count() const
     //printf("%p size = %d", &Factory<Id, T, Class>::instance(), ids.size());
     return ids.size();
 }
-
-template<typename Id, typename T, class Class>
-typename Factory<Id, T, Class>::Type* Factory<Id, T, Class>::getRandom()
-{
-    srand(time(0));
-    int index = rand() % ids.size();
-    //printf("random %d/%d", index, ids.size());
-    ID new_eid = ids.at(index);
-    //printf("id %d", new_eid);
-    return create(new_eid);
-}
-
 
 #endif //PUFF_FACTORY_H

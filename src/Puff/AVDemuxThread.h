@@ -6,6 +6,7 @@
 
 namespace Puff {
 
+class AVClock;
 class AVThread;
 class AVDemuxer;
 class AVDemuxThreadPrivate;
@@ -24,12 +25,14 @@ public:
     AVThread *audioThread();
     void setVideoThread(AVThread *thread);
     AVThread *videoThread();
+    void setClock(AVClock *clock);
 
 PU_SIGNALS:
     Signal<void*> seekFinished;
 
 protected:
     void run() PU_DECL_OVERRIDE;
+    void seekInternal(uint64_t pos, SeekType type);
 
 private:
     DPTR_DECLARE(AVDemuxThread)

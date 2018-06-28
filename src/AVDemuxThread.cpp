@@ -4,6 +4,7 @@
 #include "VideoThread.h"
 #include "PacketQueue.h"
 #include "AVLog.h"
+#include "AVClock.h"
 
 namespace Puff {
 
@@ -16,7 +17,8 @@ public:
         video_thread(NULL),
         stopped(false),
         paused(false),
-        seek_req(false)
+        seek_req(false),
+        clock(NULL)
     {
 
     }
@@ -30,6 +32,7 @@ public:
     bool paused;
 
     bool seek_req; uint64_t seek_pos; SeekType seek_type;
+    AVClock *clock;
 };
 
 AVDemuxThread::AVDemuxThread():
@@ -99,6 +102,41 @@ AVThread *AVDemuxThread::videoThread()
     return d->video_thread;
 }
 
+void AVDemuxThread::setClock(AVClock *clock)
+{
+    d_func()->clock = clock;
+}
+
+void AVDemuxThread::seekInternal(uint64_t pos, SeekType type)
+{
+    DPTR_D(AVDemuxThread);
+
+    AVThread* av[] = { d->audio_thread, d->video_thread};
+
+    if (d->audio_thread) {
+        d->audio_thread->packets()->clear();
+    }
+    if (d->video_thread) {
+        d->video_thread->packets()->clear();
+    }
+    d->demuxer->setSeekType(type);
+    d->demuxer->seek(pos);
+
+    for (size_t i = 0; i < sizeof(av) / sizeof(av[0]); ++i) {
+        AVThread *t = av[i];
+        if (!t) continue;
+        t->packets()->setBlock(false);
+        t->requestSeek();
+        Packet pkt;
+        pkt.pts = pos / 1000.0;
+        pkt.pos = pos;
+        t->packets()->enqueue(pkt);
+        t->packets()->setBlock(true);
+    }
+//    d->clock->updateValue((double)pos / 1000);
+    seekFinished(NULL);
+}
+
 void AVDemuxThread::run()
 {
     DPTR_D(AVDemuxThread);
@@ -106,7 +144,6 @@ void AVDemuxThread::run()
     Packet pkt;
     int ret = -1;
 
-    avdebug("demux thread id:%d.\n", id());
     if (d->audio_thread && !d->audio_thread->isRunning()) {
         d->audio_thread->start();
     }
@@ -130,15 +167,7 @@ void AVDemuxThread::run()
 
     while (true) {
         if (d->seek_req) {
-            if (d->audio_thread) {
-                d->audio_thread->packets()->clear();
-            }
-            if (d->video_thread) {
-                d->video_thread->packets()->clear();
-            }
-            d->demuxer->setSeekType(d->seek_type);
-            d->demuxer->seek(d->seek_pos);
-            seekFinished(NULL);
+            seekInternal(d->seek_pos, d->seek_type);
             d->seek_req = false;
         }
         if (d->stopped)
@@ -163,7 +192,7 @@ void AVDemuxThread::run()
             if (abuffer->isEmpty() && vbuffer->isEmpty()) {
                 break;
             }
-            msleep(100);
+            msleep(10);
             continue;
         }
         audio_has_pic = d->demuxer->hasAttachedPic();
