@@ -84,7 +84,7 @@ void VideoThread::run()
         double delay = puAbs(pkt.pts - frame.timestamp());
 //        avdebug("video frame, pts: %.3f timestamp: %.3f, delay: %.3f, clock: %.3f\n",
 //                pkt.pts, frame.timestamp(), frame.timestamp() - clock->value(), clock->value());
-//        avdebug("av_gettime: %d, %d\n", av_gettime(), av_gettime_relative);
+//        avdebug("av_gettime: %lld, %lld\n", av_gettime(), av_gettime_relative());
         if (delay > 0.5) {
             avdebug("continue\n");
             continue;
