@@ -111,7 +111,7 @@ void AVDemuxThread::seekInternal(uint64_t pos, SeekType type)
 {
     DPTR_D(AVDemuxThread);
 
-    AVThread* av[] = { d->audio_thread, d->video_thread};
+    AVThread* av[] = {d->audio_thread, d->video_thread};
 
     if (d->audio_thread) {
         d->audio_thread->packets()->clear();
@@ -192,7 +192,7 @@ void AVDemuxThread::run()
             if (abuffer->isEmpty() && vbuffer->isEmpty()) {
                 break;
             }
-            msleep(10);
+            msleep(1);
             continue;
         }
         audio_has_pic = d->demuxer->hasAttachedPic();

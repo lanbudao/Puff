@@ -33,6 +33,13 @@ public:
     uint64_t position();
     uint64_t duration();
 
+    /**
+     * @brief default is SyncToAudio if not set and audio stream is not null
+     * Note: must call it before play() is called
+     * @param type
+     */
+    void setClockType(ClockType type);
+
     void addVideoRenderer(VideoRenderer *renderer);
 
 private:

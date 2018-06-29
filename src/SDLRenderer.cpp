@@ -104,16 +104,6 @@ public:
     {
         SDL_Rect rect;
         rect.x = rect.y = rect.w = rect.h = 0;
-//        int width, height;
-//        SDL_GetWindowSize(window, &width, &height);
-//        if (window_width != width || window_height != height) {
-//            if (texture) {
-//                SDL_DestroyTexture(texture);
-//                texture = NULL;
-//            }
-//            rendererSizeChanged = true;
-//        }
-//        window_width = width; window_height = height;
         calculateRendererSize(frameSize);
         rect.x = (window_width - renderer_width) / 2;
         rect.y = (window_height - renderer_height) / 2;
@@ -125,7 +115,7 @@ public:
     void renderFrame(const VideoFrame &frame)
     {
         SDL_Rect update_rect = getRendererSize(frame.size());
-        if (!update_rect.w || !update_rect.h) {
+        if (!frame.isValid()) {
             clearScreen();
             return;
         }

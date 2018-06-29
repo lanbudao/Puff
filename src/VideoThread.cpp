@@ -3,6 +3,9 @@
 #include "VideoDecoder.h"
 #include "AVLog.h"
 #include "OutputSet.h"
+extern "C" {
+#include "libavutil/time.h"
+}
 
 namespace Puff {
 
@@ -36,6 +39,7 @@ void VideoThread::run()
     d->stopped = false;
 
     Packet pkt;
+    bool pkt_empty = false;
 
     while (true) {
         executeNextTask();
@@ -53,9 +57,9 @@ void VideoThread::run()
             msleep(1);
         }
 
-        pkt = d->packets.dequeue();
+        pkt = d->packets.dequeue(&pkt_empty);
 
-        if (pkt.isEOF()) {
+        if (!pkt_empty || pkt.isEOF()) {
             sendVideoFrame(VideoFrame());
             break;
         } else {
@@ -78,14 +82,15 @@ void VideoThread::run()
             continue;
         d->current_frame = frame;
         double delay = puAbs(pkt.pts - frame.timestamp());
-        avdebug("video frame, pts: %.3f timestamp: %.3f, delay: %.3f, clock: %.3f\n",
-                pkt.pts, frame.timestamp(), delay, clock->value());
+//        avdebug("video frame, pts: %.3f timestamp: %.3f, delay: %.3f, clock: %.3f\n",
+//                pkt.pts, frame.timestamp(), frame.timestamp() - clock->value(), clock->value());
+//        avdebug("av_gettime: %d, %d\n", av_gettime(), av_gettime_relative);
         if (delay > 0.5) {
             avdebug("continue\n");
             continue;
         }
         if (frame.timestamp() > 0 && clock->value() > 0) {
-            double delay = frame.timestamp() - clock->value();
+            double delay = puMin(0.1, frame.timestamp() - clock->value());
             if (delay > 0) {
                 msleep((unsigned int)(delay * 1000));
             }

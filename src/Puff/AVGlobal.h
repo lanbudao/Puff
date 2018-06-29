@@ -121,6 +121,13 @@ enum SeekType {
     AnyFrameSeek
 };
 
+enum ClockType
+{
+    SyncToAudio,
+    SyncToVideo,
+    SyncToExternalClock
+};
+
 PU_AV_EXPORT inline std::string GetVersion() {return std::string("");}
 
 PU_AV_EXPORT inline bool FuzzyCompare(double p1, double p2)

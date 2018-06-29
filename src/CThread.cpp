@@ -65,7 +65,7 @@ int CThread::wait()
 void CThread::run()
 {
     DPTR_D(CThread);
-    avdebug("thread finished!\n");
+    avdebug("Thread %d finished!\n", id());
     d->running = false;
 }
 

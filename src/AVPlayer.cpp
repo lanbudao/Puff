@@ -193,6 +193,7 @@ public:
     AudioOutput *ao;
 
     AVClock clock;
+    ClockType clock_type;
 
     Statistics statistics;
 };
@@ -317,6 +318,12 @@ uint64_t AVPlayer::duration()
     return d->demuxer->duration();
 }
 
+void AVPlayer::setClockType(ClockType type)
+{
+    DPTR_D(AVPlayer);
+    d->clock_type = type;
+}
+
 void AVPlayer::addVideoRenderer(VideoRenderer *renderer)
 {
     DPTR_D(AVPlayer);
@@ -354,6 +361,22 @@ void AVPlayer::playInternal()
             d->video_thread = NULL;
         }
     }
+
+    /*Set Clock Type*/
+    if (d->clock_type == SyncToAudio) {
+        if (d->audio_thread) {
+            d->clock_type = SyncToAudio;
+        } else {
+            d->clock_type = SyncToExternalClock;
+        }
+    } else if (d->clock_type == SyncToVideo) {
+        if (d->video_thread) {
+            d->clock_type = SyncToVideo;
+        } else {
+            d->clock_type = SyncToAudio;
+        }
+    }
+    d->clock.setClockType(d->clock_type);
 
     d->demux_thread->start();
 }

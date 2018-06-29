@@ -34,6 +34,7 @@ void AudioThread::run()
     AVClock *clock = d->clock;
     Packet pkt;
     d->stopped = false;
+    bool pkt_empty = false;
 
     while (true) {
         if (d->stopped)
@@ -50,8 +51,8 @@ void AudioThread::run()
             msleep(1);
         }
 
-        pkt = d->packets.dequeue();
-        if (pkt.isEOF()) {
+        pkt = d->packets.dequeue(&pkt_empty);
+        if (!pkt_empty || pkt.isEOF()) {
             break;
         } else {
             if (!pkt.isValid()) {

@@ -7,7 +7,7 @@ class AVClockPrivate
 public:
     AVClockPrivate():
         pts(0.0),
-        sync_type(SyncToAudio)
+        clock_type(SyncToAudio)
     {
 
     }
@@ -16,7 +16,7 @@ public:
     }
 
     double pts;
-    SyncType sync_type;
+    ClockType clock_type;
 };
 
 AVClock::AVClock():
@@ -41,15 +41,15 @@ void AVClock::updateValue(double pts)
     d->pts = pts;
 }
 
-SyncType AVClock::syncType() const
+ClockType AVClock::clockType() const
 {
-    return d_func()->sync_type;
+    return d_func()->clock_type;
 }
 
-void AVClock::setSyncType(SyncType type)
+void AVClock::setClockType(ClockType type)
 {
     DPTR_D(AVClock);
-    d->sync_type = type;
+    d->clock_type = type;
 }
 
 }
