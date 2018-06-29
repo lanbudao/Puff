@@ -52,7 +52,7 @@ void AudioThread::run()
         }
 
         pkt = d->packets.dequeue(&pkt_empty);
-        if (!pkt_empty || pkt.isEOF()) {
+        if (/*!pkt_empty || */pkt.isEOF()) {
             break;
         } else {
             if (!pkt.isValid()) {

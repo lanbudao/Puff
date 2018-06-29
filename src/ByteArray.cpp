@@ -34,11 +34,11 @@ ByteArray::ByteArray(const char *data, size_t size):
     d_ptr(new ByteArrayPrivate(size))
 {
     DPTR_D(ByteArray);
-    if (!data && size == 0) {
+    if (data && size == 0) {
         size = sizeof(data);
     }
     if (size > 0) {
-        av_fifo_generic_write(d->data, (void*)data, size, NULL);
+        setData(data, size);
     }
 }
 
