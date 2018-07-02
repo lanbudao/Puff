@@ -18,6 +18,7 @@ public:
         paused(false),
         output(NULL),
         clock(NULL),
+        seeking(false),
         seek_requested(false)
     {
         packets.clear();
@@ -42,6 +43,8 @@ public:
     bool seek_requested;
 
     std::list<Runnable*> tasks;
+
+    bool seeking = false;
 };
 
 }

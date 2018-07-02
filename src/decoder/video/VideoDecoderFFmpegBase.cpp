@@ -2,6 +2,8 @@
 #include "AVDecoder_p.h"
 #include "AVLog.h"
 
+//#define VIDEO_DECODER_USE_VIDEO2
+
 namespace Puff {
 
 VideoDecoderFFmpegBase::VideoDecoderFFmpegBase(VideoDecoderFFmpegBasePrivate *d):
@@ -43,6 +45,7 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
     if (ret < 0) {
         return false;
     }
+#ifndef VIDEO_DECODER_USE_VIDEO2
     int decoder_reorder_pts = -1;
     ret = avcodec_receive_frame(d->codec_ctx, d->frame);
     if (ret >= 0) {
@@ -52,6 +55,7 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
             d->frame->pts = d->frame->pkt_dts;
         }
     }
+#endif
     if (ret < 0) {
         avwarnning("video decode error: %s\n", averror2str(ret));
         return false;

@@ -27,6 +27,7 @@ public:
     bool load();
     void unload();
     bool atEnd();
+    void setEOF(bool eof);
 
     bool isLoaded() const;
     bool isSeekable() const;

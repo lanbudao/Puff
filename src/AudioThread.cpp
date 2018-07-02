@@ -40,16 +40,15 @@ void AudioThread::run()
         if (d->stopped)
             break;
         if (d->paused) {
-            msleep(1);
             continue;
         }
 
-        if (d->seek_requested) {
-            d->seek_requested = false;
-            avdebug("request seek audio thread\n");
-            pkt = Packet();
-            msleep(1);
-        }
+//        if (d->seek_requested) {
+//            d->seek_requested = false;
+//            avdebug("request seek audio thread\n");
+//            pkt = Packet();
+//            msleep(1);
+//        }
 
         pkt = d->packets.dequeue(&pkt_empty);
         if (/*!pkt_empty || */pkt.isEOF()) {
@@ -116,8 +115,6 @@ void AudioThread::run()
             pkt.pts += chunk_delay; // packet not fully decoded, use new pts in the next decoding
             pkt.dts += chunk_delay;
         }
-
-        msleep(1);
     }
     d->packets.clear();
     CThread::run();

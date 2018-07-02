@@ -87,4 +87,14 @@ void AVThread::executeNextTask()
     }
 }
 
+bool AVThread::isSeeking() const
+{
+    return d_func()->seeking;
+}
+
+void AVThread::setSeeking(bool s)
+{
+    d_func()->seeking = s;
+}
+
 }

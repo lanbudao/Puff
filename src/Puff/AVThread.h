@@ -32,6 +32,9 @@ public:
 
     void executeNextTask();
 
+    bool isSeeking() const;
+    void setSeeking(bool s);
+
 protected:
     AVThread(AVThreadPrivate *d);
     DPTR_DECLARE(AVThread)

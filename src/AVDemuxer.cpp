@@ -87,6 +87,12 @@ bool AVDemuxer::atEnd()
     return d->isEOF;
 }
 
+void AVDemuxer::setEOF(bool eof)
+{
+    DPTR_D(AVDemuxer);
+    d->isEOF = eof;
+}
+
 bool AVDemuxer::isLoaded() const
 {
     DPTR_D(const AVDemuxer);

@@ -40,31 +40,36 @@ void VideoThread::run()
 
     Packet pkt;
     bool pkt_empty = false;
+    bool wait_key_frame = false;
+    d->seeking = false;
 
     while (true) {
         executeNextTask();
-        if (d->stopped)
-            break;
-        if (d->paused) {
-            msleep(1);
-            continue;
-        }
 
         if (d->seek_requested) {
             d->seek_requested = false;
-            avdebug("request seek video thread\n");
+            dec->flush();
             pkt = Packet();
-            msleep(1);
+            d->seeking = true;
+            wait_key_frame = true;
+            avdebug("request seek video thread\n");
+        }
+
+        if (d->stopped)
+            break;
+        if (d->paused && !d->seeking) {
+            continue;
         }
 
         pkt = d->packets.dequeue(&pkt_empty);
 
-        if (/*!pkt_empty || */pkt.isEOF()) {
+        if (pkt.isEOF()) {
             sendVideoFrame(VideoFrame());
             break;
         } else {
             if (!pkt.isValid()) {
                 dec->flush();
+                wait_key_frame = true;
                 avdebug("video pkt is not valid, pts is %.3f\n", pkt.pts);
                 continue;
             }
@@ -80,6 +85,10 @@ void VideoThread::run()
         }
         if (!sendVideoFrame(frame))
             continue;
+        if (d->seeking) {
+            d->seeking = false;
+            continue;
+        }
         d->current_frame = frame;
         double delay = puAbs(pkt.pts - frame.timestamp());
 //        avdebug("video frame, pts: %.3f timestamp: %.3f, delay: %.3f, clock: %.3f\n",

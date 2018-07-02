@@ -18,6 +18,7 @@ public:
         stopped(false),
         paused(false),
         seek_req(false),
+        enqueue_eof(false),
         clock(NULL)
     {
 
@@ -33,6 +34,8 @@ public:
 
     bool seek_req; uint64_t seek_pos; SeekType seek_type;
     AVClock *clock;
+    bool enqueue_eof;   /*Enqueue a eof packet if demuxer is at end*/
+    CMutex enqueueMtx;
 };
 
 AVDemuxThread::AVDemuxThread():
@@ -50,10 +53,18 @@ void AVDemuxThread::stop()
     DPTR_D(AVDemuxThread);
     d->stopped = true;
     CThread::stop();
-    if (d->audio_thread)
+    if (d->audio_thread) {
+        d->audio_thread->packets()->clear();
+        d->audio_thread->packets()->blockEmpty(false);
+        d->audio_thread->packets()->blockFull(false);
         d->audio_thread->stop();
-    if (d->video_thread)
+    }
+    if (d->video_thread) {
+        d->video_thread->packets()->clear();
+        d->video_thread->packets()->blockEmpty(false);
+        d->video_thread->packets()->blockFull(false);
         d->video_thread->stop();
+    }
 }
 
 void AVDemuxThread::pause(bool p)
@@ -67,6 +78,16 @@ void AVDemuxThread::pause(bool p)
 void AVDemuxThread::seek(uint64_t ms, SeekType type)
 {
     DPTR_D(AVDemuxThread);
+
+    d->demuxer->setEOF(false);
+    if (d->audio_thread) {
+        d->audio_thread->packets()->clear();
+    }
+    if (d->video_thread) {
+        d->video_thread->packets()->clear();
+    }
+    DeclReadLockMutex(&d->enqueueMtx);
+    d->enqueue_eof = false;
     d->seek_req = true;
     d->seek_pos = ms;
     d->seek_type = type;
@@ -113,12 +134,6 @@ void AVDemuxThread::seekInternal(uint64_t pos, SeekType type)
 
     AVThread* av[] = {d->audio_thread, d->video_thread};
 
-    if (d->audio_thread) {
-        d->audio_thread->packets()->clear();
-    }
-    if (d->video_thread) {
-        d->video_thread->packets()->clear();
-    }
     d->demuxer->setSeekType(type);
     d->demuxer->seek(pos);
 
@@ -162,22 +177,21 @@ void AVDemuxThread::run()
     }
     bool audio_has_pic = false;
     d->stopped = false;
-    bool enqueue_eof = false;
 
     while (true) {
         if (d->seek_req) {
             seekInternal(d->seek_pos, d->seek_type);
             d->seek_req = false;
+            d->video_thread->setSeeking(true);
         }
         if (d->stopped)
             break;
-        if (d->paused) {
-//            msleep(1);    //Can not sheep, if seek is work
+        if (d->paused && !d->video_thread->isSeeking()) {
             continue;
         }
         if (d->demuxer->atEnd()) {
             // wait for a/v thread finished
-            if (!enqueue_eof) {
+            if (!d->enqueue_eof) {
                 if (abuffer) {
                     abuffer->enqueue(Packet::createEOF());
                     abuffer->blockEmpty(false);
@@ -186,13 +200,12 @@ void AVDemuxThread::run()
                     vbuffer->enqueue(Packet::createEOF());
                     vbuffer->blockEmpty(false);
                 }
-                enqueue_eof = true;
+                DeclReadLockMutex(&d->enqueueMtx);
+                d->enqueue_eof = true;
             }
             if (abuffer->isEmpty() && vbuffer->isEmpty()) {
                 break;
             }
-
-            msleep(1);
             continue;
         }
         audio_has_pic = d->demuxer->hasAttachedPic();
