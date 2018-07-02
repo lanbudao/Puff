@@ -52,7 +52,6 @@ void AVDemuxThread::stop()
 {
     DPTR_D(AVDemuxThread);
     d->stopped = true;
-    CThread::stop();
     if (d->audio_thread) {
         d->audio_thread->packets()->clear();
         d->audio_thread->packets()->blockEmpty(false);
@@ -65,6 +64,7 @@ void AVDemuxThread::stop()
         d->video_thread->packets()->blockFull(false);
         d->video_thread->stop();
     }
+    CThread::stop();
 }
 
 void AVDemuxThread::pause(bool p)
