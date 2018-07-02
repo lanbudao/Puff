@@ -25,8 +25,7 @@ bool AVDemuxer::load()
     DPTR_D(AVDemuxer);
     unload();
 
-    ReadLock lock(&d->mutex);
-    PU_UNUSED(lock);
+    DeclReadLockMutex(&d->mutex);
     int ret = 0;
 
     if (d->fileName.empty()) {
@@ -37,7 +36,7 @@ bool AVDemuxer::load()
         d->format_ctx->interrupt_callback = *(d->interruptHandler->handler());
     }
 
-    d->format_ctx->flags |= AVFMT_FLAG_GENPTS;
+//    d->format_ctx->flags |= AVFMT_FLAG_GENPTS;
     /*Open Stream*/
     d->interruptHandler->begin(InterruptHandler::OpenStream);
     ret = avformat_open_input(&d->format_ctx, d->fileName.data(), d->input_format, &d->format_opts);
@@ -180,6 +179,7 @@ int AVDemuxer::readFrame()
                 d->isEOF = true;
             }
         }
+        av_packet_unref(&avpkt);
         return ret;
     }
     d->stream = avpkt.stream_index;
