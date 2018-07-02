@@ -31,6 +31,14 @@ int main(int argc, char *argv[])
     player->addVideoRenderer(renderer);
     player->play(fileName);
 
+    /*Set window icon*/
+    SDL_Surface *icon = SDL_LoadBMP("app.bmp");
+    if (icon) {
+        SDL_SetColorKey(icon, SDL_TRUE, SDL_MapRGB(icon->format, 255, 0, 255));
+        SDL_SetWindowIcon(renderer->window(), icon);
+        SDL_FreeSurface(icon);
+    }
+
     SDL_Event event;
     int winID = SDL_GetWindowID(renderer->window());
     while (1) {
