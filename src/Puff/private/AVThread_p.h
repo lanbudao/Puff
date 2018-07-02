@@ -44,6 +44,10 @@ public:
 
     std::list<Runnable*> tasks;
 
+    /**
+     * Used by video thread when seek is need and media is paused.
+     * Then, we need to read a video frame when seek is done
+     */
     bool seeking = false;
 };
 

@@ -54,7 +54,7 @@ public:
             return;
         }
         if (!winId) {
-            window = SDL_CreateWindow("Puff",
+            window = SDL_CreateWindow("",
                                       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                       window_width, window_height,
                                       SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);

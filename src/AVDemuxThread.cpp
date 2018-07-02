@@ -182,11 +182,12 @@ void AVDemuxThread::run()
         if (d->seek_req) {
             seekInternal(d->seek_pos, d->seek_type);
             d->seek_req = false;
-            d->video_thread->setSeeking(true);
+            if (d->video_thread)
+                d->video_thread->setSeeking(true);
         }
         if (d->stopped)
             break;
-        if (d->paused && !d->video_thread->isSeeking()) {
+        if ( d->paused && !(d->video_thread && d->video_thread->isSeeking()) ) {
             continue;
         }
         if (d->demuxer->atEnd()) {
@@ -239,7 +240,6 @@ void AVDemuxThread::run()
         else if (stream == d->demuxer->subtitleStream()) {
 
         }
-//        msleep(1);    //Can not sheep, if seek is work
     }
 
     CThread::run();

@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 
     SDL_Event event;
     int winID = SDL_GetWindowID(renderer->window());
+    SDL_SetWindowTitle(renderer->window(), "Puff (A Simple Player)");
     while (1) {
         SDL_WaitEvent(&event);
         if (event.type == SDL_WINDOWEVENT) {
