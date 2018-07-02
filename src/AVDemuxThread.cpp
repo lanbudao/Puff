@@ -133,7 +133,6 @@ void AVDemuxThread::seekInternal(uint64_t pos, SeekType type)
         t->packets()->enqueue(pkt);
         t->packets()->setBlock(true);
     }
-//    d->clock->updateValue((double)pos / 1000);
     seekFinished(NULL);
 }
 
@@ -173,7 +172,7 @@ void AVDemuxThread::run()
         if (d->stopped)
             break;
         if (d->paused) {
-            msleep(1);
+//            msleep(1);    //Can not sheep, if seek is work
             continue;
         }
         if (d->demuxer->atEnd()) {
@@ -192,6 +191,7 @@ void AVDemuxThread::run()
             if (abuffer->isEmpty() && vbuffer->isEmpty()) {
                 break;
             }
+
             msleep(1);
             continue;
         }
@@ -226,7 +226,7 @@ void AVDemuxThread::run()
         else if (stream == d->demuxer->subtitleStream()) {
 
         }
-        msleep(1);
+//        msleep(1);    //Can not sheep, if seek is work
     }
 
     CThread::run();
