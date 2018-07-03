@@ -69,6 +69,9 @@ void AudioThread::run()
         if (!frame.isValid()) {
             continue;
         }
+        if (frame.timestamp() < 0) {
+            frame.setTimestamp(pkt.pts);
+        }
         bool has_ao = ao && ao->isAvaliable();
         if (has_ao) {
             frame.setAudioResampler(dec->audioResample());
@@ -82,7 +85,8 @@ void AudioThread::run()
         const double byte_rate = frame.format().bytesPerSecond();
         double pts = frame.timestamp();
         clock->updateValue(pts);
-//        avdebug("frame samples: %d timestemp: %.3f duration: %lld\n", frame.samplePerChannel()*frame.channelCount(), pts, frame.duration()/1000LL);
+//        avdebug("frame samples per channel: %d , channels: %d, timestemp: %.3f duration: %lld\n",
+//                frame.samplePerChannel(), frame.channelCount(), pts, frame.duration()/1000LL);
         while (decodedSize > 0) {
             if (d->stopped) {
                 avdebug("Audio thread stopped after decode\n");

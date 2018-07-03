@@ -116,8 +116,11 @@ bool AudioResampleFFmpeg::convert(const uchar **data)
     int samples = swr_convert(d->context, &out, d->out_samples_per_channel,
                                           data, d->in_samples_per_channel);
     d->out_samples_per_channel = samples;
-    //TODO
-
+    /**
+     * It is important to resize data.
+     * Otherwise, audio 'dudu' will appear.
+     */
+    d->data.resize(size_t(d->out_samples_per_channel * sampleSize));
     return true;
 }
 

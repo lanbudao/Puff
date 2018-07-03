@@ -163,8 +163,11 @@ bool AudioOutputPortAudio::write(const char *data, int size)
         return false;
     if (Pa_IsStreamStopped(stream))
         Pa_StartStream(stream);
-    PaError err = Pa_WriteStream(stream, data, size / stream_paras->channelCount / format()->bytesPerSample());
-    if (err == paUnanticipatedHostError) {
+    unsigned long frames = size / (stream_paras->channelCount * format()->bytesPerSample());
+    if (frames <= 0)
+        return false;
+    PaError err = Pa_WriteStream(stream, data, frames);
+    if (err != paNoError) {
         avwarnning("PortAudio write stream error: %s\n", Pa_GetErrorText(err));
         return false;
     }

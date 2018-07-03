@@ -2,7 +2,7 @@
 #include "AVDecoder_p.h"
 #include "AVLog.h"
 
-//#define VIDEO_DECODER_USE_VIDEO2
+#define VIDEO_DECODER_USE_VIDEO2
 
 namespace Puff {
 
@@ -55,6 +55,8 @@ bool VideoDecoderFFmpegBase::decode(const Packet &pkt) {
             d->frame->pts = d->frame->pkt_dts;
         }
     }
+#else
+    d->frame->pts = d->frame->pkt_dts;
 #endif
     if (ret < 0) {
         avwarnning("video decode error: %s\n", averror2str(ret));

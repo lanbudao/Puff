@@ -88,7 +88,6 @@ AudioFrame AudioDecoderFFmpeg::frame()
     f.setBytesPerLine(d->frame->linesize[0], 0);
     f.setSamplePerChannel(d->frame->nb_samples);
     f.setTimestamp((double)d->frame->pkt_pts / 1000.0);
-//    f.setAudioResampler(d->resampler);
     return f;
 }
 
@@ -109,6 +108,9 @@ bool AudioDecoderFFmpeg::decode(const Packet &pkt)
         ret = avcodec_decode_audio4(d->codec_ctx, d->frame, &got_frame, pkt.asAVPacket());
     }
     d->undecoded_size = puMin(pkt.data.size() - ret, pkt.data.size());
+    if (d->undecoded_size > 0) {
+        avwarnning("undecoded_size: %d\n", d->undecoded_size);
+    }
     if (ret == AVERROR(EAGAIN))
         return false;
     if (ret < 0) {
