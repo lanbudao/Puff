@@ -41,21 +41,36 @@ public:
     void Bind(T* pObj, void (T::*func)(Args...)) {
         slotSet.push_back( new SlotImpl<T,Args...>(pObj, func) );
     }
-    ~Signal() {
-        for(int i = 0; i < (int)slotSet.size();i++){
-            delete slotSet[i];
+    template<class T>
+    void Unbind(T *obj) {
+        std::list<SlotBase<Args...>*>::iterator itor;
+        for (itor = slotSet.begin(); itor != slotSet.end(); itor++) {
+            if ((*itor) == obj) {
+                delete obj;
+                slotSet.remove(obj);
+                return;
+            }
         }
     }
+    ~Signal() {
+        std::list<SlotBase<Args...>*>::iterator itor;
+        for (itor = slotSet.begin(); itor != slotSet.end(); itor++) {
+            delete (*itor);
+        }
+        slotSet.clear();
+    }
     void operator()(Args ...args) {
-        for(int i = 0; i < (int)slotSet.size();i++){
-            slotSet[i]->Exec(args...);
+        std::list<SlotBase<Args...>*>::iterator itor;
+        for (itor = slotSet.begin(); itor != slotSet.end(); itor++) {
+            (*itor)->Exec(args...);
         }
     }
 private:
-    std::vector<SlotBase<Args...>*> slotSet;
+    std::list<SlotBase<Args...>*> slotSet;
 };
 
-#define puconnect(sender, signal, receiver, method) ((sender)->signal.Bind(receiver, method))
+#define PU_LINK(sender, signal, receiver, method) ((sender)->signal.Bind(receiver, method))
+#define PU_UNLINK(sender, signal, receiver) ((sender)->signal.Unbind(receiver))
 
 }
 #endif //PUFF_SIGNALSLOT_H

@@ -41,7 +41,7 @@ public:
         demux_thread = new AVDemuxThread();
         demux_thread->setDemuxer(demuxer);
         demux_thread->setClock(&clock);
-        puconnect(demux_thread, seekFinished, this, &AVPlayerPrivate::onSeekFinished);
+        PU_LINK(demux_thread, seekFinished, this, &AVPlayerPrivate::onSeekFinished);
 
         video_dec_ids = VideoDecoder::registered();
     }
