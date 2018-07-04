@@ -34,6 +34,15 @@ public:
     uint64_t duration();
 
     /**
+     * @brief setAudio, Video and Subtitle's Track
+     * Should be called before video is playing
+     * @param track
+     */
+    void setAudioTrack(int track);
+    void setVideoTrack(int track);
+    void setSubtitleTrack(int track);
+
+    /**
      * @brief default is SyncToAudio if not set and audio stream is not null
      * Note: must call it before play() is called
      * @param type

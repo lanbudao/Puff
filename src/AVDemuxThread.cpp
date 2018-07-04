@@ -166,6 +166,7 @@ void AVDemuxThread::run()
     }
     PacketQueue *vbuffer = d->video_thread ? d->video_thread->packets() : NULL;
     PacketQueue *abuffer = d->audio_thread ? d->audio_thread->packets() : NULL;
+    AVDemuxer *demuxer = d->demuxer;
 
     if (vbuffer) {
         vbuffer->clear();
@@ -190,7 +191,7 @@ void AVDemuxThread::run()
         if ( d->paused && !(d->video_thread && d->video_thread->isSeeking()) ) {
             continue;
         }
-        if (d->demuxer->atEnd()) {
+        if (demuxer->atEnd()) {
             // wait for a/v thread finished
             if (!d->enqueue_eof) {
                 if (abuffer) {
@@ -209,15 +210,15 @@ void AVDemuxThread::run()
             }
             continue;
         }
-        audio_has_pic = d->demuxer->hasAttachedPic();
+        audio_has_pic = demuxer->hasAttachedPic();
 
-        ret = d->demuxer->readFrame();
+        ret = demuxer->readFrame();
         if (ret < 0)
             continue;
-        stream = d->demuxer->stream();
-        pkt = d->demuxer->packet();
+        stream = demuxer->stream();
+        pkt = demuxer->packet();
 
-        if (stream == d->demuxer->videoStream()) {
+        if (stream == demuxer->videoStream()) {
             if (vbuffer) {
                 if (!d->video_thread || !d->video_thread->isRunning()) {
                     vbuffer->clear();
@@ -227,7 +228,7 @@ void AVDemuxThread::run()
                 vbuffer->enqueue(pkt);
             }
         }
-        else if (stream == d->demuxer->audioStream()) {
+        else if (stream == demuxer->audioStream()) {
             if (abuffer) {
                 if (!d->audio_thread || !d->audio_thread->isRunning()) {
                     abuffer->clear();
@@ -237,7 +238,7 @@ void AVDemuxThread::run()
                 abuffer->enqueue(pkt);
             }
         }
-        else if (stream == d->demuxer->subtitleStream()) {
+        else if (stream == demuxer->subtitleStream()) {
 
         }
     }

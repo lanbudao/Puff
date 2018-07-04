@@ -169,5 +169,18 @@ public:
     AudioResample *resample;
 };
 
+class SubtitleDecoderPrivate: public AVDecoderPrivate
+{
+public:
+    SubtitleDecoderPrivate()
+    {
+
+    }
+    ~SubtitleDecoderPrivate()
+    {
+
+    }
+};
+
 }
 #endif //PUFF_AVDECODER_P_H

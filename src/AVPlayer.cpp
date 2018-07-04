@@ -283,6 +283,8 @@ void AVPlayer::seek(uint64_t ms)
     DPTR_D(AVPlayer);
     if (!isPlaying())
         return;
+    if (!d->demuxer->isSeekable())
+        return;
     if (d->seeking)
         return;
     d->seeking = true;
@@ -316,6 +318,24 @@ uint64_t AVPlayer::duration()
 {
     DPTR_D(AVPlayer);
     return d->demuxer->duration();
+}
+
+void AVPlayer::setAudioTrack(int track)
+{
+    DPTR_D(AVPlayer);
+    d->audio_track = track;
+}
+
+void AVPlayer::setVideoTrack(int track)
+{
+    DPTR_D(AVPlayer);
+    d->video_track = track;
+}
+
+void AVPlayer::setSubtitleTrack(int track)
+{
+    DPTR_D(AVPlayer);
+    d->sub_track = track;
 }
 
 void AVPlayer::setClockType(ClockType type)

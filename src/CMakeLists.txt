@@ -139,6 +139,7 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/util SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder/video SOURCES)
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder/audio SOURCES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/decoder/subtitle SOURCES)
 list(APPEND HEADERS ${SDK_HEADERS} ${SDK_PRIVATE_HEADERS} ${SDK_HEADERS_PUFF} ${SDK_HEADERS_UTIL} ${SDK_HEADERS_RENDERER})
 
 # Include path
