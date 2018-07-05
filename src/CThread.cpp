@@ -67,6 +67,7 @@ void CThread::run()
     DPTR_D(CThread);
     avdebug("Thread %d finished!\n", id());
     d->running = false;
+    PU_EMIT finished(NULL);
 }
 
 void CThread::stoped()

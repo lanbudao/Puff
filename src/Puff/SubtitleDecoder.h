@@ -15,7 +15,7 @@ class PU_AV_EXPORT SubtitleDecoder: public AVDecoder
 public:
     ~SubtitleDecoder() PU_DECL_OVERRIDE;
 
-    static StringList supportedCodecs();
+    virtual StringList supportedCodecs() = 0;
 
     virtual std::string name() const PU_DECL_OVERRIDE;
     virtual std::string description() const PU_DECL_OVERRIDE;

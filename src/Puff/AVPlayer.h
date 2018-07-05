@@ -1,4 +1,3 @@
-
 #ifndef PUFF_AVPLAYER_H
 #define PUFF_AVPLAYER_H
 
@@ -10,6 +9,7 @@
  */
 namespace Puff {
 
+class Subtitle;
 class AudioFilter;
 class VideoFilter;
 class VideoRenderer;
@@ -56,6 +56,13 @@ public:
 
     void installFilter(AudioFilter *filter);
     void installFilter(VideoFilter *filter);
+
+    std::map<std::string, std::string> internalSubtitles() const;
+    Subtitle* internalSubtitle();
+    Subtitle* addExternalSubtitle(const std::string &fileName, bool enabled = false);
+    void enableExternalSubtitle(Subtitle *sub);
+    void removeExternalSubtitle(Subtitle *sub);
+    std::list<Subtitle*> externalSubtitles();
 
 private:
     void loadInternal();

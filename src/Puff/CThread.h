@@ -2,6 +2,7 @@
 #define PUFF_CTHREAD_H
 
 #include "AVGlobal.h"
+#include "SignalSlot.h"
 #include "DPTR.h"
 
 struct SDL_Thread;
@@ -24,6 +25,9 @@ public:
     bool isRunning() const;
 
     unsigned long id() const;
+
+PU_SIGNALS:
+    Signal<void*> finished;
 
 public:
     virtual void run();

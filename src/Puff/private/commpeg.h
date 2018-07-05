@@ -46,6 +46,9 @@ extern "C" {
 #define DESC_VAL(X) (X##_minus1 + 1)
 #endif
 
+#define AVCODEC_STATIC_REGISTER FFMPEG_MODULE_CHECK(LIBAVCODEC, 58, 10, 100)
+#define AVFORMAT_STATIC_REGISTER FFMPEG_MODULE_CHECK(LIBAVFORMAT, 58, 9, 100)
+
 av_always_inline char* averror2str(int errnum)
 {
     static char str[AV_ERROR_MAX_STRING_SIZE];
