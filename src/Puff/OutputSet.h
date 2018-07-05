@@ -17,7 +17,7 @@ public:
     OutputSet();
     ~OutputSet();
 
-    CList<AVOutput *> outputs();
+    std::list<AVOutput *> outputs();
 
     void lock();
     void unlock();

@@ -171,7 +171,7 @@ VideoDecoderFFmpeg::VideoDecoderFFmpeg()
     setProperty("detail_skip_idct", ("Force skipping of idct to speed up decoding for frame types (-1=None, "
                                        "0=Default, 1=B-frames, 2=P-frames, 3=B+P frames, 4=all frames)"));
     setProperty("detail_skip_frame", ("Force skipping frames for speed up decoding."));
-    setProperty("detail_threads", sformat("%s\n%s\n%s\n",
+    setProperty("detail_threads", Util::sformat("%s\n%s\n%s\n",
             "Number of decoding threads. Set before open. Maybe no effect for some decoders",
             "0: auto",
                                          "1: single thread decoding"));
@@ -197,7 +197,7 @@ VideoDecoderId VideoDecoderFFmpeg::id() const
 std::string VideoDecoderFFmpeg::description() const
 {
     const int patch = PUFF_VERSION_PATCH((int)avcodec_version());
-    return sformat("%s avcodec %d->%d->%d",
+    return Util::sformat("%s avcodec %d->%d->%d",
             (patch >= 100 ? "FFmpeg" : "Libav"),
             (PUFF_VERSION_MAJOR((int)avcodec_version())),
             (PUFF_VERSION_MINOR((int)avcodec_version())),

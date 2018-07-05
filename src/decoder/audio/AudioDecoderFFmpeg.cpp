@@ -65,7 +65,7 @@ AudioDecoderId AudioDecoderFFmpeg::id() const
 std::string AudioDecoderFFmpeg::description() const
 {
     const int patch = PUFF_VERSION_PATCH((int)avcodec_version());
-    return sformat("%s avcodec %d.%d.%d",
+    return Util::sformat("%s avcodec %d.%d.%d",
             (patch >= 100 ? "FFmpeg" : "Libav"),
             (PUFF_VERSION_MAJOR((int)avcodec_version())),
             (PUFF_VERSION_MINOR((int)avcodec_version())),

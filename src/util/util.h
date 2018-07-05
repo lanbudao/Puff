@@ -5,9 +5,14 @@
 
 namespace Puff {
 
-std::string sformat(char *fmt, ...);
+class Util
+{
+public:
+    static std::string sformat(char *fmt, ...);
 
-std::string guid();
+    static std::string guid();
+
+};
 
 }
 #endif // UTIL_H

@@ -9,6 +9,9 @@
  *
  */
 namespace Puff {
+
+class AudioFilter;
+class VideoFilter;
 class VideoRenderer;
 class AVPlayerPrivate;
 class PU_AV_EXPORT AVPlayer
@@ -50,6 +53,9 @@ public:
     void setClockType(ClockType type);
 
     void addVideoRenderer(VideoRenderer *renderer);
+
+    void installFilter(AudioFilter *filter);
+    void installFilter(VideoFilter *filter);
 
 private:
     void loadInternal();

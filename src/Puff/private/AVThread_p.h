@@ -5,6 +5,7 @@
 #include "PacketQueue.h"
 #include "AVDecoder.h"
 #include "AVClock.h"
+#include "Filter.h"
 
 namespace Puff {
 
@@ -49,6 +50,9 @@ public:
      * Then, we need to read a video frame when seek is done
      */
     bool seeking = false;
+
+    /*Filter for audio and video*/
+    std::list<Filter*> filters;
 };
 
 }

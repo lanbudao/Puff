@@ -17,7 +17,7 @@ public:
 
     }
 
-    CList<AVOutput *> outputs;
+    std::list<AVOutput *> outputs;
     CMutex mutex;
 };
 
@@ -32,7 +32,7 @@ OutputSet::~OutputSet()
 
 }
 
-CList<AVOutput *> OutputSet::outputs()
+std::list<AVOutput *> OutputSet::outputs()
 {
     DPTR_D(const OutputSet);
     return d->outputs;
@@ -77,8 +77,9 @@ void OutputSet::clearOutput()
 void OutputSet::sendVideoFrame(const VideoFrame &frame)
 {
     DPTR_D(OutputSet);
-    for (size_t i = 0; i < d->outputs.size(); ++i) {
-        VideoRenderer *renderer = static_cast<VideoRenderer *>(d->outputs.at(i));
+    std::list<AVOutput *>::iterator itor;
+    for (itor = d->outputs.begin(); itor != d->outputs.end(); itor++) {
+        VideoRenderer *renderer = static_cast<VideoRenderer *>(*itor);
         if (!renderer->isAvaliable())
             continue;
         renderer->receive(frame);

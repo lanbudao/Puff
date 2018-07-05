@@ -6,7 +6,7 @@
 
 namespace Puff {
 
-std::string sformat(char *fmt, ...)
+std::string Util::sformat(char *fmt, ...)
 {
     std::string output;
     va_list marker = NULL;
@@ -20,7 +20,7 @@ std::string sformat(char *fmt, ...)
     return output;
 }
 
-std::string guid()
+std::string Util::guid()
 {
     char range[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     int length = strlen(range);

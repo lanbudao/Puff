@@ -43,7 +43,7 @@ void CThread::start()
 {
     DPTR_D(CThread);
     d->running = true;
-    t = SDL_CreateThread(running, guid().c_str(), this);
+    t = SDL_CreateThread(running, Util::guid().c_str(), this);
 }
 
 void CThread::stop() {

@@ -13,6 +13,7 @@
 #include "AVClock.h"
 #include "Statistics.h"
 #include "VideoRenderer.h"
+#include "Filter.h"
 #include "util.h"
 
 namespace Puff {
@@ -349,6 +350,16 @@ void AVPlayer::addVideoRenderer(VideoRenderer *renderer)
     DPTR_D(AVPlayer);
     renderer->setStatistics(&d->statistics);
     d->video_output_set.addOutput((AVOutput*)renderer);
+}
+
+void AVPlayer::installFilter(AudioFilter *filter)
+{
+
+}
+
+void AVPlayer::installFilter(VideoFilter *filter)
+{
+
 }
 
 void AVPlayer::loadInternal()

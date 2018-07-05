@@ -63,7 +63,7 @@ AudioOutputPortAudio::AudioOutputPortAudio():
         const PaHostApiInfo *hostApiInfo = Pa_GetHostApiInfo(devInfo->hostApi);
         if (!hostApiInfo)
             continue;
-        std::string name = sformat("%s: %s", devInfo->name, hostApiInfo->name);
+        std::string name = Util::sformat("%s: %s", devInfo->name, hostApiInfo->name);
         avdebug("audio device %d: %s\n", i, name.c_str());
         avdebug("max in/out channel: %d / %d\n", devInfo->maxInputChannels, devInfo->maxOutputChannels);
     }
