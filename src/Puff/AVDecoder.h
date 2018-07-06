@@ -4,7 +4,7 @@
 #include "CObject.h"
 
 typedef struct AVCodecContext AVCodecContext;
-
+typedef struct AVCodec AVCodec;
 namespace Puff {
 
 class AVDecoderPrivate;
@@ -19,7 +19,7 @@ public:
     virtual std::string name() const = 0;
     virtual std::string description() const = 0;
 
-    virtual bool open();
+    virtual bool open(const string &extra = string());
     virtual bool close();
 
     bool isOpen();
@@ -31,6 +31,7 @@ public:
     bool isAvailable() const;
 
     void setCodecCtx(void *ctx);
+    AVCodec *findCodec(const std::string &name, const std::string &hwaccel, int id);
 
 protected:
     AVDecoder(AVDecoderPrivate *d);

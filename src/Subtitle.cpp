@@ -38,6 +38,11 @@ public:
         }
     }
 
+    void reset()
+    {
+
+    }
+
     void loadInternal()
     {
         FILE *f = fopen(fileName.c_str(), "r");
@@ -101,6 +106,13 @@ void Subtitle::load()
         d->load_async = new LoadAsync(d);
     }
     d->load_async->run();
+}
+
+bool Subtitle::processLine(const ByteArray &data, double pts, double duration)
+{
+    DPTR_D(Subtitle);
+
+    return true;
 }
 
 }

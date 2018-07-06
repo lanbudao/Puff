@@ -4,6 +4,7 @@
 #include "AVDecoder.h"
 #include "AudioFrame.h"
 #include "Packet.h"
+#include "Subtitle.h"
 
 namespace Puff {
 
@@ -16,6 +17,7 @@ public:
     ~SubtitleDecoder() PU_DECL_OVERRIDE;
 
     virtual StringList supportedCodecs() = 0;
+    virtual SubtitleFrame processLine(const ByteArray &data, double pts, double duration) = 0;
 
     virtual std::string name() const PU_DECL_OVERRIDE;
     virtual std::string description() const PU_DECL_OVERRIDE;

@@ -176,7 +176,7 @@ public:
     {
 
     }
-    ~SubtitleDecoderPrivate()
+    virtual ~SubtitleDecoderPrivate()
     {
 
     }

@@ -4,23 +4,6 @@
 
 namespace Puff {
 
-static AVCodec *findCodec(const std::string &name, const std::string &hwaccel, AVCodecID id)
-{
-    std::string fullName(name);
-    if (fullName.empty()) {
-        if (hwaccel.empty())
-            return avcodec_find_decoder(id);
-        fullName = Util::sformat("%s_%s", avcodec_get_name(id), hwaccel);
-    }
-    AVCodec *codec = avcodec_find_decoder_by_name(fullName.c_str());
-    if (!codec)
-        return NULL;
-    const AVCodecDescriptor *des = avcodec_descriptor_get_by_name(fullName.c_str());
-    if (des)
-        return avcodec_find_decoder(des->id);
-    return NULL;
-}
-
 AVDecoder::AVDecoder(AVDecoderPrivate *d):
     CObject(),
     d_ptr(d)
@@ -39,10 +22,11 @@ AVCodecContext * AVDecoder::codecCtx()
     return d->codec_ctx;
 }
 
-bool AVDecoder::open()
+bool AVDecoder::open(const string &extra)
 {
     DPTR_D(AVDecoder);
 
+    PU_UNUSED(extra)
     d->opened = false;
     if (!d->codec_ctx) {
         return false;
@@ -136,6 +120,23 @@ void AVDecoder::setCodecCtx(void *ctx)
     if (!d->codec_ctx)
         return;
     AV_ENSURE_OK(avcodec_copy_context(d->codec_ctx, codec_ctx));
+}
+
+AVCodec *AVDecoder::findCodec(const std::string &name, const std::string &hwaccel, int id)
+{
+    std::string fullName(name);
+    if (fullName.empty()) {
+        if (hwaccel.empty())
+            return avcodec_find_decoder((AVCodecID)id);
+        fullName = Util::sformat("%s_%s", avcodec_get_name((AVCodecID)id), hwaccel);
+    }
+    AVCodec *codec = avcodec_find_decoder_by_name(fullName.c_str());
+    if (!codec)
+        return NULL;
+    const AVCodecDescriptor *des = avcodec_descriptor_get_by_name(fullName.c_str());
+    if (des)
+        return avcodec_find_decoder((AVCodecID)(des->id));
+    return NULL;
 }
 
 }
